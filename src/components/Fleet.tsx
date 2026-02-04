@@ -369,7 +369,7 @@ export const Fleet = () => {
                     whileInView="visible"
                     viewport={{ once: true }}
                 >
-                    <AnimatePresence mode="popLayout">
+                    <AnimatePresence>
                         {filteredCars.map((car) => (
                             <motion.div
                                 key={car.id}
