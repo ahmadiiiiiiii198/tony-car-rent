@@ -1875,53 +1875,83 @@ ul {
   .booking-modal {
     max-width: 100%;
     height: 100%;
-    /* Full height */
     max-height: 100vh;
     border-radius: 0;
     padding: 0;
-    /* Remove padding from container */
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    /* Prevent body scroll */
-    background: #000;
-    /* Ensure solid background */
+    background: #050505;
+  }
+
+  /* Header Area with Close Button */
+  .booking-modal-header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1rem;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 30;
   }
 
   .close-modal {
-    top: 1rem;
-    right: 1rem;
-    z-index: 20;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
-    padding: 5px;
-    width: 34px;
-    height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    align-self: flex-end;
+    /* Align to right */
+    top: auto;
+    right: auto;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 0.5rem;
+    margin-right: 0.5rem;
   }
 
-  /* Sticky Header Area */
+  /* Sticky Progress Header */
   .booking-progress {
-    margin: 1rem 1rem 0;
-    padding-bottom: 1rem;
+    margin: 3.5rem 1rem 0;
+    padding-bottom: 1.5rem;
     flex-shrink: 0;
-    background: #000;
-    /* Cover scrolling content */
+    background: #050505;
     z-index: 10;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
 
-  /* Scrollable Content Area */
+  /* Improve Input Styling on Mobile */
+  .form-group input,
+  .form-group select {
+    padding: 1.2rem;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    color: #fff;
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  /* Fix Date Input Appearance */
+  input[type="date"] {
+    min-height: 55px;
+    position: relative;
+  }
+
+  /* Add calendar icon to date inputs for clarity if missing */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.6;
+    cursor: pointer;
+  }
+
   .booking-step {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 0 1.5rem 1.5rem;
-    /* Add padding here */
-    min-height: 0;
-    /* Fix flex scrolling */
+    padding: 1.5rem;
+    padding-top: 2rem;
   }
 
   .step-label {
