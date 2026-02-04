@@ -7,12 +7,12 @@ const cardVariants = {
     onscreen: {
         y: 0,
         opacity: 1,
-        transition: { type: "spring", bounce: 0.4, duration: 0.8 }
+        transition: { type: "spring" as const, bounce: 0.4, duration: 0.8 }
     }
 };
 
 export const Services = () => {
-    const { t, language } = useLanguage();
+    const { language } = useLanguage();
 
     const features = [
         {
