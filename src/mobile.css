@@ -263,12 +263,15 @@
     .hero-tab {
         flex: unset;
         flex-direction: column;
-        padding: 1rem 0.75rem;
+        padding: 1rem 0.5rem;
+        /* Slightly reduced horizontal padding */
         gap: 0.6rem;
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 16px;
         min-height: 90px;
+        min-width: 0 !important;
+        /* CRITICAL FIX: Override desktop 160px min-width */
         width: 100%;
         display: flex;
         justify-content: center;
