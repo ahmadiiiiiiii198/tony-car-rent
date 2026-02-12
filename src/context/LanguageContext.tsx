@@ -16,6 +16,46 @@ interface Translations {
     extraordinary: string;
     heroDesc: string;
     exploreFleet: string;
+    selectCategoryToStart: string;
+
+    // Hero Category Tabs
+    tabUsedCars: string;
+    tabRental: string;
+    tabCommercial: string;
+    tabOnTheRoad: string;
+
+    // Search Widget
+    searchBrand: string;
+    searchModel: string;
+    searchPriceFrom: string;
+    searchPriceTo: string;
+    searchYearFrom: string;
+    searchYearTo: string;
+    searchMileageMax: string;
+    searchFuel: string;
+    searchButton: string;
+    searchResults: string;
+    searchAllBrands: string;
+    searchAllModels: string;
+    searchAllFuels: string;
+    fuelPetrol: string;
+    fuelDiesel: string;
+    fuelHybrid: string;
+    fuelElectric: string;
+    fuelLPG: string;
+    fuelCNG: string;
+
+    // Category Descriptions
+    usedCarsDesc: string;
+    rentalDesc: string;
+    commercialDesc: string;
+    onTheRoadDesc: string;
+
+    // Commercial Subtypes
+    commercialTrucks: string;
+    commercialVans: string;
+    commercialMinibuses: string;
+    commercialMinivans: string;
 
     // Fleet Section
     ourFleet: string;
@@ -63,6 +103,22 @@ interface Translations {
     totalEstimated: string;
     confirmationMessage: string;
 
+    // List Page / Fleet
+    sortBy: string;
+    sortRelevance: string;
+    sortPriceAsc: string;
+    sortPriceDesc: string;
+    sortMileageAsc: string;
+    sortYearDesc: string;
+    filters: string;
+    resetFilters: string;
+    applyFilters: string;
+    compare: string;
+    compareCount: string;
+    clearAll: string;
+    selectToCompare: string;
+    saveSearch: string;
+
     // Services
     ourServices: string;
     premiumExperience: string;
@@ -92,6 +148,46 @@ const translations: Record<Language, Translations> = {
         extraordinary: 'Straordinario',
         heroDesc: 'Vivi l\'emozione della flotta più esclusiva al mondo. Servizio impeccabile, prestazioni senza pari.',
         exploreFleet: 'Esplora la Flotta',
+        selectCategoryToStart: 'Seleziona una categoria per iniziare la ricerca',
+
+        // Hero Category Tabs
+        tabUsedCars: 'Vendita Auto Usate',
+        tabRental: 'Noleggio Auto',
+        tabCommercial: 'Veicoli Commerciali',
+        tabOnTheRoad: 'Su Strada',
+
+        // Search Widget
+        searchBrand: 'Marca',
+        searchModel: 'Modello',
+        searchPriceFrom: 'Prezzo da',
+        searchPriceTo: 'Prezzo fino a',
+        searchYearFrom: 'Anno da',
+        searchYearTo: 'Anno fino a',
+        searchMileageMax: 'Km massimi',
+        searchFuel: 'Carburante',
+        searchButton: 'Cerca Veicoli',
+        searchResults: 'risultati',
+        searchAllBrands: 'Tutte le marche',
+        searchAllModels: 'Tutti i modelli',
+        searchAllFuels: 'Tutti i carburanti',
+        fuelPetrol: 'Benzina',
+        fuelDiesel: 'Diesel',
+        fuelHybrid: 'Ibrido',
+        fuelElectric: 'Elettrico',
+        fuelLPG: 'GPL',
+        fuelCNG: 'Metano',
+
+        // Category Descriptions
+        usedCarsDesc: 'Trova la tua prossima auto tra migliaia di veicoli usati certificati e garantiti.',
+        rentalDesc: 'Noleggio a breve e lungo termine. Soluzioni flessibili per ogni esigenza.',
+        commercialDesc: 'Camion, furgoni, pulmini e minivan per la tua attività professionale.',
+        onTheRoadDesc: 'Veicoli pronti per la circolazione, revisionati e con garanzia stradale.',
+
+        // Commercial Subtypes
+        commercialTrucks: 'Camion',
+        commercialVans: 'Furgoni',
+        commercialMinibuses: 'Pulmini',
+        commercialMinivans: 'Minivan',
 
         // Fleet Section
         ourFleet: 'La Nostra Flotta',
@@ -139,6 +235,22 @@ const translations: Record<Language, Translations> = {
         totalEstimated: 'Totale (stimato)',
         confirmationMessage: 'Riceverai a breve un\'email di conferma. Il nostro team ti contatterà per finalizzare la prenotazione.',
 
+        // List Page / Fleet
+        sortBy: 'Ordina per',
+        sortRelevance: 'Rilevanza',
+        sortPriceAsc: 'Prezzo: dal più basso',
+        sortPriceDesc: 'Prezzo: dal più alto',
+        sortMileageAsc: 'Chilometraggio: dal più basso',
+        sortYearDesc: 'Anno: dal più recente',
+        filters: 'Filtri',
+        resetFilters: 'Rimuovi filtri',
+        applyFilters: 'Applica filtri',
+        compare: 'Confronta',
+        compareCount: 'veicoli selezionati',
+        clearAll: 'Cancella tutto',
+        selectToCompare: 'Seleziona almeno 2 veicoli da confrontare',
+        saveSearch: 'Salva ricerca',
+
         // Services
         ourServices: 'I Nostri Servizi',
         premiumExperience: 'Esperienza Premium',
@@ -166,6 +278,46 @@ const translations: Record<Language, Translations> = {
         extraordinary: 'Extraordinary',
         heroDesc: 'Experience the thrill of the world\'s most exclusive fleet. Impeccable service, unmatched performance.',
         exploreFleet: 'Explore Fleet',
+        selectCategoryToStart: 'Select a category to start your search',
+
+        // Hero Category Tabs
+        tabUsedCars: 'Used Cars',
+        tabRental: 'Car Rental',
+        tabCommercial: 'Commercial Vehicles',
+        tabOnTheRoad: 'On the Road',
+
+        // Search Widget
+        searchBrand: 'Brand',
+        searchModel: 'Model',
+        searchPriceFrom: 'Price from',
+        searchPriceTo: 'Price up to',
+        searchYearFrom: 'Year from',
+        searchYearTo: 'Year up to',
+        searchMileageMax: 'Max mileage',
+        searchFuel: 'Fuel type',
+        searchButton: 'Search Vehicles',
+        searchResults: 'results',
+        searchAllBrands: 'All brands',
+        searchAllModels: 'All models',
+        searchAllFuels: 'All fuel types',
+        fuelPetrol: 'Petrol',
+        fuelDiesel: 'Diesel',
+        fuelHybrid: 'Hybrid',
+        fuelElectric: 'Electric',
+        fuelLPG: 'LPG',
+        fuelCNG: 'CNG',
+
+        // Category Descriptions
+        usedCarsDesc: 'Find your next car among thousands of certified and guaranteed used vehicles.',
+        rentalDesc: 'Short and long-term rental. Flexible solutions for every need.',
+        commercialDesc: 'Trucks, vans, minibuses and minivans for your professional business.',
+        onTheRoadDesc: 'Road-ready vehicles, inspected and with roadside warranty.',
+
+        // Commercial Subtypes
+        commercialTrucks: 'Trucks',
+        commercialVans: 'Vans',
+        commercialMinibuses: 'Minibuses',
+        commercialMinivans: 'Minivans',
 
         // Fleet Section
         ourFleet: 'Our Fleet',
@@ -212,6 +364,22 @@ const translations: Record<Language, Translations> = {
         notSelected: 'Not selected',
         totalEstimated: 'Total (estimated)',
         confirmationMessage: 'A confirmation email will be sent to you shortly. Our team will contact you to finalize the booking.',
+
+        // List Page / Fleet
+        sortBy: 'Sort by',
+        sortRelevance: 'Relevance',
+        sortPriceAsc: 'Price: Low to High',
+        sortPriceDesc: 'Price: High to Low',
+        sortMileageAsc: 'Mileage: Low to High',
+        sortYearDesc: 'Year: Newest',
+        filters: 'Filters',
+        resetFilters: 'Reset filters',
+        applyFilters: 'Apply filters',
+        compare: 'Compare',
+        compareCount: 'vehicles selected',
+        clearAll: 'Clear all',
+        selectToCompare: 'Select at least 2 vehicles to compare',
+        saveSearch: 'Save search',
 
         // Services
         ourServices: 'Our Services',

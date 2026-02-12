@@ -7,20 +7,34 @@ export const Navbar = () => {
   const { t, language, setLanguage } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+
+      // Scroll Spy Logic
+      const sections = ['home', 'fleet', 'services', 'contact'];
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          if (rect.top <= 150 && rect.bottom >= 150) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const navLinks = [
-    { name: t.home, href: '#' },
-    { name: t.fleet, href: '#fleet' },
-    { name: t.services, href: '#services' },
-    { name: t.contact, href: '#contact' },
+    { id: 'home', name: t.home, href: '#' },
+    { id: 'fleet', name: t.fleet, href: '#fleet' },
+    { id: 'services', name: t.services, href: '#services' },
+    { id: 'contact', name: t.contact, href: '#contact' },
   ];
 
   const toggleLanguage = () => {
@@ -61,9 +75,9 @@ export const Navbar = () => {
         <div className="nav-links">
           {navLinks.map((link) => (
             <a
-              key={link.name}
+              key={link.id}
               href={link.href}
-              className="nav-link"
+              className={`nav-link ${activeSection === link.id ? 'active' : ''}`}
               onClick={(e) => handleNavClick(e, link.href)}
             >
               {link.name}

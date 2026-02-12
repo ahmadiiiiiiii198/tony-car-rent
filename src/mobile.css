@@ -59,6 +59,8 @@
         padding: 1.5rem;
         display: flex;
         flex-direction: column;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 
     .close-modal {
@@ -215,5 +217,114 @@
     .book-btn {
         padding: 0.6rem 1.2rem;
         font-size: 0.8rem;
+    }
+}
+
+/* ============================================
+   HERO SEARCH OPTIMIZATIONS
+   ============================================ */
+@media (max-width: 768px) {
+    .hero-tabs {
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 0.5rem;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .hero-tab {
+        flex-shrink: 0;
+    }
+
+    .hero-search-row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .hero-search-field-half {
+        width: 100%;
+    }
+
+    .hero-search-actions {
+        margin-top: 1rem;
+    }
+
+    .hero-search-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .hero-panel-desc {
+        font-size: 0.9rem;
+        line-height: 1.4;
+        margin-bottom: 1rem;
+    }
+
+    .hero-commercial-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .commercial-badge {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+    }
+}
+
+/* ============================================
+   FLEET SIDEBAR OPTIMIZATIONS
+   ============================================ */
+@media (max-width: 900px) {
+
+    /* Trigger sidebar earlier for tablets */
+    .fleet-layout {
+        display: block;
+        /* Stack sidebar and grid */
+    }
+
+    .fleet-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 85%;
+        max-width: 300px;
+        background: var(--color-card-bg);
+        /* Use dark bg */
+        z-index: 1001;
+        /* Above navbar */
+        padding: 2rem 1.5rem;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+        overflow-y: auto;
+    }
+
+    .fleet-sidebar.open {
+        transform: translateX(0);
+    }
+
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+    }
+
+    .sidebar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .close-sidebar-btn {
+        display: block;
+        /* Ensure visible on mobile */
     }
 }

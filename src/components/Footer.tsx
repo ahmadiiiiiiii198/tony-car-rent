@@ -41,18 +41,18 @@ export const Footer = () => {
                         <ul className="footer-links">
                             <li className="contact-item">
                                 <MapPin size={18} className="contact-icon" />
-                                <span>Via del Lusso 46, Milano</span>
+                                <span>Torino, Italia</span>
                             </li>
                             <li className="contact-item">
                                 <Phone size={18} className="contact-icon" />
                                 <div>
-                                    <p>+39 02 1234 5678</p>
-                                    <p style={{ fontSize: '0.8rem', color: '#666' }}>Lun-Dom, 9:00 - 21:00</p>
+                                    <p>+39 351 048 4630</p>
+                                    <p style={{ fontSize: '0.8rem', color: '#666' }}>Lun-Sab, 9:00 - 19:00</p>
                                 </div>
                             </li>
                             <li className="contact-item">
                                 <Mail size={18} className="contact-icon" />
-                                <span>info@tonaydin.it</span>
+                                <span>info@tonaydinluxurycars.it</span>
                             </li>
                         </ul>
                     </div>
