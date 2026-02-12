@@ -14,7 +14,7 @@ interface HeroProps {
 
 export const Hero = ({ onSearch }: HeroProps) => {
     const { t } = useLanguage();
-    const [activeTab, setActiveTab] = useState<TabKey | null>(null);
+    const [activeTab, setActiveTab] = useState<TabKey | null>('usedCars');
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [dbBrands, setDbBrands] = useState<string[]>([]);
     const [allCars, setAllCars] = useState<{ brand: string, name: string }[]>([]);
