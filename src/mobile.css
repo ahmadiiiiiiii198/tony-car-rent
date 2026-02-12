@@ -225,33 +225,40 @@
    ============================================ */
 @media (max-width: 768px) {
     .hero-tabs {
-        overflow-x: visible;
-        /* Remove horizontal scroll */
-        justify-content: space-between;
-        /* Distribute evenly */
-        padding-bottom: 0;
-        gap: 0.25rem;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 columns */
+        gap: 0.75rem;
+        /* Space between items */
+        padding-bottom: 0.5rem;
     }
 
     .hero-tab {
-        flex: 1;
-        /* Force equal width */
+        flex: unset;
+        /* Remove flex behavior */
         flex-direction: column;
-        padding: 0.8rem 0.2rem;
-        /* Reduce horizontal padding */
-        gap: 0.3rem;
-        min-width: 0;
-        /* Allow shrinking below content size if needed */
+        padding: 1rem 0.5rem;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        min-height: 80px;
+        /* Ensure touch target size */
+        justify-content: center;
+        align-items: center;
+    }
+
+    .hero-tab.active {
+        background: rgba(212, 175, 55, 0.15);
+        border-color: var(--color-gold);
     }
 
     .hero-tab-label {
         display: block !important;
-        font-size: 0.7rem;
-        /* Slightly smaller font */
+        font-size: 0.85rem;
+        /* Larger font */
         text-align: center;
-        line-height: 1.1;
-        white-space: normal;
-        /* Allow wrapping if absolutely necessary */
+        line-height: 1.2;
     }
 
     /* Logo size - override previously set 35px */
