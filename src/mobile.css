@@ -288,10 +288,12 @@
     }
 
     .hero-tab.active {
-        background: rgba(212, 175, 55, 0.12);
-        border-color: var(--color-gold);
-        color: var(--color-gold);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(212, 175, 55, 0.1);
+        background: rgba(212, 175, 55, 0.25) !important;
+        /* Stronger background opacity */
+        border: 2px solid var(--color-gold) !important;
+        /* Thicker border */
+        color: var(--color-gold) !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.25) !important;
     }
 
     .hero-tab-icon {
