@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Key, Car, Search, Truck, MapPin, Fuel, Calendar, Gauge } from 'lucide-react';
+import { Key, Car, Search, Truck, MapPin, Fuel, Calendar, Gauge, Send, User, Mail, Phone, MessageSquare, CheckCircle, Loader2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { supabase } from '../lib/supabase';
 
@@ -14,7 +14,7 @@ interface HeroProps {
 
 export const Hero = ({ onSearch }: HeroProps) => {
     const { t } = useLanguage();
-    const [activeTab, setActiveTab] = useState<TabKey | null>('usedCars');
+    const [activeTab, setActiveTab] = useState<TabKey | null>(null);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [dbBrands, setDbBrands] = useState<string[]>([]);
     const [allCars, setAllCars] = useState<{ brand: string, name: string }[]>([]);
@@ -25,6 +25,12 @@ export const Hero = ({ onSearch }: HeroProps) => {
     const [selectedFuel, setSelectedFuel] = useState('');
     const [priceMin, setPriceMin] = useState('');
     const [priceMax, setPriceMax] = useState('');
+    const [requestName, setRequestName] = useState('');
+    const [requestEmail, setRequestEmail] = useState('');
+    const [requestPhone, setRequestPhone] = useState('');
+    const [requestMessage, setRequestMessage] = useState('');
+    const [requestLoading, setRequestLoading] = useState(false);
+    const [requestSuccess, setRequestSuccess] = useState(false);
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
@@ -58,6 +64,48 @@ export const Hero = ({ onSearch }: HeroProps) => {
         }
     };
 
+    const handleTabClick = (tabKey: TabKey) => {
+        const newTab = activeTab === tabKey ? null : tabKey;
+        setActiveTab(newTab);
+        setSelectedBrand('');
+        setSelectedModel('');
+        setSelectedFuel('');
+        setPriceMin('');
+        setPriceMax('');
+
+        if (newTab === null) {
+            onSearch({ brand: '', model: '', fuel: '', minPrice: 0, maxPrice: 0, listingType: 'all', category: '' });
+        } else if (newTab === 'usedCars') {
+            onSearch({ brand: '', model: '', fuel: '', minPrice: 0, maxPrice: 0, listingType: 'sale', category: '' });
+            scrollToFleet();
+        } else if (newTab === 'rental') {
+            onSearch({ brand: '', model: '', fuel: '', minPrice: 0, maxPrice: 0, listingType: 'rental', category: '' });
+            scrollToFleet();
+        } else if (newTab === 'commercial') {
+            onSearch({ brand: '', model: '', fuel: '', minPrice: 0, maxPrice: 0, listingType: 'all', category: 'Van' });
+            scrollToFleet();
+        }
+    };
+
+    const handleRequestSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!requestName || !requestEmail || !requestPhone) return;
+        setRequestLoading(true);
+        const { error } = await supabase.from('orders').insert({
+            car_id: null,
+            car_name: 'Richiesta Generale',
+            car_brand: 'Su Strada',
+            customer_name: requestName,
+            customer_email: requestEmail,
+            customer_phone: requestPhone,
+            order_type: 'info',
+            message: requestMessage || null,
+            status: 'pending'
+        });
+        setRequestLoading(false);
+        if (!error) setRequestSuccess(true);
+    };
+
     const handleSearch = () => {
         let listingType: 'all' | 'sale' | 'rental' | 'both' = 'all';
         let category = '';
@@ -66,6 +114,9 @@ export const Hero = ({ onSearch }: HeroProps) => {
         else if (activeTab === 'rental') listingType = 'rental';
         else if (activeTab === 'commercial') {
             category = 'Van';
+            listingType = 'all';
+        } else if (activeTab === 'onTheRoad') {
+            listingType = 'both';
         }
 
         const fuelMap: Record<string, string> = {
@@ -148,7 +199,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
                             <motion.button
                                 key={tab.key}
                                 className={`hero-tab ${activeTab === tab.key ? 'active' : ''}`}
-                                onClick={() => setActiveTab(activeTab === tab.key ? null : tab.key)}
+                                onClick={() => handleTabClick(tab.key)}
                                 whileHover={{ y: -2, backgroundColor: "rgba(255, 255, 255, 0.05)" }}
                                 whileTap={{ scale: 0.95 }}
                             >
@@ -181,133 +232,198 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                         {/* Description */}
                                         <p className="hero-panel-desc">{currentTab?.description}</p>
 
-                                        {/* Commercial subtypes badges */}
-                                        {activeTab === 'commercial' && (
-                                            <div className="hero-commercial-badges">
-                                                {[
-                                                    { icon: <Truck size={14} />, label: t.commercialTrucks },
-                                                    { icon: <Car size={14} />, label: t.commercialVans },
-                                                    { icon: <Car size={14} />, label: t.commercialMinibuses },
-                                                    { icon: <Car size={14} />, label: t.commercialMinivans },
-                                                ].map((badge, i) => (
-                                                    <motion.span
-                                                        key={badge.label}
-                                                        className="commercial-badge"
-                                                        initial={{ opacity: 0, scale: 0.8 }}
-                                                        animate={{ opacity: 1, scale: 1 }}
-                                                        transition={{ delay: i * 0.08 }}
-                                                    >
-                                                        {badge.icon}
-                                                        {badge.label}
-                                                    </motion.span>
-                                                ))}
-                                            </div>
-                                        )}
-
-                                        {/* Search Form */}
-                                        <div className="hero-search-form">
-                                            <div className="hero-search-row">
-                                                <label className="hero-search-field">
-                                                    <span className="field-label"><Car size={14} /> {t.searchBrand}</span>
-                                                    <select
-                                                        value={selectedBrand}
-                                                        onChange={(e) => {
-                                                            setSelectedBrand(e.target.value);
-                                                            setSelectedModel('');
+                                        {activeTab === 'onTheRoad' ? (
+                                            requestSuccess ? (
+                                                <div className="order-success" style={{ marginTop: '1rem' }}>
+                                                    <CheckCircle size={48} />
+                                                    <h4>Richiesta Inviata!</h4>
+                                                    <p>Ti contatteremo al più presto.</p>
+                                                    <button
+                                                        className="hero-search-btn"
+                                                        style={{ marginTop: '1rem' }}
+                                                        onClick={() => {
+                                                            setRequestSuccess(false);
+                                                            setRequestName('');
+                                                            setRequestEmail('');
+                                                            setRequestPhone('');
+                                                            setRequestMessage('');
                                                         }}
                                                     >
-                                                        <option value="">{t.searchAllBrands}</option>
-                                                        {currentBrands.map(brand => (
-                                                            <option key={brand} value={brand}>{brand}</option>
+                                                        Nuova Richiesta
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <form className="hero-search-form" onSubmit={handleRequestSubmit}>
+                                                    <div className="hero-search-row">
+                                                        <label className="hero-search-field">
+                                                            <span className="field-label"><User size={14} /> Nome e Cognome *</span>
+                                                            <input type="text" placeholder="Mario Rossi" value={requestName} onChange={(e) => setRequestName(e.target.value)} required />
+                                                        </label>
+                                                        <label className="hero-search-field">
+                                                            <span className="field-label"><Mail size={14} /> Email *</span>
+                                                            <input type="email" placeholder="email@esempio.com" value={requestEmail} onChange={(e) => setRequestEmail(e.target.value)} required />
+                                                        </label>
+                                                        <label className="hero-search-field">
+                                                            <span className="field-label"><Phone size={14} /> Telefono *</span>
+                                                            <input type="tel" placeholder="+39 333 1234567" value={requestPhone} onChange={(e) => setRequestPhone(e.target.value)} required />
+                                                        </label>
+                                                    </div>
+                                                    <div className="hero-search-row">
+                                                        <label className="hero-search-field" style={{ flex: 1 }}>
+                                                            <span className="field-label"><MessageSquare size={14} /> Messaggio</span>
+                                                            <textarea
+                                                                placeholder="Descrivi la tua richiesta..."
+                                                                value={requestMessage}
+                                                                onChange={(e) => setRequestMessage(e.target.value)}
+                                                                rows={3}
+                                                                style={{ resize: 'vertical', minHeight: '80px', fontFamily: 'inherit' }}
+                                                            />
+                                                        </label>
+                                                    </div>
+                                                    <div className="hero-search-actions">
+                                                        <motion.button
+                                                            type="submit"
+                                                            className="hero-search-btn"
+                                                            whileHover={{ scale: 1.03, boxShadow: "0 8px 30px rgba(212,175,55,0.4)" }}
+                                                            whileTap={{ scale: 0.97 }}
+                                                            disabled={requestLoading}
+                                                        >
+                                                            {requestLoading ? <><Loader2 size={18} className="spin" /> Invio in corso...</> : <><Send size={18} /> Invia Richiesta</>}
+                                                        </motion.button>
+                                                    </div>
+                                                </form>
+                                            )
+                                        ) : (
+                                            <>
+                                                {/* Commercial subtypes badges */}
+                                                {activeTab === 'commercial' && (
+                                                    <div className="hero-commercial-badges">
+                                                        {[
+                                                            { icon: <Truck size={14} />, label: t.commercialTrucks },
+                                                            { icon: <Car size={14} />, label: t.commercialVans },
+                                                            { icon: <Car size={14} />, label: t.commercialMinibuses },
+                                                            { icon: <Car size={14} />, label: t.commercialMinivans },
+                                                        ].map((badge, i) => (
+                                                            <motion.span
+                                                                key={badge.label}
+                                                                className="commercial-badge"
+                                                                initial={{ opacity: 0, scale: 0.8 }}
+                                                                animate={{ opacity: 1, scale: 1 }}
+                                                                transition={{ delay: i * 0.08 }}
+                                                            >
+                                                                {badge.icon}
+                                                                {badge.label}
+                                                            </motion.span>
                                                         ))}
-                                                    </select>
-                                                </label>
-                                                <label className="hero-search-field">
-                                                    <span className="field-label"><Car size={14} /> {t.searchModel}</span>
-                                                    <select
-                                                        value={selectedModel}
-                                                        onChange={(e) => setSelectedModel(e.target.value)}
-                                                        disabled={!selectedBrand}
-                                                    >
-                                                        <option value="">{t.searchAllModels}</option>
-                                                        {availableModels.map(model => (
-                                                            <option key={model} value={model}>{model}</option>
-                                                        ))}
-                                                    </select>
-                                                </label>
-                                                <label className="hero-search-field">
-                                                    <span className="field-label"><Fuel size={14} /> {t.searchFuel}</span>
-                                                    <select
-                                                        value={selectedFuel}
-                                                        onChange={(e) => setSelectedFuel(e.target.value)}
-                                                    >
-                                                        <option value="">{t.searchAllFuels}</option>
-                                                        <option value="petrol">{t.fuelPetrol}</option>
-                                                        <option value="diesel">{t.fuelDiesel}</option>
-                                                        <option value="hybrid">{t.fuelHybrid}</option>
-                                                        <option value="electric">{t.fuelElectric}</option>
-                                                        <option value="lpg">{t.fuelLPG}</option>
-                                                        <option value="cng">{t.fuelCNG}</option>
-                                                    </select>
-                                                </label>
-                                            </div>
-                                            <div className="hero-search-row">
-                                                <label className="hero-search-field hero-search-field-half">
-                                                    <span className="field-label">{t.searchPriceFrom}</span>
-                                                    <input
-                                                        type="number"
-                                                        placeholder="€ Min"
-                                                        value={priceMin}
-                                                        onChange={(e) => setPriceMin(e.target.value)}
-                                                    />
-                                                </label>
-                                                <label className="hero-search-field hero-search-field-half">
-                                                    <span className="field-label">{t.searchPriceTo}</span>
-                                                    <input
-                                                        type="number"
-                                                        placeholder="€ Max"
-                                                        value={priceMax}
-                                                        onChange={(e) => setPriceMax(e.target.value)}
-                                                    />
-                                                </label>
-                                                {activeTab !== 'rental' && (
-                                                    <>
-                                                        <label className="hero-search-field hero-search-field-half">
-                                                            <span className="field-label"><Calendar size={14} /> {t.searchYearFrom}</span>
-                                                            <input type="number" placeholder="2015" min="1990" max="2026" />
-                                                        </label>
-                                                        <label className="hero-search-field hero-search-field-half">
-                                                            <span className="field-label"><Gauge size={14} /> {t.searchMileageMax}</span>
-                                                            <input type="number" placeholder="150.000 km" />
-                                                        </label>
-                                                    </>
+                                                    </div>
                                                 )}
-                                                {activeTab === 'rental' && (
-                                                    <>
-                                                        <label className="hero-search-field hero-search-field-half">
-                                                            <span className="field-label"><Calendar size={14} /> {t.pickupDate}</span>
-                                                            <input type="date" />
-                                                        </label>
-                                                        <label className="hero-search-field hero-search-field-half">
-                                                            <span className="field-label"><Calendar size={14} /> {t.returnDate}</span>
-                                                            <input type="date" />
-                                                        </label>
-                                                    </>
-                                                )}
-                                            </div>
 
-                                            <div className="hero-search-actions">
-                                                <motion.button
-                                                    className="hero-search-btn"
-                                                    whileHover={{ scale: 1.03, boxShadow: "0 8px 30px rgba(212,175,55,0.4)" }}
-                                                    whileTap={{ scale: 0.97 }}
-                                                    onClick={handleSearch}
-                                                >
-                                                    <Search size={18} />
-                                                    {t.searchButton}
-                                                </motion.button>
-                                            </div>
-                                        </div>
+                                                {/* Search Form */}
+                                                <div className="hero-search-form">
+                                                    <div className="hero-search-row">
+                                                        <label className="hero-search-field">
+                                                            <span className="field-label"><Car size={14} /> {t.searchBrand}</span>
+                                                            <select
+                                                                value={selectedBrand}
+                                                                onChange={(e) => {
+                                                                    setSelectedBrand(e.target.value);
+                                                                    setSelectedModel('');
+                                                                }}
+                                                            >
+                                                                <option value="">{t.searchAllBrands}</option>
+                                                                {currentBrands.map(brand => (
+                                                                    <option key={brand} value={brand}>{brand}</option>
+                                                                ))}
+                                                            </select>
+                                                        </label>
+                                                        <label className="hero-search-field">
+                                                            <span className="field-label"><Car size={14} /> {t.searchModel}</span>
+                                                            <select
+                                                                value={selectedModel}
+                                                                onChange={(e) => setSelectedModel(e.target.value)}
+                                                                disabled={!selectedBrand}
+                                                            >
+                                                                <option value="">{t.searchAllModels}</option>
+                                                                {availableModels.map(model => (
+                                                                    <option key={model} value={model}>{model}</option>
+                                                                ))}
+                                                            </select>
+                                                        </label>
+                                                        <label className="hero-search-field">
+                                                            <span className="field-label"><Fuel size={14} /> {t.searchFuel}</span>
+                                                            <select
+                                                                value={selectedFuel}
+                                                                onChange={(e) => setSelectedFuel(e.target.value)}
+                                                            >
+                                                                <option value="">{t.searchAllFuels}</option>
+                                                                <option value="petrol">{t.fuelPetrol}</option>
+                                                                <option value="diesel">{t.fuelDiesel}</option>
+                                                                <option value="hybrid">{t.fuelHybrid}</option>
+                                                                <option value="electric">{t.fuelElectric}</option>
+                                                                <option value="lpg">{t.fuelLPG}</option>
+                                                                <option value="cng">{t.fuelCNG}</option>
+                                                            </select>
+                                                        </label>
+                                                    </div>
+                                                    <div className="hero-search-row">
+                                                        <label className="hero-search-field hero-search-field-half">
+                                                            <span className="field-label">{t.searchPriceFrom}</span>
+                                                            <input
+                                                                type="number"
+                                                                placeholder="€ Min"
+                                                                value={priceMin}
+                                                                onChange={(e) => setPriceMin(e.target.value)}
+                                                            />
+                                                        </label>
+                                                        <label className="hero-search-field hero-search-field-half">
+                                                            <span className="field-label">{t.searchPriceTo}</span>
+                                                            <input
+                                                                type="number"
+                                                                placeholder="€ Max"
+                                                                value={priceMax}
+                                                                onChange={(e) => setPriceMax(e.target.value)}
+                                                            />
+                                                        </label>
+                                                        {activeTab !== 'rental' && (
+                                                            <>
+                                                                <label className="hero-search-field hero-search-field-half">
+                                                                    <span className="field-label"><Calendar size={14} /> {t.searchYearFrom}</span>
+                                                                    <input type="number" placeholder="2015" min="1990" max="2026" />
+                                                                </label>
+                                                                <label className="hero-search-field hero-search-field-half">
+                                                                    <span className="field-label"><Gauge size={14} /> {t.searchMileageMax}</span>
+                                                                    <input type="number" placeholder="150.000 km" />
+                                                                </label>
+                                                            </>
+                                                        )}
+                                                        {activeTab === 'rental' && (
+                                                            <>
+                                                                <label className="hero-search-field hero-search-field-half">
+                                                                    <span className="field-label"><Calendar size={14} /> {t.pickupDate}</span>
+                                                                    <input type="date" />
+                                                                </label>
+                                                                <label className="hero-search-field hero-search-field-half">
+                                                                    <span className="field-label"><Calendar size={14} /> {t.returnDate}</span>
+                                                                    <input type="date" />
+                                                                </label>
+                                                            </>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="hero-search-actions">
+                                                        <motion.button
+                                                            className="hero-search-btn"
+                                                            whileHover={{ scale: 1.03, boxShadow: "0 8px 30px rgba(212,175,55,0.4)" }}
+                                                            whileTap={{ scale: 0.97 }}
+                                                            onClick={handleSearch}
+                                                        >
+                                                            <Search size={18} />
+                                                            {t.searchButton}
+                                                        </motion.button>
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
                                 </motion.div>
                             )}

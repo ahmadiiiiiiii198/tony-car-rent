@@ -3,9 +3,10 @@ import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     ChevronRight, ChevronLeft, Star, Fuel, Users, Gauge, X, Calendar,
-    Phone, Check, Filter, ChevronDown, ArrowUpDown, Navigation, Info, Tag, ShoppingCart, Car as CarIcon
+    Check, Filter, ChevronDown, ArrowUpDown, Navigation, Info, Tag, ShoppingCart, Car as CarIcon
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { OrderForm } from './OrderForm';
 
 interface Car {
     id: number;
@@ -160,8 +161,8 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                 result = result.filter(c => c.listing_type === 'sale' || c.listing_type === 'both');
             } else if (filters.listingType === 'rental') {
                 result = result.filter(c => c.listing_type === 'rental' || c.listing_type === 'both');
-            } else {
-                result = result.filter(c => c.listing_type === filters.listingType);
+            } else if (filters.listingType === 'both') {
+                result = result.filter(c => c.listing_type === 'both');
             }
         }
 
@@ -223,13 +224,6 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('it-IT').format(price);
-    };
-
-    const handleWhatsApp = (car: Car) => {
-        const message = encodeURIComponent(
-            `Ciao! Sono interessato/a alla ${car.brand} ${car.name}${car.year ? ` (${car.year})` : ''} a €${formatPrice(car.price)}. È ancora disponibile?`
-        );
-        window.open(`https://wa.me/393510484630?text=${message}`, '_blank');
     };
 
     if (loading) {
@@ -309,6 +303,12 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                     onClick={() => setFilters({ ...filters, listingType: 'rental' })}
                                 >
                                     <CarIcon size={14} /> Noleggio
+                                </button>
+                                <button
+                                    className={`listing-type-btn both ${filters.listingType === 'both' ? 'active' : ''}`}
+                                    onClick={() => setFilters({ ...filters, listingType: 'both' })}
+                                >
+                                    <ShoppingCart size={14} /> Entrambi
                                 </button>
                             </div>
                         </div>
@@ -462,6 +462,37 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                             }}
                         >
                             <AnimatePresence>
+                                {filteredCars.length === 0 && (
+                                    <motion.div
+                                        className="no-results"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        style={{
+                                            gridColumn: '1 / -1',
+                                            textAlign: 'center',
+                                            padding: '4rem 2rem',
+                                            color: 'var(--color-text-muted)'
+                                        }}
+                                    >
+                                        <CarIcon size={48} style={{ color: 'var(--color-gold)', opacity: 0.4, marginBottom: '1.5rem' }} />
+                                        <h3 style={{ fontSize: '1.3rem', marginBottom: '0.75rem', color: 'var(--color-text)' }}>
+                                            {t.noResults || 'Nessun veicolo trovato'}
+                                        </h3>
+                                        <p style={{ fontSize: '0.95rem', marginBottom: '1.5rem' }}>
+                                            {t.tryDifferentFilters || 'Prova a modificare i filtri di ricerca'}
+                                        </p>
+                                        <button
+                                            className="book-btn"
+                                            onClick={() => {
+                                                setFilters({ brands: [], categories: [], minPrice: 0, maxPrice: 50000, fuel: [], listingType: 'all' as 'all' | 'sale' | 'rental' | 'both', model: '' });
+                                                if (onClearSearch) onClearSearch();
+                                            }}
+                                            style={{ margin: '0 auto' }}
+                                        >
+                                            {t.resetFilters}
+                                        </button>
+                                    </motion.div>
+                                )}
                                 {filteredCars.map(car => (
                                     <motion.div
                                         key={car.id}
@@ -473,7 +504,7 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                         whileHover={{ y: -10, boxShadow: "0 20px 40px rgba(0,0,0,0.4)" }}
                                     >
                                         <div className="car-image-wrapper">
-                                            <img src={car.image} alt={car.name} />
+                                            <img src={car.image} alt={car.name} loading="lazy" />
                                             {!car.available && <div className="unavailable-badge">Non Disponibile</div>}
                                             <div className="car-category-badge">{car.category}</div>
                                             <div className={`listing-type-badge ${car.listing_type}`}>
@@ -762,20 +793,14 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                     </div>
                                 )}
 
-                                {/* Action Buttons */}
-                                <div className="detail-actions">
-                                    <button
-                                        className="btn-primary detail-whatsapp-btn"
-                                        onClick={() => handleWhatsApp(selectedCar)}
-                                    >
-                                        <Phone size={18} />
-                                        Contattaci su WhatsApp
-                                    </button>
-                                    <a href="tel:+393510484630" className="btn-secondary detail-call-btn">
-                                        <Phone size={18} />
-                                        Chiama Ora
-                                    </a>
-                                </div>
+                                {/* Order Form */}
+                                <OrderForm
+                                    carId={selectedCar.id}
+                                    carName={selectedCar.name}
+                                    carBrand={selectedCar.brand}
+                                    listingType={selectedCar.listing_type}
+                                    onClose={() => setSelectedCar(null)}
+                                />
                             </div>
                         </motion.div>
                     </motion.div>

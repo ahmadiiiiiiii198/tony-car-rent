@@ -118,6 +118,8 @@ interface Translations {
     clearAll: string;
     selectToCompare: string;
     saveSearch: string;
+    noResults: string;
+    tryDifferentFilters: string;
 
     // Services
     ourServices: string;
@@ -250,6 +252,8 @@ const translations: Record<Language, Translations> = {
         clearAll: 'Cancella tutto',
         selectToCompare: 'Seleziona almeno 2 veicoli da confrontare',
         saveSearch: 'Salva ricerca',
+        noResults: 'Nessun veicolo trovato',
+        tryDifferentFilters: 'Prova a modificare i filtri di ricerca',
 
         // Services
         ourServices: 'I Nostri Servizi',
@@ -380,6 +384,8 @@ const translations: Record<Language, Translations> = {
         clearAll: 'Clear all',
         selectToCompare: 'Select at least 2 vehicles to compare',
         saveSearch: 'Save search',
+        noResults: 'No vehicles found',
+        tryDifferentFilters: 'Try adjusting your search filters',
 
         // Services
         ourServices: 'Our Services',
