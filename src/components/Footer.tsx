@@ -46,7 +46,7 @@ export const Footer = () => {
                             <li className="contact-item">
                                 <Phone size={18} className="contact-icon" />
                                 <div>
-                                    <p>+39 351 048 4630</p>
+                                    <p>+39 351 099 5065</p>
                                     <p style={{ fontSize: '0.8rem', color: '#666' }}>Lun-Sab, 9:00 - 19:00</p>
                                 </div>
                             </li>
