@@ -309,37 +309,39 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                 </AnimatePresence>
                             ) : (
                                 features.map((feature, index) => (
-                                    <motion.div
-                                        key={index}
-                                        className="hero-animated-panel"
-                                        initial={{ opacity: 0, scale: 0.8, y: 50 }}
-                                        animate={{
-                                            opacity: index <= currentPanelIndex ? 1 : 0,
-                                            scale: index <= currentPanelIndex ? 1 : 0.8,
-                                            y: index <= currentPanelIndex ? 0 : 50,
-                                        }}
-                                        exit={{
-                                            opacity: 0,
-                                            scale: 1.05,
-                                            y: -50,
-                                            filter: "blur(15px)",
-                                            transition: {
-                                                duration: 0.8,
-                                                ease: [0.4, 0, 0.2, 1],
-                                                delay: (features.length - index) * 0.1 // Reverse stagger
-                                            }
-                                        }}
-                                        transition={{
-                                            duration: 0.8,
-                                            ease: [0.22, 1, 0.36, 1]
-                                        }}
-                                    >
-                                        <div className="service-icon">
-                                            {feature.icon}
-                                        </div>
-                                        <h3 className="service-title">{feature.title}</h3>
-                                        <p className="service-desc">{feature.description}</p>
-                                    </motion.div>
+                                    index <= currentPanelIndex && (
+                                        <motion.div
+                                            key={index}
+                                            className="hero-animated-panel"
+                                            layout
+                                            initial={{ opacity: 0, scale: 0.8, y: 50 }}
+                                            animate={{
+                                                opacity: 1,
+                                                scale: 1,
+                                                y: 0
+                                            }}
+                                            exit={{
+                                                opacity: 0,
+                                                scale: 0.95,
+                                                y: -30,
+                                                filter: "blur(10px)",
+                                                transition: {
+                                                    duration: 0.6,
+                                                    ease: [0.4, 0, 0.2, 1]
+                                                }
+                                            }}
+                                            transition={{
+                                                duration: 0.6,
+                                                ease: [0.22, 1, 0.36, 1]
+                                            }}
+                                        >
+                                            <div className="service-icon">
+                                                {feature.icon}
+                                            </div>
+                                            <h3 className="service-title">{feature.title}</h3>
+                                            <p className="service-desc">{feature.description}</p>
+                                        </motion.div>
+                                    )
                                 ))
                             )}
                         </motion.div>
