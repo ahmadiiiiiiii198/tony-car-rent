@@ -49,7 +49,7 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
         brands: [] as string[],
         categories: [] as string[],
         minPrice: 0,
-        maxPrice: 50000,
+        maxPrice: 1000000,
         fuel: [] as string[],
         listingType: 'all' as 'all' | 'sale' | 'rental' | 'both',
         model: ''
@@ -87,7 +87,7 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                 categories: searchParams.category ? [searchParams.category] : [],
                 fuel: searchParams.fuel ? [searchParams.fuel] : [],
                 minPrice: searchParams.minPrice || 0,
-                maxPrice: searchParams.maxPrice > 0 ? searchParams.maxPrice : 50000,
+                maxPrice: searchParams.maxPrice > 0 ? searchParams.maxPrice : 1000000,
                 listingType: searchParams.listingType,
                 model: searchParams.model || ''
             }));
@@ -267,7 +267,7 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                 <button
                                     className="reset-btn"
                                     onClick={() => {
-                                        setFilters({ brands: [], categories: [], minPrice: 0, maxPrice: 50000, fuel: [], listingType: 'all' as 'all' | 'sale' | 'rental' | 'both', model: '' });
+                                        setFilters({ brands: [], categories: [], minPrice: 0, maxPrice: 1000000, fuel: [], listingType: 'all' as 'all' | 'sale' | 'rental' | 'both', model: '' });
                                         if (onClearSearch) onClearSearch();
                                     }}
                                 >
@@ -363,8 +363,8 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                 <input
                                     type="range"
                                     min="0"
-                                    max="50000"
-                                    step="500"
+                                    max="1000000"
+                                    step="1000"
                                     value={filters.maxPrice}
                                     onChange={(e) => setFilters({ ...filters, maxPrice: parseInt(e.target.value) })}
                                     className="price-slider"
@@ -442,7 +442,7 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                 <button
                                     className="clear-all-btn"
                                     onClick={() => {
-                                        setFilters({ brands: [], categories: [], minPrice: 0, maxPrice: 50000, fuel: [], listingType: 'all' as 'all' | 'sale' | 'rental' | 'both', model: '' });
+                                        setFilters({ brands: [], categories: [], minPrice: 0, maxPrice: 1000000, fuel: [], listingType: 'all' as 'all' | 'sale' | 'rental' | 'both', model: '' });
                                         if (onClearSearch) onClearSearch();
                                     }}
                                 >
@@ -484,7 +484,7 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                         <button
                                             className="book-btn"
                                             onClick={() => {
-                                                setFilters({ brands: [], categories: [], minPrice: 0, maxPrice: 50000, fuel: [], listingType: 'all' as 'all' | 'sale' | 'rental' | 'both', model: '' });
+                                                setFilters({ brands: [], categories: [], minPrice: 0, maxPrice: 1000000, fuel: [], listingType: 'all' as 'all' | 'sale' | 'rental' | 'both', model: '' });
                                                 if (onClearSearch) onClearSearch();
                                             }}
                                             style={{ margin: '0 auto' }}

@@ -63,8 +63,8 @@ export const Hero = ({ onSearch }: HeroProps) => {
     const [currentPanelIndex, setCurrentPanelIndex] = useState(0);
 
     useEffect(() => {
-        if (animationStage === 'intro' || animationStage === 'settling') {
-            const intervalTime = isMobile ? 2400 : 800; // MUCH slower for mobile to allow reading
+        if (animationStage === 'intro') {
+            const intervalTime = isMobile ? 1800 : 800; // Slightly faster for mobile but still readable
             const timer = setInterval(() => {
                 setCurrentPanelIndex(prev => {
                     if (prev < features.length - 1) {
@@ -86,7 +86,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
                             setTimeout(() => {
                                 setAnimationStage('complete');
                                 setShowPanels(false);
-                            }, isMobile ? 2500 : 2000);
+                            }, 2500);
                         }
                         return prev;
                     }
@@ -150,17 +150,31 @@ export const Hero = ({ onSearch }: HeroProps) => {
         setPriceMin('');
         setPriceMax('');
 
-        if (newTab === null) {
-            onSearch({ brand: '', model: '', fuel: '', minPrice: 0, maxPrice: 0, listingType: 'all', category: '' });
-        } else if (newTab === 'usedCars') {
-            onSearch({ brand: '', model: '', fuel: '', minPrice: 0, maxPrice: 0, listingType: 'sale', category: '' });
-            scrollToFleet();
-        } else if (newTab === 'rental') {
-            onSearch({ brand: '', model: '', fuel: '', minPrice: 0, maxPrice: 0, listingType: 'rental', category: '' });
-            scrollToFleet();
-        } else if (newTab === 'commercial') {
-            onSearch({ brand: '', model: '', fuel: '', minPrice: 0, maxPrice: 0, listingType: 'all', category: 'Van' });
-            scrollToFleet();
+        const params: SearchParams = {
+            brand: '',
+            model: '',
+            fuel: '',
+            minPrice: 0,
+            maxPrice: 0,
+            listingType: 'all',
+            category: ''
+        };
+
+        if (newTab === 'usedCars') params.listingType = 'sale';
+        else if (newTab === 'rental') params.listingType = 'rental';
+        else if (newTab === 'commercial') {
+            params.category = 'Van';
+            params.listingType = 'all';
+        } else if (newTab === 'onTheRoad') {
+            params.listingType = 'both';
+        }
+
+        onSearch(params);
+
+        if (isMobile && newTab !== null) {
+            setTimeout(() => {
+                scrollToFleet();
+            }, 300);
         }
     };
 
@@ -349,7 +363,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
                     animate={{
                         opacity: animationStage === 'complete' ? 1 : 0,
                         y: animationStage === 'complete' ? (isMobile ? 0 : -80) : 50,
-                        pointerEvents: animationStage === 'complete' ? 'auto' : 'none'
+                        pointerEvents: (animationStage === 'complete' || animationStage === 'settling') ? 'auto' : 'none'
                     }}
                     transition={{
                         delay: animationStage === 'complete' ? 0.6 : 0,
