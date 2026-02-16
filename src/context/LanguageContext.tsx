@@ -126,6 +126,12 @@ interface Translations {
     premiumExperience: string;
     servicesDesc: string;
 
+    // Placeholders
+    namePlaceholder: string;
+    emailPlaceholder: string;
+    phonePlaceholder: string;
+    messagePlaceholder: string;
+
     // Footer
     footerDesc: string;
     quickLinks: string;
@@ -260,6 +266,12 @@ const translations: Record<Language, Translations> = {
         premiumExperience: 'Esperienza Premium',
         servicesDesc: 'Offriamo servizi esclusivi per rendere la tua esperienza indimenticabile.',
 
+        // Placeholders
+        namePlaceholder: 'Il tuo nome',
+        emailPlaceholder: 'La tua email',
+        phonePlaceholder: 'Il tuo telefono',
+        messagePlaceholder: 'Il tuo messaggio',
+
         // Footer
         footerDesc: 'Tonaydin Luxury Cars offre una flotta d\'élite per chi esige il massimo e lo straordinario.',
         quickLinks: 'Link Rapidi',
@@ -391,6 +403,12 @@ const translations: Record<Language, Translations> = {
         ourServices: 'Our Services',
         premiumExperience: 'Premium Experience',
         servicesDesc: 'We offer exclusive services to make your experience unforgettable.',
+
+        // Placeholders
+        namePlaceholder: 'Your name',
+        emailPlaceholder: 'Your email',
+        phonePlaceholder: 'Your phone',
+        messagePlaceholder: 'Your message',
 
         // Footer
         footerDesc: 'Tonaydin Luxury Cars provides an elite fleet of vehicles for those who demand the immense and the extraordinary.',
