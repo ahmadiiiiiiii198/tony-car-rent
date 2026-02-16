@@ -265,16 +265,28 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
             <div className="container hero-content">
                 {/* Panels Animation Stage */}
+                {/* Panels Animation Stage */}
                 <AnimatePresence mode="wait">
                     {showPanels && (
                         <motion.div
                             key="hero-panels-intro"
                             className="hero-panels-container"
-                            initial={{ opacity: 1 }}
-                            animate={{ opacity: 1 }}
-                            exit={{
-                                opacity: 0,
-                                transition: { staggerChildren: 0.1, delayChildren: 0 }
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                            variants={{
+                                hidden: { opacity: 0 },
+                                visible: {
+                                    opacity: 1,
+                                    transition: { staggerChildren: 0.1 }
+                                },
+                                exit: {
+                                    opacity: 0,
+                                    transition: {
+                                        staggerChildren: 0.05,
+                                        staggerDirection: -1
+                                    }
+                                }
                             }}
                         >
                             {isMobile ? (
@@ -282,21 +294,18 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                     {features.map((feature, index) => (
                                         index === currentPanelIndex && (
                                             <motion.div
-                                                key={index}
+                                                key={`mobile-panel-${index}`}
                                                 className="hero-animated-panel"
                                                 initial={{ opacity: 0, scale: 0.8, y: 20 }}
                                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                                 exit={{
                                                     opacity: 0,
                                                     scale: 1.05,
-                                                    y: -30,
+                                                    y: -20,
                                                     filter: "blur(10px)",
-                                                    transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] }
+                                                    transition: { duration: 0.4 }
                                                 }}
-                                                transition={{
-                                                    duration: 0.6,
-                                                    ease: [0.22, 1, 0.36, 1]
-                                                }}
+                                                transition={{ duration: 0.5, ease: "easeOut" }}
                                             >
                                                 <div className="service-icon">
                                                     {feature.icon}
@@ -311,28 +320,24 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                 features.map((feature, index) => (
                                     index <= currentPanelIndex && (
                                         <motion.div
-                                            key={index}
-                                            className="hero-animated-panel"
+                                            key={`desktop-panel-${index}`}
                                             layout
-                                            initial={{ opacity: 0, scale: 0.8, y: 50 }}
-                                            animate={{
-                                                opacity: 1,
-                                                scale: 1,
-                                                y: 0
-                                            }}
-                                            exit={{
-                                                opacity: 0,
-                                                scale: 0.95,
-                                                y: -30,
-                                                filter: "blur(10px)",
-                                                transition: {
-                                                    duration: 0.6,
-                                                    ease: [0.4, 0, 0.2, 1]
+                                            className="hero-animated-panel"
+                                            variants={{
+                                                hidden: { opacity: 0, y: 30, scale: 0.9 },
+                                                visible: {
+                                                    opacity: 1,
+                                                    y: 0,
+                                                    scale: 1,
+                                                    transition: { duration: 0.5, ease: "easeOut" }
+                                                },
+                                                exit: {
+                                                    opacity: 0,
+                                                    y: -30,
+                                                    scale: 0.95,
+                                                    filter: "blur(5px)",
+                                                    transition: { duration: 0.4, ease: "easeInOut" }
                                                 }
-                                            }}
-                                            transition={{
-                                                duration: 0.6,
-                                                ease: [0.22, 1, 0.36, 1]
                                             }}
                                         >
                                             <div className="service-icon">
