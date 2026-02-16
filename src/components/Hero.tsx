@@ -286,16 +286,41 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
             <div className="container hero-content">
                 {/* Panels Animation Stage */}
-                <AnimatePresence mode="wait">
-                    {showPanels && (
-                        <motion.div
-                            key="hero-panels-intro"
-                            className="hero-panels-container"
-                        >
+                {/* Panels Animation Stage */}
+                <div className="hero-panels-container">
+                    {isMobile ? (
+                        <AnimatePresence mode="wait">
                             {features.map((feature, index) => (
+                                index === currentPanelIndex && showPanels && (
+                                    <motion.div
+                                        key={`mobile-panel-${index}`}
+                                        className="hero-animated-panel"
+                                        initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{
+                                            opacity: 0,
+                                            scale: 1.05,
+                                            y: -20,
+                                            filter: "blur(10px)",
+                                            transition: { duration: 0.4 }
+                                        }}
+                                        transition={{ duration: 0.5, ease: "easeOut" }}
+                                    >
+                                        <div className="service-icon">
+                                            {feature.icon}
+                                        </div>
+                                        <h3 className="service-title">{feature.title}</h3>
+                                        <p className="service-desc">{feature.description}</p>
+                                    </motion.div>
+                                )
+                            ))}
+                        </AnimatePresence>
+                    ) : (
+                        <AnimatePresence>
+                            {showPanels && features.map((feature, index) => (
                                 index <= currentPanelIndex && (
                                     <motion.div
-                                        key={isMobile ? `mobile-panel-${index}` : `desktop-panel-${index}`}
+                                        key={`desktop-panel-${index}`}
                                         layout
                                         className="hero-animated-panel"
                                         variants={panelVariants}
@@ -311,9 +336,9 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                     </motion.div>
                                 )
                             ))}
-                        </motion.div>
+                        </AnimatePresence>
                     )}
-                </AnimatePresence>
+                </div>
 
                 {/* Search widget with category tabs */}
                 <motion.div
