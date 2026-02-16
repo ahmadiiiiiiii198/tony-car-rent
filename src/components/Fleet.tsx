@@ -62,6 +62,13 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [loading, setLoading] = useState(true);
 
+    // Card gallery state
+    const [cardImageIndices, setCardImageIndices] = useState<Record<number, number>>({});
+
+    // Lightbox state
+    const [lightboxImages, setLightboxImages] = useState<string[]>([]);
+    const [lightboxIndex, setLightboxIndex] = useState(0);
+
     useEffect(() => {
         if (isSidebarOpen) {
             document.body.style.overflow = 'hidden';
@@ -77,6 +84,14 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
             document.body.style.overflow = '';
         }
     }, [selectedCar]);
+
+    useEffect(() => {
+        if (lightboxImages.length > 0) {
+            document.body.style.overflow = 'hidden';
+        } else if (!selectedCar && !isSidebarOpen) {
+            document.body.style.overflow = '';
+        }
+    }, [lightboxImages, selectedCar, isSidebarOpen]);
 
     // Sync with SearchParams from Hero
     useEffect(() => {
@@ -504,7 +519,58 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                         whileHover={{ y: -10, boxShadow: "0 20px 40px rgba(0,0,0,0.4)" }}
                                     >
                                         <div className="car-image-wrapper">
-                                            <img src={car.image} alt={car.name} loading="lazy" />
+                                            <img
+                                                src={(car.images && car.images.length > 0) ? car.images[cardImageIndices[car.id] || 0] : car.image}
+                                                alt={car.name}
+                                                loading="lazy"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    const imgs = (car.images && car.images.length > 0) ? car.images : [car.image];
+                                                    setLightboxImages(imgs);
+                                                    setLightboxIndex(cardImageIndices[car.id] || 0);
+                                                }}
+                                                style={{ cursor: 'pointer' }}
+                                            />
+                                            {(car.images && car.images.length > 1) && (
+                                                <>
+                                                    <button
+                                                        className="card-gallery-nav prev"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setCardImageIndices(prev => ({
+                                                                ...prev,
+                                                                [car.id]: (prev[car.id] || 0) === 0 ? (car.images!.length - 1) : (prev[car.id] || 0) - 1
+                                                            }));
+                                                        }}
+                                                    >
+                                                        <ChevronLeft size={18} />
+                                                    </button>
+                                                    <button
+                                                        className="card-gallery-nav next"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setCardImageIndices(prev => ({
+                                                                ...prev,
+                                                                [car.id]: (prev[car.id] || 0) === (car.images!.length - 1) ? 0 : (prev[car.id] || 0) + 1
+                                                            }));
+                                                        }}
+                                                    >
+                                                        <ChevronRight size={18} />
+                                                    </button>
+                                                    <div className="card-gallery-dots">
+                                                        {car.images.slice(0, 8).map((_, idx) => (
+                                                            <span
+                                                                key={idx}
+                                                                className={`dot ${idx === (cardImageIndices[car.id] || 0) ? 'active' : ''}`}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setCardImageIndices(prev => ({ ...prev, [car.id]: idx }));
+                                                                }}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                </>
+                                            )}
                                             {!car.available && <div className="unavailable-badge">Non Disponibile</div>}
                                             <div className="car-category-badge">{car.category}</div>
                                             <div className={`listing-type-badge ${car.listing_type}`}>
@@ -803,6 +869,60 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                 />
                             </div>
                         </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Fullscreen Lightbox */}
+            <AnimatePresence>
+                {lightboxImages.length > 0 && (
+                    <motion.div
+                        className="lightbox-overlay"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setLightboxImages([])}
+                    >
+                        <button
+                            className="lightbox-close"
+                            onClick={() => setLightboxImages([])}
+                        >
+                            <X size={28} />
+                        </button>
+
+                        <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+                            <img
+                                src={lightboxImages[lightboxIndex]}
+                                alt="Car"
+                            />
+                        </div>
+
+                        {lightboxImages.length > 1 && (
+                            <>
+                                <button
+                                    className="lightbox-nav prev"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setLightboxIndex(prev => prev === 0 ? lightboxImages.length - 1 : prev - 1);
+                                    }}
+                                >
+                                    <ChevronLeft size={32} />
+                                </button>
+                                <button
+                                    className="lightbox-nav next"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setLightboxIndex(prev => prev === lightboxImages.length - 1 ? 0 : prev + 1);
+                                    }}
+                                >
+                                    <ChevronRight size={32} />
+                                </button>
+
+                                <div className="lightbox-counter">
+                                    {lightboxIndex + 1} / {lightboxImages.length}
+                                </div>
+                            </>
+                        )}
                     </motion.div>
                 )}
             </AnimatePresence>

@@ -10,6 +10,17 @@ export const Navbar = () => {
   const [activeSection, setActiveSection] = useState('home');
 
   useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [mobileOpen]);
+
+  useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
 
@@ -112,34 +123,59 @@ export const Navbar = () => {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="mobile-menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="mobile-menu-overlay"
           >
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="mobile-link"
-                onClick={(e) => handleNavClick(e, link.href)}
-              >
-                {link.name}
+            <div className="mobile-menu-header">
+              <a href="#" className="mobile-menu-logo" onClick={(e) => handleNavClick(e, '#')}>
+                <img src="/logo-newest.png" alt="Tonaydin Luxury Cars" />
               </a>
-            ))}
+              <button
+                className="mobile-menu-close"
+                onClick={() => setMobileOpen(false)}
+              >
+                <X size={32} />
+              </button>
+            </div>
 
-            {/* Mobile Language Switcher */}
-            <button
-              className="lang-switcher mobile"
-              onClick={toggleLanguage}
-            >
-              <Globe size={18} />
-              <span>{language === 'it' ? 'English' : 'Italiano'}</span>
-            </button>
+            <div className="mobile-menu-content">
+              <div className="mobile-links">
+                {navLinks.map((link, index) => (
+                  <motion.a
+                    key={link.id}
+                    href={link.href}
+                    className="mobile-link"
+                    onClick={(e) => handleNavClick(e, link.href)}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.15 + index * 0.08, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    {link.name}
+                  </motion.a>
+                ))}
+              </div>
 
-            <button className="btn-primary" style={{ width: '100%', justifyContent: 'center' }} onClick={scrollToFleet}>
-              {t.bookNow}
-            </button>
+              <motion.div
+                className="mobile-menu-footer"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.4 }}
+              >
+                <button
+                  className="lang-switcher mobile"
+                  onClick={toggleLanguage}
+                >
+                  <Globe size={20} />
+                  <span>{language === 'it' ? 'ENGLISH' : 'ITALIANO'}</span>
+                </button>
+
+                <button className="btn-primary mobile-book-btn" onClick={scrollToFleet}>
+                  {t.bookNow}
+                </button>
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
