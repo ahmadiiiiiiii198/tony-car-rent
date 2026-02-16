@@ -64,7 +64,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
     useEffect(() => {
         if (animationStage === 'intro' || animationStage === 'settling') {
-            const intervalTime = 800; // Consistent snappy interval for all devices
+            const intervalTime = isMobile ? 2400 : 800; // MUCH slower for mobile to allow reading
             const timer = setInterval(() => {
                 setCurrentPanelIndex(prev => {
                     if (prev < features.length - 1) {
@@ -82,11 +82,11 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                 }, 1200);
                             }, 1000);
                         } else {
-                            // Mobile sequence ends - wait 2s for user to see all 4 panels
+                            // Mobile sequence ends - wait for the last panel's full duration
                             setTimeout(() => {
                                 setAnimationStage('complete');
                                 setShowPanels(false);
-                            }, 2000);
+                            }, isMobile ? 2500 : 2000);
                         }
                         return prev;
                     }
@@ -286,8 +286,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
             <div className="container hero-content">
                 {/* Panels Animation Stage */}
-                {/* Panels Animation Stage */}
-                <div className="hero-panels-container">
+                <div className={`hero-panels-container ${isMobile ? 'mobile-sequential' : ''}`}>
                     {isMobile ? (
                         <AnimatePresence mode="wait">
                             {features.map((feature, index) => (
@@ -295,16 +294,19 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                     <motion.div
                                         key={`mobile-panel-${index}`}
                                         className="hero-animated-panel"
-                                        initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                                        initial={{ opacity: 0, scale: 0.9, y: 30 }}
                                         animate={{ opacity: 1, scale: 1, y: 0 }}
                                         exit={{
                                             opacity: 0,
-                                            scale: 1.05,
-                                            y: -20,
-                                            filter: "blur(10px)",
-                                            transition: { duration: 0.4 }
+                                            scale: 1.1,
+                                            y: -30,
+                                            filter: "blur(15px)",
+                                            transition: { duration: 0.5 }
                                         }}
-                                        transition={{ duration: 0.5, ease: "easeOut" }}
+                                        transition={{
+                                            duration: 0.8,
+                                            ease: [0.22, 1, 0.36, 1]
+                                        }}
                                     >
                                         <div className="service-icon">
                                             {feature.icon}
@@ -350,7 +352,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
                         pointerEvents: animationStage === 'complete' ? 'auto' : 'none'
                     }}
                     transition={{
-                        delay: animationStage === 'complete' ? 1.0 : 0,
+                        delay: animationStage === 'complete' ? 0.6 : 0,
                         duration: 0.8,
                         ease: [0.22, 1, 0.36, 1]
                     }}
