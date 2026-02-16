@@ -270,16 +270,11 @@ export const Hero = ({ onSearch }: HeroProps) => {
                         <motion.div
                             key="hero-panels-intro"
                             className="hero-panels-container"
-                            initial={{ opacity: 1, y: 0 }}
-                            animate={{ opacity: 1, y: 0 }}
+                            initial={{ opacity: 1 }}
+                            animate={{ opacity: 1 }}
                             exit={{
                                 opacity: 0,
-                                scale: 0.8,
-                                y: -200,
-                                transition: {
-                                    duration: 0.8,
-                                    ease: [0.22, 1, 0.36, 1]
-                                }
+                                transition: { staggerChildren: 0.1, delayChildren: 0 }
                             }}
                         >
                             {isMobile ? (
@@ -291,7 +286,13 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                                 className="hero-animated-panel"
                                                 initial={{ opacity: 0, scale: 0.8, y: 20 }}
                                                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                exit={{ opacity: 0, scale: 1.1, y: -20 }}
+                                                exit={{
+                                                    opacity: 0,
+                                                    scale: 1.05,
+                                                    y: -30,
+                                                    filter: "blur(10px)",
+                                                    transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] }
+                                                }}
                                                 transition={{
                                                     duration: 0.6,
                                                     ease: [0.22, 1, 0.36, 1]
@@ -308,29 +309,37 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                 </AnimatePresence>
                             ) : (
                                 features.map((feature, index) => (
-                                    index <= currentPanelIndex && (
-                                        <motion.div
-                                            key={index}
-                                            className="hero-animated-panel"
-                                            initial={{ opacity: 0, scale: 0.8, y: 50 }}
-                                            animate={{
-                                                opacity: 1,
-                                                scale: animationStage === 'settling' ? 0.9 : 1,
-                                                y: animationStage === 'settling' ? 250 : 0,
-                                                x: animationStage === 'settling' ? (index - 1.5) * 280 : 0
-                                            }}
-                                            transition={{
+                                    <motion.div
+                                        key={index}
+                                        className="hero-animated-panel"
+                                        initial={{ opacity: 0, scale: 0.8, y: 50 }}
+                                        animate={{
+                                            opacity: index <= currentPanelIndex ? 1 : 0,
+                                            scale: index <= currentPanelIndex ? 1 : 0.8,
+                                            y: index <= currentPanelIndex ? 0 : 50,
+                                        }}
+                                        exit={{
+                                            opacity: 0,
+                                            scale: 1.05,
+                                            y: -50,
+                                            filter: "blur(15px)",
+                                            transition: {
                                                 duration: 0.8,
-                                                ease: [0.22, 1, 0.36, 1]
-                                            }}
-                                        >
-                                            <div className="service-icon">
-                                                {feature.icon}
-                                            </div>
-                                            <h3 className="service-title">{feature.title}</h3>
-                                            <p className="service-desc">{feature.description}</p>
-                                        </motion.div>
-                                    )
+                                                ease: [0.4, 0, 0.2, 1],
+                                                delay: (features.length - index) * 0.1 // Reverse stagger
+                                            }
+                                        }}
+                                        transition={{
+                                            duration: 0.8,
+                                            ease: [0.22, 1, 0.36, 1]
+                                        }}
+                                    >
+                                        <div className="service-icon">
+                                            {feature.icon}
+                                        </div>
+                                        <h3 className="service-title">{feature.title}</h3>
+                                        <p className="service-desc">{feature.description}</p>
+                                    </motion.div>
                                 ))
                             )}
                         </motion.div>
