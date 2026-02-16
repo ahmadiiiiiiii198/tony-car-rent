@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Key, Car, Search, Truck, MapPin, Fuel, Calendar, Gauge, Send, User, Mail, Phone, MessageSquare, CheckCircle, Loader2 } from 'lucide-react';
+import { Key, Car, Search, Truck, MapPin, Fuel, Calendar, Gauge, Send, User, Mail, Phone, MessageSquare, CheckCircle, Loader2, Shield, Clock, Award } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { supabase } from '../lib/supabase';
 
@@ -13,11 +13,66 @@ interface HeroProps {
 }
 
 export const Hero = ({ onSearch }: HeroProps) => {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [activeTab, setActiveTab] = useState<TabKey | null>(null);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [dbBrands, setDbBrands] = useState<string[]>([]);
     const [allCars, setAllCars] = useState<{ brand: string, name: string }[]>([]);
+    const [animationStage, setAnimationStage] = useState<'intro' | 'settling' | 'complete'>('intro');
+    const [showPanels, setShowPanels] = useState(true);
+
+    const features = [
+        {
+            icon: <Shield size={32} />,
+            title: language === 'it' ? 'Assicurazione Premium' : 'Premium Insurance',
+            description: language === 'it'
+                ? 'Copertura completa per la tua tranquillità mentre guidi.'
+                : 'Comprehensive coverage for your peace of mind while you drive.',
+        },
+        {
+            icon: <Clock size={32} />,
+            title: language === 'it' ? 'Supporto 24/7' : '24/7 Support',
+            description: language === 'it'
+                ? 'Servizio concierge sempre disponibile per assisterti in qualsiasi momento.'
+                : 'Round-the-clock concierge service to assist you at any time.',
+        },
+        {
+            icon: <MapPin size={32} />,
+            title: language === 'it' ? 'Consegna a Domicilio' : 'Doorstep Delivery',
+            description: language === 'it'
+                ? 'Portiamo l\'auto direttamente da te, con il pieno e pronta all\'uso.'
+                : 'We bring the car to your location, fully fueled and ready.',
+        },
+        {
+            icon: <Award size={32} />,
+            title: language === 'it' ? 'Miglior Prezzo Garantito' : 'Best Price Guarantee',
+            description: language === 'it'
+                ? 'Tariffe competitive per i veicoli più esclusivi sul mercato.'
+                : 'Competitive rates for the most exclusive vehicles on the market.',
+        },
+    ];
+
+    const [currentPanelIndex, setCurrentPanelIndex] = useState(0);
+
+    useEffect(() => {
+        if (animationStage === 'intro' || animationStage === 'settling') {
+            const timer = setInterval(() => {
+                setCurrentPanelIndex(prev => {
+                    if (prev < features.length - 1) {
+                        return prev + 1;
+                    } else {
+                        clearInterval(timer);
+                        setTimeout(() => {
+                            setAnimationStage('complete');
+                            setShowPanels(false);
+                        }, 1500);
+                        return prev;
+                    }
+                });
+            }, 2200);
+            return () => clearInterval(timer);
+        }
+    }, [animationStage, features.length]);
 
     // Search State
     const [selectedBrand, setSelectedBrand] = useState('');
@@ -161,6 +216,13 @@ export const Hero = ({ onSearch }: HeroProps) => {
         'Mercedes-Benz', 'Nissan', 'Peugeot', 'Porsche', 'Smart', 'Toyota', 'Volkswagen'
     ];
 
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
 
     return (
@@ -187,19 +249,79 @@ export const Hero = ({ onSearch }: HeroProps) => {
             </motion.div>
 
             <div className="container hero-content">
+                {/* Panels Animation Stage */}
+                <AnimatePresence mode="wait">
+                    {showPanels && (
+                        <motion.div
+                            key="hero-panels-intro"
+                            className="hero-panels-container"
+                            initial={{ opacity: 1, y: 0 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{
+                                opacity: 0,
+                                scale: 0.8,
+                                y: -200,
+                                transition: {
+                                    duration: 0.8,
+                                    ease: [0.22, 1, 0.36, 1]
+                                }
+                            }}
+                        >
+                            <AnimatePresence mode="wait">
+                                {features.map((feature, index) => (
+                                    index === currentPanelIndex && (
+                                        <motion.div
+                                            key={index}
+                                            className="hero-animated-panel"
+                                            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                                            exit={{ opacity: 0, scale: 1.1, y: -20 }}
+                                            transition={{
+                                                duration: 0.6,
+                                                ease: [0.22, 1, 0.36, 1]
+                                            }}
+                                        >
+                                            <div className="service-icon">
+                                                {feature.icon}
+                                            </div>
+                                            <h3 className="service-title">{feature.title}</h3>
+                                            <p className="service-desc">{feature.description}</p>
+                                        </motion.div>
+                                    )
+                                ))}
+                            </AnimatePresence>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* Search widget with category tabs */}
                 <motion.div
                     className="hero-search-widget"
                     initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                    animate={{
+                        opacity: animationStage === 'complete' ? 1 : 0,
+                        y: animationStage === 'complete' ? (isMobile ? 0 : -80) : 50,
+                        pointerEvents: animationStage === 'complete' ? 'auto' : 'none'
+                    }}
+                    transition={{
+                        delay: animationStage === 'complete' ? 0.5 : 0,
+                        duration: 0.8,
+                        ease: [0.22, 1, 0.36, 1] as any
+                    }}
                 >
-                    {/* Tabs */}
                     <div className="hero-tabs">
-                        {tabs.map((tab) => (
+                        {tabs.map((tab, index) => (
                             <motion.button
                                 key={tab.key}
                                 className={`hero-tab ${activeTab === tab.key ? 'active' : ''}`}
                                 onClick={() => handleTabClick(tab.key)}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{
+                                    delay: 0.5 + index * 0.1,
+                                    duration: 0.5,
+                                    ease: [0.22, 1, 0.36, 1],
+                                }}
                                 whileHover={{ y: -2, backgroundColor: "rgba(255, 255, 255, 0.05)" }}
                                 whileTap={{ scale: 0.95 }}
                             >
@@ -216,9 +338,20 @@ export const Hero = ({ onSearch }: HeroProps) => {
                         ))}
                     </div>
 
-                    {/* Panels */}
                     <div className="hero-panel">
                         <AnimatePresence mode="wait">
+                            {!activeTab && (
+                                <motion.div
+                                    key="default"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="hero-panel-default"
+                                >
+                                    <p>{t.selectCategoryToStart}</p>
+                                </motion.div>
+                            )}
                             {activeTab && (
                                 <motion.div
                                     key={activeTab}
@@ -228,16 +361,15 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                     transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                                     style={{ overflow: 'hidden' }}
                                 >
-                                    <div style={{ padding: '2rem' }}>
-                                        {/* Description */}
+                                    <div className="hero-panel-inner">
                                         <p className="hero-panel-desc">{currentTab?.description}</p>
 
                                         {activeTab === 'onTheRoad' ? (
                                             requestSuccess ? (
-                                                <div className="order-success" style={{ marginTop: '1rem' }}>
+                                                <div className="hero-request-success">
                                                     <CheckCircle size={48} />
-                                                    <h4>Richiesta Inviata!</h4>
-                                                    <p>Ti contatteremo al più presto.</p>
+                                                    <h4>{language === 'it' ? 'Richiesta Inviata!' : 'Request Sent!'}</h4>
+                                                    <p>{language === 'it' ? 'Ti contatteremo al più presto.' : 'We will contact you soon.'}</p>
                                                     <button
                                                         className="hero-search-btn"
                                                         style={{ marginTop: '1rem' }}
@@ -249,14 +381,14 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                                             setRequestMessage('');
                                                         }}
                                                     >
-                                                        Nuova Richiesta
+                                                        {language === 'it' ? 'Nuova Richiesta' : 'New Request'}
                                                     </button>
                                                 </div>
                                             ) : (
                                                 <form className="hero-search-form" onSubmit={handleRequestSubmit}>
                                                     <div className="hero-search-row">
                                                         <label className="hero-search-field">
-                                                            <span className="field-label"><User size={14} /> Nome e Cognome *</span>
+                                                            <span className="field-label"><User size={14} /> {language === 'it' ? 'Nome e Cognome' : 'Full Name'} *</span>
                                                             <input type="text" placeholder="Mario Rossi" value={requestName} onChange={(e) => setRequestName(e.target.value)} required />
                                                         </label>
                                                         <label className="hero-search-field">
@@ -264,15 +396,15 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                                             <input type="email" placeholder="email@esempio.com" value={requestEmail} onChange={(e) => setRequestEmail(e.target.value)} required />
                                                         </label>
                                                         <label className="hero-search-field">
-                                                            <span className="field-label"><Phone size={14} /> Telefono *</span>
+                                                            <span className="field-label"><Phone size={14} /> {language === 'it' ? 'Telefono' : 'Phone'} *</span>
                                                             <input type="tel" placeholder="+39 333 1234567" value={requestPhone} onChange={(e) => setRequestPhone(e.target.value)} required />
                                                         </label>
                                                     </div>
                                                     <div className="hero-search-row">
                                                         <label className="hero-search-field" style={{ flex: 1 }}>
-                                                            <span className="field-label"><MessageSquare size={14} /> Messaggio</span>
+                                                            <span className="field-label"><MessageSquare size={14} /> {language === 'it' ? 'Messaggio' : 'Message'}</span>
                                                             <textarea
-                                                                placeholder="Descrivi la tua richiesta..."
+                                                                placeholder={language === 'it' ? 'Descrivi la tua richiesta...' : 'Describe your request...'}
                                                                 value={requestMessage}
                                                                 onChange={(e) => setRequestMessage(e.target.value)}
                                                                 rows={3}
@@ -288,14 +420,13 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                                             whileTap={{ scale: 0.97 }}
                                                             disabled={requestLoading}
                                                         >
-                                                            {requestLoading ? <><Loader2 size={18} className="spin" /> Invio in corso...</> : <><Send size={18} /> Invia Richiesta</>}
+                                                            {requestLoading ? <><Loader2 size={18} className="hero-spinner" /> {language === 'it' ? 'Invio in corso...' : 'Sending...'}</> : <><Send size={18} /> {language === 'it' ? 'Invia Richiesta' : 'Send Request'}</>}
                                                         </motion.button>
                                                     </div>
                                                 </form>
                                             )
                                         ) : (
                                             <>
-                                                {/* Commercial subtypes badges */}
                                                 {activeTab === 'commercial' && (
                                                     <div className="hero-commercial-badges">
                                                         {[
@@ -318,7 +449,6 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                                     </div>
                                                 )}
 
-                                                {/* Search Form */}
                                                 <div className="hero-search-form">
                                                     <div className="hero-search-row">
                                                         <label className="hero-search-field">
