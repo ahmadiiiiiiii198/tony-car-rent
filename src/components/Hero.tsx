@@ -21,6 +21,14 @@ export const Hero = ({ onSearch }: HeroProps) => {
     const [animationStage, setAnimationStage] = useState<'intro' | 'settling' | 'complete'>('intro');
     const [showPanels, setShowPanels] = useState(true);
 
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     const features = [
         {
             icon: <Shield size={32} />,
@@ -56,23 +64,37 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
     useEffect(() => {
         if (animationStage === 'intro' || animationStage === 'settling') {
+            const intervalTime = isMobile ? 2200 : 800; // Faster accumulation on desktop
             const timer = setInterval(() => {
                 setCurrentPanelIndex(prev => {
                     if (prev < features.length - 1) {
                         return prev + 1;
                     } else {
                         clearInterval(timer);
-                        setTimeout(() => {
-                            setAnimationStage('complete');
-                            setShowPanels(false);
-                        }, 1500);
+
+                        // Desktop settling phase: all panels present
+                        if (!isMobile) {
+                            setTimeout(() => {
+                                setAnimationStage('settling');
+                                setTimeout(() => {
+                                    setAnimationStage('complete');
+                                    setShowPanels(false);
+                                }, 1200);
+                            }, 1000);
+                        } else {
+                            // Mobile sequence ends
+                            setTimeout(() => {
+                                setAnimationStage('complete');
+                                setShowPanels(false);
+                            }, 1500);
+                        }
                         return prev;
                     }
                 });
-            }, 2200);
+            }, intervalTime);
             return () => clearInterval(timer);
         }
-    }, [animationStage, features.length]);
+    }, [animationStage, features.length, isMobile]);
 
     // Search State
     const [selectedBrand, setSelectedBrand] = useState('');
@@ -216,13 +238,6 @@ export const Hero = ({ onSearch }: HeroProps) => {
         'Mercedes-Benz', 'Nissan', 'Peugeot', 'Porsche', 'Smart', 'Toyota', 'Volkswagen'
     ];
 
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
-
-    useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth <= 1024);
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
 
 
     return (
@@ -267,17 +282,45 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                 }
                             }}
                         >
-                            <AnimatePresence mode="wait">
-                                {features.map((feature, index) => (
-                                    index === currentPanelIndex && (
+                            {isMobile ? (
+                                <AnimatePresence mode="wait">
+                                    {features.map((feature, index) => (
+                                        index === currentPanelIndex && (
+                                            <motion.div
+                                                key={index}
+                                                className="hero-animated-panel"
+                                                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                exit={{ opacity: 0, scale: 1.1, y: -20 }}
+                                                transition={{
+                                                    duration: 0.6,
+                                                    ease: [0.22, 1, 0.36, 1]
+                                                }}
+                                            >
+                                                <div className="service-icon">
+                                                    {feature.icon}
+                                                </div>
+                                                <h3 className="service-title">{feature.title}</h3>
+                                                <p className="service-desc">{feature.description}</p>
+                                            </motion.div>
+                                        )
+                                    ))}
+                                </AnimatePresence>
+                            ) : (
+                                features.map((feature, index) => (
+                                    index <= currentPanelIndex && (
                                         <motion.div
                                             key={index}
                                             className="hero-animated-panel"
-                                            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                                            exit={{ opacity: 0, scale: 1.1, y: -20 }}
+                                            initial={{ opacity: 0, scale: 0.8, y: 50 }}
+                                            animate={{
+                                                opacity: 1,
+                                                scale: animationStage === 'settling' ? 0.9 : 1,
+                                                y: animationStage === 'settling' ? 250 : 0,
+                                                x: animationStage === 'settling' ? (index - 1.5) * 280 : 0
+                                            }}
                                             transition={{
-                                                duration: 0.6,
+                                                duration: 0.8,
                                                 ease: [0.22, 1, 0.36, 1]
                                             }}
                                         >
@@ -288,8 +331,8 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                             <p className="service-desc">{feature.description}</p>
                                         </motion.div>
                                     )
-                                ))}
-                            </AnimatePresence>
+                                ))
+                            )}
                         </motion.div>
                     )}
                 </AnimatePresence>
