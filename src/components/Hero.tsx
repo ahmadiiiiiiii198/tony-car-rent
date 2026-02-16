@@ -64,7 +64,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
     useEffect(() => {
         if (animationStage === 'intro' || animationStage === 'settling') {
-            const intervalTime = isMobile ? 2200 : 800; // Faster accumulation on desktop
+            const intervalTime = 800; // Consistent snappy interval for all devices
             const timer = setInterval(() => {
                 setCurrentPanelIndex(prev => {
                     if (prev < features.length - 1) {
@@ -72,7 +72,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
                     } else {
                         clearInterval(timer);
 
-                        // Desktop settling phase: all panels present
+                        // Desktop settling phase
                         if (!isMobile) {
                             setTimeout(() => {
                                 setAnimationStage('settling');
@@ -82,11 +82,11 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                 }, 1200);
                             }, 1000);
                         } else {
-                            // Mobile sequence ends
+                            // Mobile sequence ends - wait 2s for user to see all 4 panels
                             setTimeout(() => {
                                 setAnimationStage('complete');
                                 setShowPanels(false);
-                            }, 1500);
+                            }, 2000);
                         }
                         return prev;
                     }
@@ -239,6 +239,27 @@ export const Hero = ({ onSearch }: HeroProps) => {
     ];
 
 
+    const panelVariants: any = {
+        hidden: { opacity: 0, scale: 0.8, y: 30 },
+        visible: {
+            opacity: 1,
+            scale: 1,
+            y: 0,
+            transition: {
+                duration: 0.6,
+                ease: [0.22, 1, 0.36, 1]
+            }
+        },
+        exit: {
+            opacity: 0,
+            scale: 0.8,
+            y: -100,
+            transition: {
+                duration: 0.6,
+                ease: [0.22, 1, 0.36, 1]
+            }
+        }
+    };
 
     return (
         <section className="hero-section" id="home">
@@ -265,90 +286,31 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
             <div className="container hero-content">
                 {/* Panels Animation Stage */}
-                {/* Panels Animation Stage */}
                 <AnimatePresence mode="wait">
                     {showPanels && (
                         <motion.div
                             key="hero-panels-intro"
                             className="hero-panels-container"
-                            initial="hidden"
-                            animate="visible"
-                            exit="exit"
-                            variants={{
-                                hidden: { opacity: 0 },
-                                visible: {
-                                    opacity: 1,
-                                    transition: { staggerChildren: 0.1 }
-                                },
-                                exit: {
-                                    opacity: 0,
-                                    transition: {
-                                        staggerChildren: 0.05,
-                                        staggerDirection: -1
-                                    }
-                                }
-                            }}
                         >
-                            {isMobile ? (
-                                <AnimatePresence mode="wait">
-                                    {features.map((feature, index) => (
-                                        index === currentPanelIndex && (
-                                            <motion.div
-                                                key={`mobile-panel-${index}`}
-                                                className="hero-animated-panel"
-                                                initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                exit={{
-                                                    opacity: 0,
-                                                    scale: 1.05,
-                                                    y: -20,
-                                                    filter: "blur(10px)",
-                                                    transition: { duration: 0.4 }
-                                                }}
-                                                transition={{ duration: 0.5, ease: "easeOut" }}
-                                            >
-                                                <div className="service-icon">
-                                                    {feature.icon}
-                                                </div>
-                                                <h3 className="service-title">{feature.title}</h3>
-                                                <p className="service-desc">{feature.description}</p>
-                                            </motion.div>
-                                        )
-                                    ))}
-                                </AnimatePresence>
-                            ) : (
-                                features.map((feature, index) => (
-                                    index <= currentPanelIndex && (
-                                        <motion.div
-                                            key={`desktop-panel-${index}`}
-                                            layout
-                                            className="hero-animated-panel"
-                                            variants={{
-                                                hidden: { opacity: 0, y: 30, scale: 0.9 },
-                                                visible: {
-                                                    opacity: 1,
-                                                    y: 0,
-                                                    scale: 1,
-                                                    transition: { duration: 0.5, ease: "easeOut" }
-                                                },
-                                                exit: {
-                                                    opacity: 0,
-                                                    y: -30,
-                                                    scale: 0.95,
-                                                    filter: "blur(5px)",
-                                                    transition: { duration: 0.4, ease: "easeInOut" }
-                                                }
-                                            }}
-                                        >
-                                            <div className="service-icon">
-                                                {feature.icon}
-                                            </div>
-                                            <h3 className="service-title">{feature.title}</h3>
-                                            <p className="service-desc">{feature.description}</p>
-                                        </motion.div>
-                                    )
-                                ))
-                            )}
+                            {features.map((feature, index) => (
+                                index <= currentPanelIndex && (
+                                    <motion.div
+                                        key={isMobile ? `mobile-panel-${index}` : `desktop-panel-${index}`}
+                                        layout
+                                        className="hero-animated-panel"
+                                        variants={panelVariants}
+                                        initial="hidden"
+                                        animate="visible"
+                                        exit="exit"
+                                    >
+                                        <div className="service-icon">
+                                            {feature.icon}
+                                        </div>
+                                        <h3 className="service-title">{feature.title}</h3>
+                                        <p className="service-desc">{feature.description}</p>
+                                    </motion.div>
+                                )
+                            ))}
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -363,9 +325,9 @@ export const Hero = ({ onSearch }: HeroProps) => {
                         pointerEvents: animationStage === 'complete' ? 'auto' : 'none'
                     }}
                     transition={{
-                        delay: animationStage === 'complete' ? 0.5 : 0,
+                        delay: animationStage === 'complete' ? 1.0 : 0,
                         duration: 0.8,
-                        ease: [0.22, 1, 0.36, 1] as any
+                        ease: [0.22, 1, 0.36, 1]
                     }}
                 >
                     <div className="hero-tabs">
@@ -377,7 +339,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{
-                                    delay: 0.5 + index * 0.1,
+                                    delay: animationStage === 'complete' ? 1.2 + index * 0.1 : 0,
                                     duration: 0.5,
                                     ease: [0.22, 1, 0.36, 1],
                                 }}
@@ -444,174 +406,181 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                                     </button>
                                                 </div>
                                             ) : (
-                                                <form className="hero-search-form" onSubmit={handleRequestSubmit}>
-                                                    <div className="hero-search-row">
-                                                        <label className="hero-search-field">
-                                                            <span className="field-label"><User size={14} /> {language === 'it' ? 'Nome e Cognome' : 'Full Name'} *</span>
-                                                            <input type="text" placeholder="Mario Rossi" value={requestName} onChange={(e) => setRequestName(e.target.value)} required />
-                                                        </label>
-                                                        <label className="hero-search-field">
-                                                            <span className="field-label"><Mail size={14} /> Email *</span>
-                                                            <input type="email" placeholder="email@esempio.com" value={requestEmail} onChange={(e) => setRequestEmail(e.target.value)} required />
-                                                        </label>
-                                                        <label className="hero-search-field">
-                                                            <span className="field-label"><Phone size={14} /> {language === 'it' ? 'Telefono' : 'Phone'} *</span>
-                                                            <input type="tel" placeholder="+39 333 1234567" value={requestPhone} onChange={(e) => setRequestPhone(e.target.value)} required />
-                                                        </label>
+                                                <form className="hero-request-form" onSubmit={handleRequestSubmit}>
+                                                    <div className="hero-request-row">
+                                                        <div className="hero-request-field">
+                                                            <User size={18} />
+                                                            <input
+                                                                type="text"
+                                                                placeholder={t.namePlaceholder}
+                                                                value={requestName}
+                                                                onChange={(e) => setRequestName(e.target.value)}
+                                                                required
+                                                            />
+                                                        </div>
+                                                        <div className="hero-request-field">
+                                                            <Mail size={18} />
+                                                            <input
+                                                                type="email"
+                                                                placeholder={t.emailPlaceholder}
+                                                                value={requestEmail}
+                                                                onChange={(e) => setRequestEmail(e.target.value)}
+                                                                required
+                                                            />
+                                                        </div>
                                                     </div>
-                                                    <div className="hero-search-row">
-                                                        <label className="hero-search-field" style={{ flex: 1 }}>
-                                                            <span className="field-label"><MessageSquare size={14} /> {language === 'it' ? 'Messaggio' : 'Message'}</span>
-                                                            <textarea
-                                                                placeholder={language === 'it' ? 'Descrivi la tua richiesta...' : 'Describe your request...'}
+                                                    <div className="hero-request-row">
+                                                        <div className="hero-request-field">
+                                                            <Phone size={18} />
+                                                            <input
+                                                                type="tel"
+                                                                placeholder={t.phonePlaceholder}
+                                                                value={requestPhone}
+                                                                onChange={(e) => setRequestPhone(e.target.value)}
+                                                                required
+                                                            />
+                                                        </div>
+                                                        <div className="hero-request-field hero-request-message">
+                                                            <MessageSquare size={18} />
+                                                            <input
+                                                                type="text"
+                                                                placeholder={t.messagePlaceholder}
                                                                 value={requestMessage}
                                                                 onChange={(e) => setRequestMessage(e.target.value)}
-                                                                rows={3}
-                                                                style={{ resize: 'vertical', minHeight: '80px', fontFamily: 'inherit' }}
                                                             />
-                                                        </label>
+                                                        </div>
                                                     </div>
-                                                    <div className="hero-search-actions">
-                                                        <motion.button
-                                                            type="submit"
-                                                            className="hero-search-btn"
-                                                            whileHover={{ scale: 1.03, boxShadow: "0 8px 30px rgba(212,175,55,0.4)" }}
-                                                            whileTap={{ scale: 0.97 }}
-                                                            disabled={requestLoading}
-                                                        >
-                                                            {requestLoading ? <><Loader2 size={18} className="hero-spinner" /> {language === 'it' ? 'Invio in corso...' : 'Sending...'}</> : <><Send size={18} /> {language === 'it' ? 'Invia Richiesta' : 'Send Request'}</>}
-                                                        </motion.button>
-                                                    </div>
+                                                    <motion.button
+                                                        type="submit"
+                                                        className="hero-request-submit"
+                                                        whileHover={{ scale: 1.02 }}
+                                                        whileTap={{ scale: 0.98 }}
+                                                        disabled={requestLoading}
+                                                    >
+                                                        {requestLoading ? <Loader2 className="animate-spin" /> : <Send size={18} />}
+                                                        {language === 'it' ? 'Invia Richiesta' : 'Send Request'}
+                                                    </motion.button>
                                                 </form>
                                             )
                                         ) : (
-                                            <>
+                                            <div className="hero-search-form">
                                                 {activeTab === 'commercial' && (
                                                     <div className="hero-commercial-badges">
                                                         {[
-                                                            { icon: <Truck size={14} />, label: t.commercialTrucks },
-                                                            { icon: <Car size={14} />, label: t.commercialVans },
-                                                            { icon: <Car size={14} />, label: t.commercialMinibuses },
-                                                            { icon: <Car size={14} />, label: t.commercialMinivans },
+                                                            { label: 'Vito', active: true },
+                                                            { label: 'Sprinter', active: false },
+                                                            { label: 'V-Class', active: false },
+                                                            { label: 'Crafter', active: false }
                                                         ].map((badge, i) => (
-                                                            <motion.span
-                                                                key={badge.label}
-                                                                className="commercial-badge"
-                                                                initial={{ opacity: 0, scale: 0.8 }}
-                                                                animate={{ opacity: 1, scale: 1 }}
-                                                                transition={{ delay: i * 0.08 }}
-                                                            >
-                                                                {badge.icon}
+                                                            <span key={i} className={`commercial-badge ${badge.active ? 'active' : ''}`}>
                                                                 {badge.label}
-                                                            </motion.span>
+                                                            </span>
                                                         ))}
                                                     </div>
                                                 )}
 
-                                                <div className="hero-search-form">
-                                                    <div className="hero-search-row">
-                                                        <label className="hero-search-field">
-                                                            <span className="field-label"><Car size={14} /> {t.searchBrand}</span>
-                                                            <select
-                                                                value={selectedBrand}
-                                                                onChange={(e) => {
-                                                                    setSelectedBrand(e.target.value);
-                                                                    setSelectedModel('');
-                                                                }}
-                                                            >
-                                                                <option value="">{t.searchAllBrands}</option>
-                                                                {currentBrands.map(brand => (
-                                                                    <option key={brand} value={brand}>{brand}</option>
-                                                                ))}
-                                                            </select>
-                                                        </label>
-                                                        <label className="hero-search-field">
-                                                            <span className="field-label"><Car size={14} /> {t.searchModel}</span>
-                                                            <select
-                                                                value={selectedModel}
-                                                                onChange={(e) => setSelectedModel(e.target.value)}
-                                                                disabled={!selectedBrand}
-                                                            >
-                                                                <option value="">{t.searchAllModels}</option>
-                                                                {availableModels.map(model => (
-                                                                    <option key={model} value={model}>{model}</option>
-                                                                ))}
-                                                            </select>
-                                                        </label>
-                                                        <label className="hero-search-field">
-                                                            <span className="field-label"><Fuel size={14} /> {t.searchFuel}</span>
-                                                            <select
-                                                                value={selectedFuel}
-                                                                onChange={(e) => setSelectedFuel(e.target.value)}
-                                                            >
-                                                                <option value="">{t.searchAllFuels}</option>
-                                                                <option value="petrol">{t.fuelPetrol}</option>
-                                                                <option value="diesel">{t.fuelDiesel}</option>
-                                                                <option value="hybrid">{t.fuelHybrid}</option>
-                                                                <option value="electric">{t.fuelElectric}</option>
-                                                                <option value="lpg">{t.fuelLPG}</option>
-                                                                <option value="cng">{t.fuelCNG}</option>
-                                                            </select>
-                                                        </label>
-                                                    </div>
-                                                    <div className="hero-search-row">
-                                                        <label className="hero-search-field hero-search-field-half">
-                                                            <span className="field-label">{t.searchPriceFrom}</span>
-                                                            <input
-                                                                type="number"
-                                                                placeholder="€ Min"
-                                                                value={priceMin}
-                                                                onChange={(e) => setPriceMin(e.target.value)}
-                                                            />
-                                                        </label>
-                                                        <label className="hero-search-field hero-search-field-half">
-                                                            <span className="field-label">{t.searchPriceTo}</span>
-                                                            <input
-                                                                type="number"
-                                                                placeholder="€ Max"
-                                                                value={priceMax}
-                                                                onChange={(e) => setPriceMax(e.target.value)}
-                                                            />
-                                                        </label>
-                                                        {activeTab !== 'rental' && (
-                                                            <>
-                                                                <label className="hero-search-field hero-search-field-half">
-                                                                    <span className="field-label"><Calendar size={14} /> {t.searchYearFrom}</span>
-                                                                    <input type="number" placeholder="2015" min="1990" max="2026" />
-                                                                </label>
-                                                                <label className="hero-search-field hero-search-field-half">
-                                                                    <span className="field-label"><Gauge size={14} /> {t.searchMileageMax}</span>
-                                                                    <input type="number" placeholder="150.000 km" />
-                                                                </label>
-                                                            </>
-                                                        )}
-                                                        {activeTab === 'rental' && (
-                                                            <>
-                                                                <label className="hero-search-field hero-search-field-half">
-                                                                    <span className="field-label"><Calendar size={14} /> {t.pickupDate}</span>
-                                                                    <input type="date" />
-                                                                </label>
-                                                                <label className="hero-search-field hero-search-field-half">
-                                                                    <span className="field-label"><Calendar size={14} /> {t.returnDate}</span>
-                                                                    <input type="date" />
-                                                                </label>
-                                                            </>
-                                                        )}
-                                                    </div>
-
-                                                    <div className="hero-search-actions">
-                                                        <motion.button
-                                                            className="hero-search-btn"
-                                                            whileHover={{ scale: 1.03, boxShadow: "0 8px 30px rgba(212,175,55,0.4)" }}
-                                                            whileTap={{ scale: 0.97 }}
-                                                            onClick={handleSearch}
+                                                <div className="hero-search-row">
+                                                    <label className="hero-search-field">
+                                                        <span className="field-label"><Car size={14} /> {t.searchBrand}</span>
+                                                        <select
+                                                            value={selectedBrand}
+                                                            onChange={(e) => {
+                                                                setSelectedBrand(e.target.value);
+                                                                setSelectedModel('');
+                                                            }}
                                                         >
-                                                            <Search size={18} />
-                                                            {t.searchButton}
-                                                        </motion.button>
-                                                    </div>
+                                                            <option value="">{t.searchAllBrands}</option>
+                                                            {currentBrands.map(brand => (
+                                                                <option key={brand} value={brand}>{brand}</option>
+                                                            ))}
+                                                        </select>
+                                                    </label>
+                                                    <label className="hero-search-field">
+                                                        <span className="field-label"><Car size={14} /> {t.searchModel}</span>
+                                                        <select
+                                                            value={selectedModel}
+                                                            onChange={(e) => setSelectedModel(e.target.value)}
+                                                            disabled={!selectedBrand}
+                                                        >
+                                                            <option value="">{t.searchAllModels}</option>
+                                                            {availableModels.map(model => (
+                                                                <option key={model} value={model}>{model}</option>
+                                                            ))}
+                                                        </select>
+                                                    </label>
+                                                    <label className="hero-search-field">
+                                                        <span className="field-label"><Fuel size={14} /> {t.searchFuel}</span>
+                                                        <select
+                                                            value={selectedFuel}
+                                                            onChange={(e) => setSelectedFuel(e.target.value)}
+                                                        >
+                                                            <option value="">{t.searchAllFuels}</option>
+                                                            <option value="petrol">{t.fuelPetrol}</option>
+                                                            <option value="diesel">{t.fuelDiesel}</option>
+                                                            <option value="hybrid">{t.fuelHybrid}</option>
+                                                            <option value="electric">{t.fuelElectric}</option>
+                                                            <option value="lpg">{t.fuelLPG}</option>
+                                                            <option value="cng">{t.fuelCNG}</option>
+                                                        </select>
+                                                    </label>
                                                 </div>
-                                            </>
+                                                <div className="hero-search-row">
+                                                    <label className="hero-search-field hero-search-field-half">
+                                                        <span className="field-label">{t.searchPriceFrom}</span>
+                                                        <input
+                                                            type="number"
+                                                            placeholder="€ Min"
+                                                            value={priceMin}
+                                                            onChange={(e) => setPriceMin(e.target.value)}
+                                                        />
+                                                    </label>
+                                                    <label className="hero-search-field hero-search-field-half">
+                                                        <span className="field-label">{t.searchPriceTo}</span>
+                                                        <input
+                                                            type="number"
+                                                            placeholder="€ Max"
+                                                            value={priceMax}
+                                                            onChange={(e) => setPriceMax(e.target.value)}
+                                                        />
+                                                    </label>
+                                                    {activeTab !== 'rental' && (
+                                                        <>
+                                                            <label className="hero-search-field hero-search-field-half">
+                                                                <span className="field-label"><Calendar size={14} /> {t.searchYearFrom}</span>
+                                                                <input type="number" placeholder="2015" min="1990" max="2026" />
+                                                            </label>
+                                                            <label className="hero-search-field hero-search-field-half">
+                                                                <span className="field-label"><Gauge size={14} /> {t.searchMileageMax}</span>
+                                                                <input type="number" placeholder="150.000 km" />
+                                                            </label>
+                                                        </>
+                                                    )}
+                                                    {activeTab === 'rental' && (
+                                                        <>
+                                                            <label className="hero-search-field hero-search-field-half">
+                                                                <span className="field-label"><Calendar size={14} /> {t.pickupDate}</span>
+                                                                <input type="date" />
+                                                            </label>
+                                                            <label className="hero-search-field hero-search-field-half">
+                                                                <span className="field-label"><Calendar size={14} /> {t.returnDate}</span>
+                                                                <input type="date" />
+                                                            </label>
+                                                        </>
+                                                    )}
+                                                </div>
+
+                                                <div className="hero-search-actions">
+                                                    <motion.button
+                                                        className="hero-search-btn"
+                                                        whileHover={{ scale: 1.03, boxShadow: "0 8px 30px rgba(212,175,55,0.4)" }}
+                                                        whileTap={{ scale: 0.97 }}
+                                                        onClick={handleSearch}
+                                                    >
+                                                        <Search size={18} />
+                                                        {t.searchButton}
+                                                    </motion.button>
+                                                </div>
+                                            </div>
                                         )}
                                     </div>
                                 </motion.div>
