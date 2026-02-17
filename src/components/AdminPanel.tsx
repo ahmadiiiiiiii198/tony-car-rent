@@ -5,8 +5,9 @@ import {
     ShieldCheck, LogOut, Clock, CheckCircle, Package,
     Mail, Phone, Car as CarIcon, Calendar, Search, RefreshCw,
     ChevronDown, ChevronUp, MessageSquare, Trash2, ArrowLeft,
-    Plus, Edit, Save, X, Upload, LayoutGrid, Settings,
-    Fuel, Users, Gauge
+    Plus, Edit, Save, X, Upload, LayoutGrid, Settings as SettingsIcon,
+    Fuel, Users, Gauge,
+    Award
 } from 'lucide-react';
 import { useSettings } from '../context/SettingsContext';
 
@@ -333,7 +334,7 @@ export const AdminPanel = () => {
                             className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`}
                             onClick={() => setActiveTab('settings')}
                         >
-                            <Settings size={18} /> Impostazioni
+                            <SettingsIcon size={18} /> Impostazioni
                         </button>
                     </nav>
 
@@ -592,6 +593,76 @@ export const AdminPanel = () => {
                                 <div className="form-group">
                                     <label>Sottotitolo Hero</label>
                                     <input value={siteSettings.heroSubtitle} onChange={e => setSiteSettings({ ...siteSettings, heroSubtitle: e.target.value })} />
+                                </div>
+                            </div>
+
+                            <div className="settings-card full-width">
+                                <h3><Award size={20} /> Piani Perizia / Valutazione</h3>
+                                <p className="settings-desc">Configura i pacchetti di perizia tecnica e i prezzi relativi.</p>
+                                <div className="perizia-plans-editor">
+                                    {siteSettings.periziaPlans?.map((plan, pIdx) => (
+                                        <div key={plan.id} className="perizia-plan-config">
+                                            <div className="plan-header">
+                                                <input
+                                                    value={plan.name}
+                                                    onChange={e => {
+                                                        const newPlans = (siteSettings.periziaPlans || []).map((p, i) =>
+                                                            i === pIdx ? { ...p, name: e.target.value } : p
+                                                        );
+                                                        setSiteSettings({ ...siteSettings, periziaPlans: newPlans });
+                                                    }}
+                                                    placeholder="Nome Piano"
+                                                />
+                                                <div className="plan-price-input">
+                                                    <span>€</span>
+                                                    <input
+                                                        value={plan.price}
+                                                        onChange={e => {
+                                                            const newPlans = (siteSettings.periziaPlans || []).map((p, i) =>
+                                                                i === pIdx ? { ...p, price: e.target.value } : p
+                                                            );
+                                                            setSiteSettings({ ...siteSettings, periziaPlans: newPlans });
+                                                        }}
+                                                        placeholder="Prezzo"
+                                                    />
+                                                </div>
+                                                <label className="plan-highlight-toggle" title="Evidenzia come Consigliato">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={plan.highlight || false}
+                                                        onChange={e => {
+                                                            const newPlans = (siteSettings.periziaPlans || []).map((p, i) =>
+                                                                i === pIdx ? { ...p, highlight: e.target.checked } : p
+                                                            );
+                                                            setSiteSettings({ ...siteSettings, periziaPlans: newPlans });
+                                                        }}
+                                                    />
+                                                    <Award size={16} className={plan.highlight ? 'text-gold' : 'text-muted'} />
+                                                </label>
+                                            </div>
+                                            <div className="plan-features-toggle">
+                                                {siteSettings.periziaFeatures?.map(feat => (
+                                                    <label key={feat.id} className="feature-toggle">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={plan.features.includes(feat.id)}
+                                                            onChange={e => {
+                                                                const newPlans = (siteSettings.periziaPlans || []).map((p, i) => {
+                                                                    if (i !== pIdx) return p;
+                                                                    const newFeatures = e.target.checked
+                                                                        ? [...p.features, feat.id]
+                                                                        : p.features.filter(id => id !== feat.id);
+                                                                    return { ...p, features: newFeatures };
+                                                                });
+                                                                setSiteSettings({ ...siteSettings, periziaPlans: newPlans });
+                                                            }}
+                                                        />
+                                                        {feat.label}
+                                                    </label>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>

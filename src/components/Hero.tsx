@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Key, Car, Search, MapPin, Fuel, Calendar, Gauge,
@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { supabase } from '../lib/supabase';
+import { PeriziaTable } from './PeriziaTable';
 
 type TabKey = 'sale' | 'rental' | 'perizia' | 'assistance';
 
@@ -112,6 +113,8 @@ export const Hero = ({ onSearch }: HeroProps) => {
     const [requestMessage, setRequestMessage] = useState('');
     const [requestLoading, setRequestLoading] = useState(false);
     const [requestSuccess, setRequestSuccess] = useState(false);
+
+    const messageInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
@@ -363,11 +366,12 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
                 {/* Search widget with category tabs */}
                 <motion.div
-                    className="hero-search-widget"
+                    className={`hero-search-widget ${activeTab === 'perizia' ? 'is-perizia' : ''}`}
                     initial={{ opacity: 0, y: 50 }}
                     animate={{
                         opacity: animationStage === 'complete' ? 1 : 0,
-                        y: animationStage === 'complete' ? (isMobile ? 0 : -80) : 50,
+                        y: animationStage === 'complete' ? ((isMobile || activeTab === 'perizia') ? 0 : -80) : 50,
+                        width: activeTab === 'perizia' && !isMobile ? '95%' : '100%',
                         pointerEvents: (animationStage === 'complete' || animationStage === 'settling') ? 'auto' : 'none'
                     }}
                     transition={{
@@ -435,82 +439,103 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                         <p className="hero-panel-desc">{currentTab?.description}</p>
 
                                         {(activeTab === 'perizia' || activeTab === 'assistance') ? (
-                                            requestSuccess ? (
-                                                <div className="hero-request-success">
-                                                    <CheckCircle size={48} />
-                                                    <h4>{language === 'it' ? 'Richiesta Inviata!' : 'Request Sent!'}</h4>
-                                                    <p>{language === 'it' ? 'Ti contatteremo al più presto.' : 'We will contact you soon.'}</p>
-                                                    <button
-                                                        className="hero-search-btn"
-                                                        style={{ marginTop: '1rem' }}
-                                                        onClick={() => {
-                                                            setRequestSuccess(false);
-                                                            setRequestName('');
-                                                            setRequestEmail('');
-                                                            setRequestPhone('');
-                                                            setRequestMessage('');
-                                                        }}
-                                                    >
-                                                        {language === 'it' ? 'Nuova Richiesta' : 'New Request'}
-                                                    </button>
+                                            <div className="perizia-flex-layout">
+                                                {activeTab === 'perizia' && (
+                                                    <div className="perizia-table-section">
+                                                        <PeriziaTable onSelectPlan={(planName) => {
+                                                            const msg = `Vorrei maggiori informazioni sul pacchetto ${planName}.`;
+                                                            setRequestMessage(msg);
+                                                            // On mobile, scroll to form
+                                                            if (isMobile) {
+                                                                const form = document.querySelector('.perizia-form-section');
+                                                                form?.scrollIntoView({ behavior: 'smooth' });
+                                                            }
+                                                            // Focus message input
+                                                            setTimeout(() => messageInputRef.current?.focus(), 100);
+                                                        }} />
+                                                    </div>
+                                                )}
+
+                                                <div className="perizia-form-section">
+                                                    {requestSuccess ? (
+                                                        <div className="hero-request-success">
+                                                            <CheckCircle size={48} />
+                                                            <h4>{language === 'it' ? 'Richiesta Inviata!' : 'Request Sent!'}</h4>
+                                                            <p>{language === 'it' ? 'Ti contatteremo al più presto.' : 'We will contact you soon.'}</p>
+                                                            <button
+                                                                className="hero-search-btn"
+                                                                style={{ marginTop: '1rem' }}
+                                                                onClick={() => {
+                                                                    setRequestSuccess(false);
+                                                                    setRequestName('');
+                                                                    setRequestEmail('');
+                                                                    setRequestPhone('');
+                                                                    setRequestMessage('');
+                                                                }}
+                                                            >
+                                                                {language === 'it' ? 'Nuova Richiesta' : 'New Request'}
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <form className={`hero-request-form ${activeTab === 'perizia' ? 'compact' : ''}`} onSubmit={handleRequestSubmit}>
+                                                            <div className="hero-request-row">
+                                                                <div className="hero-request-field">
+                                                                    <User size={18} />
+                                                                    <input
+                                                                        type="text"
+                                                                        placeholder={t.namePlaceholder}
+                                                                        value={requestName}
+                                                                        onChange={(e) => setRequestName(e.target.value)}
+                                                                        required
+                                                                    />
+                                                                </div>
+                                                                <div className="hero-request-field">
+                                                                    <Mail size={18} />
+                                                                    <input
+                                                                        type="email"
+                                                                        placeholder={t.emailPlaceholder}
+                                                                        value={requestEmail}
+                                                                        onChange={(e) => setRequestEmail(e.target.value)}
+                                                                        required
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <div className="hero-request-row">
+                                                                <div className="hero-request-field">
+                                                                    <Phone size={18} />
+                                                                    <input
+                                                                        type="tel"
+                                                                        placeholder={t.phonePlaceholder}
+                                                                        value={requestPhone}
+                                                                        onChange={(e) => setRequestPhone(e.target.value)}
+                                                                        required
+                                                                    />
+                                                                </div>
+                                                                <div className="hero-request-field hero-request-message">
+                                                                    <MessageSquare size={18} />
+                                                                    <input
+                                                                        ref={messageInputRef}
+                                                                        type="text"
+                                                                        placeholder={t.messagePlaceholder}
+                                                                        value={requestMessage}
+                                                                        onChange={(e) => setRequestMessage(e.target.value)}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <motion.button
+                                                                type="submit"
+                                                                className="hero-request-submit"
+                                                                whileHover={{ scale: 1.02 }}
+                                                                whileTap={{ scale: 0.98 }}
+                                                                disabled={requestLoading}
+                                                            >
+                                                                {requestLoading ? <Loader2 className="animate-spin" /> : <Send size={18} />}
+                                                                {language === 'it' ? 'Invia Richiesta' : 'Send Request'}
+                                                            </motion.button>
+                                                        </form>
+                                                    )}
                                                 </div>
-                                            ) : (
-                                                <form className="hero-request-form" onSubmit={handleRequestSubmit}>
-                                                    <div className="hero-request-row">
-                                                        <div className="hero-request-field">
-                                                            <User size={18} />
-                                                            <input
-                                                                type="text"
-                                                                placeholder={t.namePlaceholder}
-                                                                value={requestName}
-                                                                onChange={(e) => setRequestName(e.target.value)}
-                                                                required
-                                                            />
-                                                        </div>
-                                                        <div className="hero-request-field">
-                                                            <Mail size={18} />
-                                                            <input
-                                                                type="email"
-                                                                placeholder={t.emailPlaceholder}
-                                                                value={requestEmail}
-                                                                onChange={(e) => setRequestEmail(e.target.value)}
-                                                                required
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="hero-request-row">
-                                                        <div className="hero-request-field">
-                                                            <Phone size={18} />
-                                                            <input
-                                                                type="tel"
-                                                                placeholder={t.phonePlaceholder}
-                                                                value={requestPhone}
-                                                                onChange={(e) => setRequestPhone(e.target.value)}
-                                                                required
-                                                            />
-                                                        </div>
-                                                        <div className="hero-request-field hero-request-message">
-                                                            <MessageSquare size={18} />
-                                                            <input
-                                                                type="text"
-                                                                placeholder={t.messagePlaceholder}
-                                                                value={requestMessage}
-                                                                onChange={(e) => setRequestMessage(e.target.value)}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <motion.button
-                                                        type="submit"
-                                                        className="hero-request-submit"
-                                                        whileHover={{ scale: 1.02 }}
-                                                        whileTap={{ scale: 0.98 }}
-                                                        disabled={requestLoading}
-                                                    >
-                                                        {requestLoading ? <Loader2 className="animate-spin" /> : <Send size={18} />}
-                                                        {language === 'it' ? 'Invia Richiesta' : 'Send Request'}
-                                                    </motion.button>
-                                                </form>
-                                            )
+                                            </div>
                                         ) : (
                                             <div className="hero-search-form">
 
