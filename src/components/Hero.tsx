@@ -380,7 +380,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
                         {tabs.map((tab, index) => (
                             <motion.button
                                 key={tab.key}
-                                className={`hero-tab ${activeTab === tab.key ? 'active' : ''}`}
+                                className={`hero-tab ${activeTab === tab.key ? 'active' : ''} ${tab.badge ? 'has-badge' : ''}`}
                                 onClick={() => handleTabClick(tab.key)}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}

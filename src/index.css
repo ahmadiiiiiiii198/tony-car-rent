@@ -803,6 +803,10 @@ ul {
   cursor: pointer;
 }
 
+.hero-tab.has-badge {
+  padding-right: 2.75rem;
+}
+
 .hero-tab:hover {
   color: var(--color-text);
   background: rgba(255, 255, 255, 0.03);
@@ -830,28 +834,47 @@ ul {
 
 .hero-tab-badge {
   position: absolute;
-  top: 6px;
-  right: 50%;
-  transform: translateX(65%);
-  background: var(--color-gold);
-  color: var(--color-black);
-  font-size: 0.65rem;
-  padding: 1px 6px;
-  border-radius: 4px;
+  top: 8px;
+  right: 12px;
+  background: linear-gradient(135deg, #FFD700 0%, #D4AF37 100%);
+  color: #000;
+  font-size: 0.58rem;
+  padding: 2px 6px;
+  border-radius: 100px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
+  letter-spacing: 0.08em;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
   pointer-events: none;
-  line-height: 1.2;
+  line-height: 1;
+  animation: badge-pulse 2s infinite ease-in-out;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+@keyframes badge-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+  }
+
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 18px rgba(212, 175, 55, 0.6);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+  }
 }
 
 @media (max-width: 1024px) {
   .hero-tab-badge {
-    top: 2px;
-    transform: translateX(50%);
-    font-size: 0.55rem;
-    padding: 0px 4px;
+    top: 5px;
+    right: 5px;
+    font-size: 0.5rem;
+    padding: 1px 4px;
+    letter-spacing: 0.04em;
   }
 }
 
