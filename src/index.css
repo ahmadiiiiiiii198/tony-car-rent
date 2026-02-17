@@ -4798,4 +4798,49 @@ ul {
   .mobile-hidden {
     display: none !important;
   }
+
+  /* Admin Mobile Optimizations */
+  .section-header h2 {
+    font-size: 1.5rem;
+    /* Reduced from default */
+    margin-bottom: 0.5rem;
+    line-height: 1.1;
+  }
+
+  .section-header p {
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    max-width: 100%;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    text-align: left;
+  }
+
+  .admin-add-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .settings-card {
+    padding: 1.25rem;
+  }
+
+  .settings-card h3 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .admin-header-right {
+    gap: 1rem;
+  }
+
+  .admin-site-link,
+  .admin-logout-btn {
+    padding: 0.5rem;
+    /* Increase touch target slightly even if text is hidden */
+  }
 }
