@@ -54,74 +54,85 @@ export const Navbar = () => {
   };
 
   const scrollToFleet = () => {
-    const fleetSection = document.getElementById('fleet');
-    if (fleetSection) {
-      fleetSection.scrollIntoView({ behavior: 'smooth' });
-    }
     setMobileOpen(false);
+    document.body.style.overflow = 'unset';
+
+    setTimeout(() => {
+      const fleetSection = document.getElementById('fleet');
+      if (fleetSection) {
+        fleetSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    if (href === '#') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      const element = document.querySelector(href);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
     setMobileOpen(false);
+
+    // Explicitly unset overflow for immediate effect on mobile browsers
+    document.body.style.overflow = 'unset';
+
+    // Small delay ensures the menu state update is processing and body is scrollable
+    setTimeout(() => {
+      if (href === '#') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        const element = document.querySelector(href);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }, 50);
   };
 
   return (
     <>
-    <nav
-      className={`navbar ${scrolled ? 'scrolled' : ''}`}
-    >
-      <div className="container nav-content">
-        <a href="#" className="nav-logo" onClick={(e) => handleNavClick(e, '#')}>
-          <img src="/logo-newest.png" alt="Tonaydin Luxury Cars" />
-        </a>
+      <nav
+        className={`navbar ${scrolled ? 'scrolled' : ''}`}
+      >
+        <div className="container nav-content">
+          <a href="#" className="nav-logo" onClick={(e) => handleNavClick(e, '#')}>
+            <img src="/logo-newest.png" alt="Tonaydin Luxury Cars" />
+          </a>
 
-        {/* Desktop Menu */}
-        <div className="nav-links">
-          {navLinks.map((link) => (
-            <a
-              key={link.id}
-              href={link.href}
-              className={`nav-link ${activeSection === link.id ? 'active' : ''}`}
-              onClick={(e) => handleNavClick(e, link.href)}
+          {/* Desktop Menu */}
+          <div className="nav-links">
+            {navLinks.map((link) => (
+              <a
+                key={link.id}
+                href={link.href}
+                className={`nav-link ${activeSection === link.id ? 'active' : ''}`}
+                onClick={(e) => handleNavClick(e, link.href)}
+              >
+                {link.name}
+              </a>
+            ))}
+
+            {/* Language Switcher */}
+            <button
+              className="lang-switcher"
+              onClick={toggleLanguage}
+              title={language === 'it' ? 'Switch to English' : 'Cambia in Italiano'}
             >
-              {link.name}
-            </a>
-          ))}
+              <Globe size={18} />
+              <span>{language.toUpperCase()}</span>
+            </button>
 
-          {/* Language Switcher */}
+            <button className="btn-outline" onClick={scrollToFleet}>
+              {t.bookNow}
+            </button>
+          </div>
+
+          {/* Mobile Toggle */}
           <button
-            className="lang-switcher"
-            onClick={toggleLanguage}
-            title={language === 'it' ? 'Switch to English' : 'Cambia in Italiano'}
+            className="mobile-toggle"
+            onClick={() => setMobileOpen(!mobileOpen)}
           >
-            <Globe size={18} />
-            <span>{language.toUpperCase()}</span>
-          </button>
-
-          <button className="btn-outline" onClick={scrollToFleet}>
-            {t.bookNow}
+            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
-        {/* Mobile Toggle */}
-        <button
-          className="mobile-toggle"
-          onClick={() => setMobileOpen(!mobileOpen)}
-        >
-          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
-
-    </nav>
+      </nav>
 
       {/* Mobile Menu - rendered via portal to avoid navbar pointer-events: none */}
       {createPortal(
