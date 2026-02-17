@@ -47,7 +47,7 @@ interface Car {
     images: string[];
 }
 
-const ADMIN_PASSWORD = 'tonaydin2026';
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'tonaydin2026';
 
 const statusColors: Record<string, string> = {
     pending: '#f59e0b',
@@ -322,28 +322,28 @@ export const AdminPanel = () => {
                             className={`nav-item ${activeTab === 'orders' ? 'active' : ''}`}
                             onClick={() => setActiveTab('orders')}
                         >
-                            <MessageSquare size={18} /> Richieste
+                            <MessageSquare size={18} /> <span>Richieste</span>
                         </button>
                         <button
                             className={`nav-item ${activeTab === 'fleet' ? 'active' : ''}`}
                             onClick={() => setActiveTab('fleet')}
                         >
-                            <LayoutGrid size={18} /> Flotta
+                            <LayoutGrid size={18} /> <span>Flotta</span>
                         </button>
                         <button
                             className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`}
                             onClick={() => setActiveTab('settings')}
                         >
-                            <SettingsIcon size={18} /> Impostazioni
+                            <SettingsIcon size={18} /> <span>Impostazioni</span>
                         </button>
                     </nav>
 
                     <div className="admin-header-right">
                         <a href="/" className="admin-site-link">
-                            <ArrowLeft size={16} /> Sito
+                            <ArrowLeft size={16} /> <span className="mobile-hidden">Sito</span>
                         </a>
                         <button onClick={handleLogout} className="admin-logout-btn">
-                            <LogOut size={16} /> Esci
+                            <LogOut size={16} /> <span className="mobile-hidden">Esci</span>
                         </button>
                     </div>
                 </div>
