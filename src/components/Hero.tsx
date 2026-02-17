@@ -70,15 +70,13 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
     useEffect(() => {
         if (animationStage === 'intro') {
-            const intervalTime = isMobile ? 1800 : 800; // Slightly faster for mobile but still readable
+            const intervalTime = isMobile ? 1800 : 800;
             const timer = setInterval(() => {
                 setCurrentPanelIndex(prev => {
                     if (prev < features.length - 1) {
                         return prev + 1;
                     } else {
                         clearInterval(timer);
-
-                        // Desktop settling phase
                         if (!isMobile) {
                             setTimeout(() => {
                                 setAnimationStage('settling');
@@ -88,7 +86,6 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                 }, 1200);
                             }, 1000);
                         } else {
-                            // Mobile sequence ends - wait for the last panel's full duration
                             setTimeout(() => {
                                 setAnimationStage('complete');
                                 setShowPanels(false);
@@ -102,7 +99,6 @@ export const Hero = ({ onSearch }: HeroProps) => {
         }
     }, [animationStage, features.length, isMobile]);
 
-    // Search State
     const [selectedBrand, setSelectedBrand] = useState('');
     const [selectedModel, setSelectedModel] = useState('');
     const [selectedFuel, setSelectedFuel] = useState('');
@@ -294,20 +290,18 @@ export const Hero = ({ onSearch }: HeroProps) => {
                 transition={{ type: "tween", ease: "linear", duration: 0.2 }}
             >
                 <video
-                    key={settings.heroVideo}
                     autoPlay
                     loop
                     muted
                     playsInline
                     poster="/hero.png"
                 >
-                    <source src={settings.heroVideo} type="video/mp4" />
+                    <source src="/luxury-car-bg.mp4" type="video/mp4" />
                 </video>
                 <div className="hero-overlay" />
             </motion.div>
 
             <div className="container hero-content">
-                {/* Panels Animation Stage */}
                 <div className={`hero-panels-container ${isMobile ? 'mobile-sequential' : ''}`}>
                     {isMobile ? (
                         <AnimatePresence mode="wait">
@@ -364,7 +358,26 @@ export const Hero = ({ onSearch }: HeroProps) => {
                     )}
                 </div>
 
-                {/* Search widget with category tabs */}
+                {animationStage === 'complete' && (
+                    <motion.div
+                        className="hero-main-text"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                    >
+                        <h1 className="hero-title">
+                            {language === 'it'
+                                ? (settings.heroTitle || 'Tonaydin Luxury Cars')
+                                : (settings.heroTitleEn || 'Tonaydin Luxury Cars')}
+                        </h1>
+                        <p className="hero-desc">
+                            {language === 'it'
+                                ? (settings.heroSubtitle || 'Il massimo del lusso nel noleggio auto e vendita.')
+                                : (settings.heroSubtitleEn || 'The pinnacle of luxury in car rental and sales.')}
+                        </p>
+                    </motion.div>
+                )}
+
                 <motion.div
                     className="hero-search-widget"
                     initial={{ opacity: 0, y: 50 }}
@@ -504,7 +517,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                                     </div>
                                                     <motion.button
                                                         type="submit"
-                                                        className="hero-request-submit"
+                                                        class="hero-request-submit"
                                                         whileHover={{ scale: 1.02 }}
                                                         whileTap={{ scale: 0.98 }}
                                                         disabled={requestLoading}
@@ -581,33 +594,6 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                                             onChange={(e) => setPriceMax(e.target.value)}
                                                         />
                                                     </label>
-                                                    {activeTab !== 'rental' && (
-                                                        <>
-                                                            <label className="hero-search-field hero-search-field-half">
-                                                                <span className="field-label"><Calendar size={14} /> {t.searchYearFrom}</span>
-                                                                <input type="number" placeholder="2015" min="1990" max="2026" />
-                                                            </label>
-                                                            <label className="hero-search-field hero-search-field-half">
-                                                                <span className="field-label"><Gauge size={14} /> {t.searchMileageMax}</span>
-                                                                <input type="number" placeholder="150.000 km" />
-                                                            </label>
-                                                        </>
-                                                    )}
-                                                    {activeTab === 'rental' && (
-                                                        <>
-                                                            <label className="hero-search-field hero-search-field-half">
-                                                                <span className="field-label"><Calendar size={14} /> {t.pickupDate}</span>
-                                                                <input type="date" />
-                                                            </label>
-                                                            <label className="hero-search-field hero-search-field-half">
-                                                                <span className="field-label"><Calendar size={14} /> {t.returnDate}</span>
-                                                                <input type="date" />
-                                                            </label>
-                                                        </>
-                                                    )}
-                                                </div>
-
-                                                <div className="hero-search-actions">
                                                     <motion.button
                                                         className="hero-search-btn"
                                                         whileHover={{ scale: 1.03, boxShadow: "0 8px 30px rgba(212,175,55,0.4)" }}
