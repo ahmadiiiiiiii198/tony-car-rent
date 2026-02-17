@@ -298,7 +298,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
                     playsInline
                     poster="/hero.png"
                 >
-                    <source src="/luxury-car-bg.mp4" type="video/mp4" />
+                    <source src="/bmw.mp4" type="video/mp4" />
                 </video>
                 <div className="hero-overlay" />
             </motion.div>
