@@ -7,6 +7,7 @@ import { Services } from './components/Services';
 import { Footer } from './components/Footer';
 import { AdminPanel } from './components/AdminPanel';
 import { LanguageProvider } from './context/LanguageContext';
+import { SettingsProvider } from './context/SettingsContext';
 import { emptySearchParams, type SearchParams } from './types/SearchParams';
 
 function MainSite() {
@@ -28,10 +29,12 @@ function MainSite() {
 function App() {
   return (
     <LanguageProvider>
-      <Routes>
-        <Route path="/" element={<MainSite />} />
-        <Route path="/admin" element={<AdminPanel />} />
-      </Routes>
+      <SettingsProvider>
+        <Routes>
+          <Route path="/" element={<MainSite />} />
+          <Route path="/admin" element={<AdminPanel />} />
+        </Routes>
+      </SettingsProvider>
     </LanguageProvider>
   );
 }

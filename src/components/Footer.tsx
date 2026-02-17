@@ -1,8 +1,10 @@
-import { Instagram, Facebook, Twitter, Mail, Phone, MapPin } from 'lucide-react';
+import { Instagram, Facebook, Mail, Phone, MapPin, MessageCircle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useSettings } from '../context/SettingsContext';
 
 export const Footer = () => {
     const { t } = useLanguage();
+    const { settings } = useSettings();
 
     return (
         <footer className="footer" id="contact">
@@ -14,14 +16,14 @@ export const Footer = () => {
                             {t.footerDesc}
                         </p>
                         <div className="social-links">
-                            <a href="#" className="social-link">
+                            <a href={`https://instagram.com/${settings.instagram}`} target="_blank" rel="noopener noreferrer" className="social-link">
                                 <Instagram size={20} />
+                            </a>
+                            <a href={`https://wa.me/${settings.whatsapp.replace('+', '')}`} target="_blank" rel="noopener noreferrer" className="social-link">
+                                <MessageCircle size={20} />
                             </a>
                             <a href="#" className="social-link">
                                 <Facebook size={20} />
-                            </a>
-                            <a href="#" className="social-link">
-                                <Twitter size={20} />
                             </a>
                         </div>
                     </div>
@@ -41,18 +43,18 @@ export const Footer = () => {
                         <ul className="footer-links">
                             <li className="contact-item">
                                 <MapPin size={18} className="contact-icon" />
-                                <span>Torino, Italia</span>
+                                <span>{settings.address}</span>
                             </li>
                             <li className="contact-item">
                                 <Phone size={18} className="contact-icon" />
                                 <div>
-                                    <p>+39 351 099 5065</p>
+                                    <p>{settings.phone}</p>
                                     <p style={{ fontSize: '0.8rem', color: '#666' }}>Lun-Sab, 9:00 - 19:00</p>
                                 </div>
                             </li>
                             <li className="contact-item">
                                 <Mail size={18} className="contact-icon" />
-                                <span>info@tonaydinluxurycars.it</span>
+                                <span>{settings.email}</span>
                             </li>
                         </ul>
                     </div>

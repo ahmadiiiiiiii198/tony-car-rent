@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Key, Car, Search, Truck, MapPin, Fuel, Calendar, Gauge, Send, User, Mail, Phone, MessageSquare, CheckCircle, Loader2, Shield, Clock, Award } from 'lucide-react';
+import {
+    Key, Car, Search, Truck, MapPin, Fuel, Calendar, Gauge,
+    Send, User, Mail, Phone, MessageSquare, CheckCircle,
+    Loader2, Shield, Clock, Award, RefreshCw
+} from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useSettings } from '../context/SettingsContext';
 import { supabase } from '../lib/supabase';
 
 type TabKey = 'usedCars' | 'rental' | 'commercial' | 'onTheRoad';
@@ -14,6 +19,7 @@ interface HeroProps {
 
 export const Hero = ({ onSearch }: HeroProps) => {
     const { t, language } = useLanguage();
+    const { settings } = useSettings();
     const [activeTab, setActiveTab] = useState<TabKey | null>(null);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [dbBrands, setDbBrands] = useState<string[]>([]);
@@ -287,13 +293,14 @@ export const Hero = ({ onSearch }: HeroProps) => {
                 transition={{ type: "tween", ease: "linear", duration: 0.2 }}
             >
                 <video
+                    key={settings.heroVideo}
                     autoPlay
                     loop
                     muted
                     playsInline
                     poster="/hero.png"
                 >
-                    <source src="/bmw.mp4" type="video/mp4" />
+                    <source src={settings.heroVideo} type="video/mp4" />
                 </video>
                 <div className="hero-overlay" />
             </motion.div>

@@ -8,6 +8,7 @@ import {
     Plus, Edit, Save, X, Upload, LayoutGrid, Settings,
     Fuel, Users, Gauge
 } from 'lucide-react';
+import { useSettings } from '../context/SettingsContext';
 
 interface Order {
     id: string;
@@ -82,6 +83,10 @@ export const AdminPanel = () => {
     const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
     const [orderStats, setOrderStats] = useState({ total: 0, pending: 0, confirmed: 0, rejected: 0, completed: 0 });
 
+    const { settings: currentSettings, refreshSettings } = useSettings();
+    const [siteSettings, setSiteSettings] = useState(currentSettings);
+    const [savingSettings, setSavingSettings] = useState(false);
+
     // Fleet State
     const [cars, setCars] = useState<Car[]>([]);
     const [loadingCars, setLoadingCars] = useState(false);
@@ -100,10 +105,12 @@ export const AdminPanel = () => {
         if (authenticated) {
             fetchOrders();
             fetchCars();
+            // Sync local state with global settings on auth
+            setSiteSettings(currentSettings);
             const interval = setInterval(fetchOrders, 30000);
             return () => clearInterval(interval);
         }
-    }, [authenticated]);
+    }, [authenticated, currentSettings]);
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -509,6 +516,84 @@ export const AdminPanel = () => {
                                     </div>
                                 </div>
                             ))}
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'settings' && (
+                    <div className="admin-content-section">
+                        <div className="section-header">
+                            <div>
+                                <h2>Impostazioni Sito</h2>
+                                <p>Gestisci le informazioni di contatto e i contenuti globali del sito.</p>
+                            </div>
+                            <button
+                                className="admin-add-btn"
+                                onClick={async () => {
+                                    setSavingSettings(true);
+                                    const { error } = await supabase
+                                        .from('site_settings')
+                                        .update({ data: siteSettings, updated_at: new Date().toISOString() })
+                                        .eq('id', 'main');
+
+                                    if (!error) {
+                                        await refreshSettings();
+                                        alert('Impostazioni salvate con successo!');
+                                    } else {
+                                        alert('Errore nel salvataggio: ' + error.message);
+                                    }
+                                    setSavingSettings(false);
+                                }}
+                                disabled={savingSettings}
+                            >
+                                {savingSettings ? <RefreshCw className="spin" size={18} /> : <Save size={18} />}
+                                Salva Modifiche
+                            </button>
+                        </div>
+
+                        <div className="settings-grid">
+                            <div className="settings-card">
+                                <h3><Phone size={20} /> Contatti & Social</h3>
+                                <div className="form-group">
+                                    <label>Telefono</label>
+                                    <input value={siteSettings.phone} onChange={e => setSiteSettings({ ...siteSettings, phone: e.target.value })} />
+                                </div>
+                                <div className="form-group">
+                                    <label>Email</label>
+                                    <input value={siteSettings.email} onChange={e => setSiteSettings({ ...siteSettings, email: e.target.value })} />
+                                </div>
+                                <div className="form-group">
+                                    <label>Indirizzo</label>
+                                    <input value={siteSettings.address} onChange={e => setSiteSettings({ ...siteSettings, address: e.target.value })} />
+                                </div>
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label>Instagram User</label>
+                                        <input value={siteSettings.instagram} onChange={e => setSiteSettings({ ...siteSettings, instagram: e.target.value })} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>WhatsApp (con prefisso)</label>
+                                        <input value={siteSettings.whatsapp} onChange={e => setSiteSettings({ ...siteSettings, whatsapp: e.target.value })} />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="settings-card">
+                                <h3><CarIcon size={20} /> Sezione Hero</h3>
+                                <div className="form-group">
+                                    <label>Video URL (Sfondo)</label>
+                                    <input value={siteSettings.heroVideo} onChange={e => setSiteSettings({ ...siteSettings, heroVideo: e.target.value })} />
+                                    <small style={{ color: '#888', marginTop: '4px' }}>Inserisci un link diretto a un file .mp4</small>
+                                </div>
+                                <div className="form-group">
+                                    <label>Titolo Hero</label>
+                                    <input value={siteSettings.heroTitle} onChange={e => setSiteSettings({ ...siteSettings, heroTitle: e.target.value })} />
+                                </div>
+                                <div className="form-group">
+                                    <label>Sottotitolo Hero</label>
+                                    <input value={siteSettings.heroSubtitle} onChange={e => setSiteSettings({ ...siteSettings, heroSubtitle: e.target.value })} />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}
