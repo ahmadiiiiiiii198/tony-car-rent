@@ -77,7 +77,7 @@ export const AdminPanel = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [loadingOrders, setLoadingOrders] = useState(false);
     const [filterStatus, setFilterStatus] = useState<string>('all');
-    const [filterType, setFilterType] = useState<string>('all');
+    const [filterType] = useState<string>('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
     const [orderStats, setOrderStats] = useState({ total: 0, pending: 0, confirmed: 0, rejected: 0, completed: 0 });
