@@ -21,8 +21,9 @@ interface Translations {
     // Hero Category Tabs
     tabUsedCars: string;
     tabRental: string;
-    tabCommercial: string;
-    tabOnTheRoad: string;
+    tabPerizia: string;
+    tabNovita: string;
+    tabAssistance: string;
 
     // Search Widget
     searchBrand: string;
@@ -48,8 +49,8 @@ interface Translations {
     // Category Descriptions
     usedCarsDesc: string;
     rentalDesc: string;
-    commercialDesc: string;
-    onTheRoadDesc: string;
+    periziaDesc: string;
+    assistanceDesc: string;
 
     // Commercial Subtypes
     commercialTrucks: string;
@@ -159,10 +160,11 @@ const translations: Record<Language, Translations> = {
         selectCategoryToStart: 'Seleziona una categoria per iniziare la ricerca',
 
         // Hero Category Tabs
-        tabUsedCars: 'Vendita Auto Usate',
-        tabRental: 'Noleggio Auto',
-        tabCommercial: 'Veicoli Commerciali',
-        tabOnTheRoad: 'Su Strada',
+        tabUsedCars: 'Vendita',
+        tabRental: 'Noleggio',
+        tabPerizia: 'Perizia',
+        tabNovita: 'Novità',
+        tabAssistance: 'Assistenza Stradale',
 
         // Search Widget
         searchBrand: 'Marca',
@@ -186,10 +188,10 @@ const translations: Record<Language, Translations> = {
         fuelCNG: 'Metano',
 
         // Category Descriptions
-        usedCarsDesc: 'Trova la tua prossima auto tra migliaia di veicoli usati certificati e garantiti.',
-        rentalDesc: 'Noleggio a breve e lungo termine. Soluzioni flessibili per ogni esigenza.',
-        commercialDesc: 'Camion, furgoni, pulmini e minivan per la tua attività professionale.',
-        onTheRoadDesc: 'Veicoli pronti per la circolazione, revisionati e con garanzia stradale.',
+        usedCarsDesc: 'Scopri le nostre migliori opportunità di acquisto per veicoli certificati.',
+        rentalDesc: 'Scegli l\'auto perfetta per il tuo prossimo viaggio o evento speciale.',
+        periziaDesc: 'Valutazione professionale del tuo veicolo per vendita o permuta.',
+        assistanceDesc: 'Supporto professionale 24/7 per ogni emergenza su strada.',
 
         // Commercial Subtypes
         commercialTrucks: 'Camion',
@@ -297,10 +299,11 @@ const translations: Record<Language, Translations> = {
         selectCategoryToStart: 'Select a category to start your search',
 
         // Hero Category Tabs
-        tabUsedCars: 'Used Cars',
-        tabRental: 'Car Rental',
-        tabCommercial: 'Commercial Vehicles',
-        tabOnTheRoad: 'On the Road',
+        tabUsedCars: 'Sales',
+        tabRental: 'Rental',
+        tabPerizia: 'Valuation',
+        tabNovita: 'New',
+        tabAssistance: 'Roadside Assistance',
 
         // Search Widget
         searchBrand: 'Brand',
@@ -324,10 +327,10 @@ const translations: Record<Language, Translations> = {
         fuelCNG: 'CNG',
 
         // Category Descriptions
-        usedCarsDesc: 'Find your next car among thousands of certified and guaranteed used vehicles.',
-        rentalDesc: 'Short and long-term rental. Flexible solutions for every need.',
-        commercialDesc: 'Trucks, vans, minibuses and minivans for your professional business.',
-        onTheRoadDesc: 'Road-ready vehicles, inspected and with roadside warranty.',
+        usedCarsDesc: 'Explore our best luxury car purchase opportunities.',
+        rentalDesc: 'Choose the perfect car for your next trip or special event.',
+        periziaDesc: 'Professional valuation of your vehicle for sale or trade-in.',
+        assistanceDesc: 'Professional 24/7 support for any roadside emergency.',
 
         // Commercial Subtypes
         commercialTrucks: 'Trucks',

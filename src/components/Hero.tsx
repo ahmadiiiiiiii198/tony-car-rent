@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Key, Car, Search, Truck, MapPin, Fuel, Calendar, Gauge,
+    Key, Car, Search, MapPin, Fuel, Calendar, Gauge,
     Send, User, Mail, Phone, MessageSquare, CheckCircle,
-    Loader2, Shield, Clock, Award, RefreshCw
+    Loader2, Shield, Clock, Award
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useSettings } from '../context/SettingsContext';
 import { supabase } from '../lib/supabase';
 
-type TabKey = 'usedCars' | 'rental' | 'commercial' | 'onTheRoad';
+type TabKey = 'sale' | 'rental' | 'perizia' | 'assistance';
 
 import type { SearchParams } from '../types/SearchParams';
 
@@ -166,14 +166,9 @@ export const Hero = ({ onSearch }: HeroProps) => {
             category: ''
         };
 
-        if (newTab === 'usedCars') params.listingType = 'sale';
+        if (newTab === 'sale') params.listingType = 'sale';
         else if (newTab === 'rental') params.listingType = 'rental';
-        else if (newTab === 'commercial') {
-            params.category = 'Van';
-            params.listingType = 'all';
-        } else if (newTab === 'onTheRoad') {
-            params.listingType = 'both';
-        }
+        else if (newTab === 'assistance') params.listingType = 'both';
 
         onSearch(params);
 
@@ -188,10 +183,22 @@ export const Hero = ({ onSearch }: HeroProps) => {
         e.preventDefault();
         if (!requestName || !requestEmail || !requestPhone) return;
         setRequestLoading(true);
+
+        let requestType = 'Richiesta Generale';
+        let brandLabel = 'Generale';
+
+        if (activeTab === 'perizia') {
+            requestType = 'Richiesta Perizia / Valutazione';
+            brandLabel = 'Perizia';
+        } else if (activeTab === 'assistance') {
+            requestType = 'Richiesta Assistenza Stradale';
+            brandLabel = 'Assistenza';
+        }
+
         const { error } = await supabase.from('orders').insert({
             car_id: null,
-            car_name: 'Richiesta Generale',
-            car_brand: 'Su Strada',
+            car_name: requestType,
+            car_brand: brandLabel,
             customer_name: requestName,
             customer_email: requestEmail,
             customer_phone: requestPhone,
@@ -207,14 +214,8 @@ export const Hero = ({ onSearch }: HeroProps) => {
         let listingType: 'all' | 'sale' | 'rental' | 'both' = 'all';
         let category = '';
 
-        if (activeTab === 'usedCars') listingType = 'sale';
+        if (activeTab === 'sale') listingType = 'sale';
         else if (activeTab === 'rental') listingType = 'rental';
-        else if (activeTab === 'commercial') {
-            category = 'Van';
-            listingType = 'all';
-        } else if (activeTab === 'onTheRoad') {
-            listingType = 'both';
-        }
 
         const fuelMap: Record<string, string> = {
             'petrol': 'Benzina',
@@ -244,11 +245,11 @@ export const Hero = ({ onSearch }: HeroProps) => {
         ? Array.from(new Set(allCars.filter(c => c.brand === selectedBrand).map(c => c.name))).sort()
         : [];
 
-    const tabs: { key: TabKey; label: string; icon: React.ReactNode; description: string }[] = [
-        { key: 'usedCars', label: t.tabUsedCars, icon: <Car size={18} />, description: t.usedCarsDesc },
+    const tabs: { key: TabKey; label: string; icon: React.ReactNode; description: string; badge?: string }[] = [
+        { key: 'sale', label: t.tabUsedCars, icon: <Car size={18} />, description: t.usedCarsDesc },
         { key: 'rental', label: t.tabRental, icon: <Key size={18} />, description: t.rentalDesc },
-        { key: 'commercial', label: t.tabCommercial, icon: <Truck size={18} />, description: t.commercialDesc },
-        { key: 'onTheRoad', label: t.tabOnTheRoad, icon: <MapPin size={18} />, description: t.onTheRoadDesc },
+        { key: 'perizia', label: t.tabPerizia, icon: <Award size={18} />, description: t.periziaDesc, badge: t.tabNovita },
+        { key: 'assistance', label: t.tabAssistance, icon: <Phone size={18} />, description: t.assistanceDesc },
     ];
 
     const currentTab = tabs.find(tab => tab.key === activeTab);
@@ -396,6 +397,9 @@ export const Hero = ({ onSearch }: HeroProps) => {
                             >
                                 <span className="hero-tab-icon">{tab.icon}</span>
                                 <span className="hero-tab-label">{tab.label}</span>
+                                {tab.badge && (
+                                    <span className="hero-tab-badge">{tab.badge}</span>
+                                )}
                                 {activeTab === tab.key && (
                                     <motion.div
                                         className="hero-tab-indicator"
@@ -433,7 +437,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                     <div className="hero-panel-inner">
                                         <p className="hero-panel-desc">{currentTab?.description}</p>
 
-                                        {activeTab === 'onTheRoad' ? (
+                                        {(activeTab === 'perizia' || activeTab === 'assistance') ? (
                                             requestSuccess ? (
                                                 <div className="hero-request-success">
                                                     <CheckCircle size={48} />
@@ -512,20 +516,6 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                             )
                                         ) : (
                                             <div className="hero-search-form">
-                                                {activeTab === 'commercial' && (
-                                                    <div className="hero-commercial-badges">
-                                                        {[
-                                                            { label: 'Vito', active: true },
-                                                            { label: 'Sprinter', active: false },
-                                                            { label: 'V-Class', active: false },
-                                                            { label: 'Crafter', active: false }
-                                                        ].map((badge, i) => (
-                                                            <span key={i} className={`commercial-badge ${badge.active ? 'active' : ''}`}>
-                                                                {badge.label}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                )}
 
                                                 <div className="hero-search-row">
                                                     <label className="hero-search-field">
