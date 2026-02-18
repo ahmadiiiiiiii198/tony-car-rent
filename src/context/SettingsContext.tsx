@@ -2,6 +2,27 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
+export interface ColorOption {
+    name: string;
+    hex: string;
+}
+
+export interface ConditionOption {
+    value: string;
+    label: string;
+}
+
+export interface SearchFormConfig {
+    exteriorColors: ColorOption[];
+    interiorColors: ColorOption[];
+    materials: string[];
+    features: string[];
+    conditions: ConditionOption[];
+    doorOptions: string[];
+    emissionClasses: string[];
+    ecoBadgeLevels: string[];
+}
+
 interface SiteSettings {
     phone: string;
     email: string;
@@ -15,6 +36,9 @@ interface SiteSettings {
     heroSubtitleEn: string;
     periziaPlans?: PeriziaPlan[];
     periziaFeatures?: PeriziaFeature[];
+    searchFormConfig?: SearchFormConfig;
+    assistancePricePerKm?: number;
+    assistancePhone?: string;
 }
 
 export interface PeriziaPlan {
@@ -29,6 +53,73 @@ export interface PeriziaFeature {
     id: string;
     label: string;
 }
+
+const defaultSearchFormConfig: SearchFormConfig = {
+    exteriorColors: [
+        { name: 'Beige', hex: '#D2B48C' },
+        { name: 'Blu/Azzurro', hex: '#1E3A8A' },
+        { name: 'Marrone', hex: '#8B4513' },
+        { name: 'Bronzo', hex: '#CD7F32' },
+        { name: 'Giallo', hex: '#EAB308' },
+        { name: 'Grigio', hex: '#9CA3AF' },
+        { name: 'Verde', hex: '#16A34A' },
+        { name: 'Rosso', hex: '#DC2626' },
+        { name: 'Nero', hex: '#111111' },
+        { name: 'Argento', hex: '#C0C0C0' },
+        { name: 'Lilla', hex: '#9333EA' },
+        { name: 'Bianco', hex: '#F5F5F5' },
+        { name: 'Arancione', hex: '#EA580C' },
+        { name: 'Oro', hex: '#D4AF37' },
+    ],
+    interiorColors: [
+        { name: 'Beige', hex: '#D2B48C' },
+        { name: 'Nero', hex: '#111111' },
+        { name: 'Grigio', hex: '#9CA3AF' },
+        { name: 'Marrone', hex: '#8B4513' },
+        { name: 'Altro', hex: '#6B7280' },
+        { name: 'Blu/Azzurro', hex: '#1E3A8A' },
+        { name: 'Rosso', hex: '#DC2626' },
+        { name: 'Verde', hex: '#16A34A' },
+        { name: 'Giallo', hex: '#EAB308' },
+        { name: 'Arancione', hex: '#EA580C' },
+        { name: 'Bianco', hex: '#F5F5F5' },
+    ],
+    materials: [
+        'Alcantara',
+        'Stoffa',
+        'Pelle totale',
+        'Altro',
+        'Pelle parziale',
+        'Pelle scamosciata',
+    ],
+    features: [
+        'ABS',
+        'Climatizzatore',
+        'Climatizzatore automatico',
+        'Cruise Control',
+        'Adaptive Cruise Control',
+        'Fari LED',
+        'Fari Xenon',
+        'Navigatore',
+        'Sensori di parcheggio',
+        'Telecamera posteriore',
+        'Sedili riscaldati',
+        'Trazione integrale',
+        'Volante multifunzione',
+        'Tettuccio apribile',
+        'Interni in pelle',
+    ],
+    conditions: [
+        { value: 'new', label: 'Nuovo' },
+        { value: 'used', label: 'Usato' },
+        { value: 'classic', label: 'Epoca' },
+        { value: 'demo', label: 'Dimostrativo' },
+        { value: 'km0', label: 'KM0' },
+    ],
+    doorOptions: ['2/3', '4/5', '6/7'],
+    emissionClasses: ['Euro 1', 'Euro 2', 'Euro 3', 'Euro 4', 'Euro 5', 'Euro 6'],
+    ecoBadgeLevels: ['2', '3', '4', '5'],
+};
 
 const defaultSettings: SiteSettings = {
     phone: '+39 329 116 3843',
@@ -64,7 +155,10 @@ const defaultSettings: SiteSettings = {
         { id: '1', name: 'Base', price: '99', features: ['motore', 'meccanica', 'carrozzeria'] },
         { id: '2', name: 'Premium', price: '199', features: ['motore', 'meccanica', 'carrozzeria', 'obd', 'elettronica', 'km'], highlight: true },
         { id: '3', name: 'Full', price: '299', features: ['motore', 'meccanica', 'carrozzeria', 'obd', 'elettronica', 'km', 'sinistri', 'freni', 'sospensioni', 'assistenza', 'prova'] }
-    ]
+    ],
+    searchFormConfig: defaultSearchFormConfig,
+    assistancePricePerKm: 2.5,
+    assistancePhone: '800 123 456'
 };
 
 interface SettingsContextType {
@@ -88,7 +182,13 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                 .single();
 
             if (data && !error) {
-                setSettings({ ...defaultSettings, ...data.data });
+                const merged = { ...defaultSettings, ...data.data };
+                // Ensure searchFormConfig is deeply merged with defaults
+                merged.searchFormConfig = {
+                    ...defaultSearchFormConfig,
+                    ...(data.data.searchFormConfig || {})
+                };
+                setSettings(merged);
             }
         } catch (err) {
             console.error('Error fetching settings:', err);

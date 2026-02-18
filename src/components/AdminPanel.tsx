@@ -7,9 +7,10 @@ import {
     ChevronDown, ChevronUp, MessageSquare, Trash2, ArrowLeft,
     Plus, Edit, Save, X, Upload, LayoutGrid, Settings as SettingsIcon,
     Fuel, Users, Gauge,
-    Award
+    Award, Palette, Wand2, Shield
 } from 'lucide-react';
-import { useSettings } from '../context/SettingsContext';
+import { useSettings, type SearchFormConfig, type ColorOption, type ConditionOption } from '../context/SettingsContext';
+import { CarImageEditor } from './CarImageEditor';
 
 interface Order {
     id: string;
@@ -49,6 +50,272 @@ interface Car {
 
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'tonaydin2026';
 
+// ====================================================================
+// Search Form Configuration Editor Component
+// ====================================================================
+
+interface SearchFormEditorProps {
+    siteSettings: any;
+    setSiteSettings: (s: any) => void;
+    savingSettings: boolean;
+    setSavingSettings: (b: boolean) => void;
+    refreshSettings: () => Promise<void>;
+}
+
+const SearchFormEditor = ({ siteSettings, setSiteSettings, savingSettings, setSavingSettings, refreshSettings }: SearchFormEditorProps) => {
+    const config: SearchFormConfig = siteSettings.searchFormConfig || {
+        exteriorColors: [], interiorColors: [], materials: [], features: [],
+        conditions: [], doorOptions: [], emissionClasses: [], ecoBadgeLevels: []
+    };
+
+    const updateConfig = (patch: Partial<SearchFormConfig>) => {
+        setSiteSettings({
+            ...siteSettings,
+            searchFormConfig: { ...config, ...patch }
+        });
+    };
+
+    const handleSave = async () => {
+        setSavingSettings(true);
+        const { error } = await supabase
+            .from('site_settings')
+            .update({ data: siteSettings, updated_at: new Date().toISOString() })
+            .eq('id', 'main');
+
+        if (!error) {
+            await refreshSettings();
+            alert('Configurazione ricerca salvata con successo!');
+        } else {
+            alert('Errore nel salvataggio: ' + error.message);
+        }
+        setSavingSettings(false);
+    };
+
+    // --- Color list editor helper ---
+    const ColorListEditor = ({ label, colors, onChange }: { label: string; colors: ColorOption[]; onChange: (c: ColorOption[]) => void }) => {
+        const [newName, setNewName] = useState('');
+        const [newHex, setNewHex] = useState('#888888');
+
+        return (
+            <div className="search-config-card">
+                <h4><Palette size={18} /> {label}</h4>
+                <div className="search-config-items">
+                    {colors.map((c, i) => (
+                        <div key={i} className="search-config-item color-item">
+                            <input
+                                type="color"
+                                value={c.hex}
+                                onChange={e => {
+                                    const updated = [...colors];
+                                    updated[i] = { ...c, hex: e.target.value };
+                                    onChange(updated);
+                                }}
+                                className="color-picker-input"
+                            />
+                            <input
+                                type="text"
+                                value={c.name}
+                                onChange={e => {
+                                    const updated = [...colors];
+                                    updated[i] = { ...c, name: e.target.value };
+                                    onChange(updated);
+                                }}
+                                className="admin-input-sm"
+                            />
+                            <span className="color-hex-label">{c.hex}</span>
+                            <button type="button" className="remove-item-btn" onClick={() => onChange(colors.filter((_, idx) => idx !== i))}>
+                                <X size={14} />
+                            </button>
+                        </div>
+                    ))}
+                </div>
+                <div className="add-item-row">
+                    <input type="color" value={newHex} onChange={e => setNewHex(e.target.value)} className="color-picker-input" />
+                    <input type="text" placeholder="Nome colore" value={newName} onChange={e => setNewName(e.target.value)} className="admin-input-sm" />
+                    <button type="button" className="add-item-btn" onClick={() => {
+                        if (newName.trim()) {
+                            onChange([...colors, { name: newName.trim(), hex: newHex }]);
+                            setNewName('');
+                            setNewHex('#888888');
+                        }
+                    }}>
+                        <Plus size={14} /> Aggiungi
+                    </button>
+                </div>
+            </div>
+        );
+    };
+
+    // --- Simple string list editor ---
+    const StringListEditor = ({ label, icon, items, onChange }: { label: string; icon: React.ReactNode; items: string[]; onChange: (items: string[]) => void }) => {
+        const [newItem, setNewItem] = useState('');
+
+        return (
+            <div className="search-config-card">
+                <h4>{icon} {label}</h4>
+                <div className="search-config-items">
+                    {items.map((item, i) => (
+                        <div key={i} className="search-config-item">
+                            <input
+                                type="text"
+                                value={item}
+                                onChange={e => {
+                                    const updated = [...items];
+                                    updated[i] = e.target.value;
+                                    onChange(updated);
+                                }}
+                                className="admin-input-sm"
+                            />
+                            <button type="button" className="remove-item-btn" onClick={() => onChange(items.filter((_, idx) => idx !== i))}>
+                                <X size={14} />
+                            </button>
+                        </div>
+                    ))}
+                </div>
+                <div className="add-item-row">
+                    <input type="text" placeholder={`Nuovo ${label.toLowerCase()}`} value={newItem} onChange={e => setNewItem(e.target.value)} className="admin-input-sm"
+                        onKeyDown={e => {
+                            if (e.key === 'Enter' && newItem.trim()) {
+                                e.preventDefault();
+                                onChange([...items, newItem.trim()]);
+                                setNewItem('');
+                            }
+                        }}
+                    />
+                    <button type="button" className="add-item-btn" onClick={() => {
+                        if (newItem.trim()) {
+                            onChange([...items, newItem.trim()]);
+                            setNewItem('');
+                        }
+                    }}>
+                        <Plus size={14} /> Aggiungi
+                    </button>
+                </div>
+            </div>
+        );
+    };
+
+    // --- Condition list editor ---
+    const ConditionListEditor = ({ conditions, onChange }: { conditions: ConditionOption[]; onChange: (c: ConditionOption[]) => void }) => {
+        const [newValue, setNewValue] = useState('');
+        const [newLabel, setNewLabel] = useState('');
+
+        return (
+            <div className="search-config-card">
+                <h4><Award size={18} /> Condizioni Veicolo</h4>
+                <div className="search-config-items">
+                    {conditions.map((c, i) => (
+                        <div key={i} className="search-config-item">
+                            <input
+                                type="text"
+                                value={c.value}
+                                onChange={e => {
+                                    const updated = [...conditions];
+                                    updated[i] = { ...c, value: e.target.value };
+                                    onChange(updated);
+                                }}
+                                className="admin-input-sm"
+                                placeholder="Valore (es: new)"
+                            />
+                            <input
+                                type="text"
+                                value={c.label}
+                                onChange={e => {
+                                    const updated = [...conditions];
+                                    updated[i] = { ...c, label: e.target.value };
+                                    onChange(updated);
+                                }}
+                                className="admin-input-sm"
+                                placeholder="Etichetta (es: Nuovo)"
+                            />
+                            <button type="button" className="remove-item-btn" onClick={() => onChange(conditions.filter((_, idx) => idx !== i))}>
+                                <X size={14} />
+                            </button>
+                        </div>
+                    ))}
+                </div>
+                <div className="add-item-row">
+                    <input type="text" placeholder="Valore" value={newValue} onChange={e => setNewValue(e.target.value)} className="admin-input-sm" />
+                    <input type="text" placeholder="Etichetta" value={newLabel} onChange={e => setNewLabel(e.target.value)} className="admin-input-sm" />
+                    <button type="button" className="add-item-btn" onClick={() => {
+                        if (newValue.trim() && newLabel.trim()) {
+                            onChange([...conditions, { value: newValue.trim(), label: newLabel.trim() }]);
+                            setNewValue('');
+                            setNewLabel('');
+                        }
+                    }}>
+                        <Plus size={14} /> Aggiungi
+                    </button>
+                </div>
+            </div>
+        );
+    };
+
+    return (
+        <div className="admin-content-section">
+            <div className="section-header">
+                <div>
+                    <h2>Configurazione Ricerca</h2>
+                    <p>Gestisci tutte le opzioni del modulo di ricerca avanzata.</p>
+                </div>
+                <button className="admin-add-btn" onClick={handleSave} disabled={savingSettings}>
+                    {savingSettings ? <RefreshCw className="spin" size={18} /> : <Save size={18} />}
+                    Salva Modifiche
+                </button>
+            </div>
+
+            <div className="search-config-grid">
+                <ColorListEditor
+                    label="Colori Esterni"
+                    colors={config.exteriorColors}
+                    onChange={c => updateConfig({ exteriorColors: c })}
+                />
+                <ColorListEditor
+                    label="Colori Interni"
+                    colors={config.interiorColors}
+                    onChange={c => updateConfig({ interiorColors: c })}
+                />
+                <StringListEditor
+                    label="Materiali Interni"
+                    icon={<CarIcon size={18} />}
+                    items={config.materials}
+                    onChange={items => updateConfig({ materials: items })}
+                />
+                <StringListEditor
+                    label="Dotazioni / Features"
+                    icon={<CheckCircle size={18} />}
+                    items={config.features}
+                    onChange={items => updateConfig({ features: items })}
+                />
+                <ConditionListEditor
+                    conditions={config.conditions}
+                    onChange={c => updateConfig({ conditions: c })}
+                />
+                <StringListEditor
+                    label="Opzioni Porte"
+                    icon={<CarIcon size={18} />}
+                    items={config.doorOptions}
+                    onChange={items => updateConfig({ doorOptions: items })}
+                />
+                <StringListEditor
+                    label="Classi Emissioni"
+                    icon={<Fuel size={18} />}
+                    items={config.emissionClasses}
+                    onChange={items => updateConfig({ emissionClasses: items })}
+                />
+                <StringListEditor
+                    label="Bollini Ambientali"
+                    icon={<Award size={18} />}
+                    items={config.ecoBadgeLevels}
+                    onChange={items => updateConfig({ ecoBadgeLevels: items })}
+                />
+            </div>
+        </div>
+    );
+};
+
+// ====================================================================
+
 const statusColors: Record<string, string> = {
     pending: '#f59e0b',
     confirmed: '#22c55e',
@@ -73,7 +340,7 @@ export const AdminPanel = () => {
     const [authenticated, setAuthenticated] = useState(false);
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
-    const [activeTab, setActiveTab] = useState<'orders' | 'fleet' | 'settings'>('orders');
+    const [activeTab, setActiveTab] = useState<'orders' | 'fleet' | 'settings' | 'search'>('orders');
 
     // Orders State
     const [orders, setOrders] = useState<Order[]>([]);
@@ -96,6 +363,12 @@ export const AdminPanel = () => {
     const [uploadingImage, setUploadingImage] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const multiFileInputRef = useRef<HTMLInputElement>(null);
+
+    // Image Editor State
+    const [imageEditorFile, setImageEditorFile] = useState<File | null>(null);
+    const [imageEditorIsMain, setImageEditorIsMain] = useState(true);
+    const [pendingFile, setPendingFile] = useState<File | null>(null);
+    const [pendingIsMain, setPendingIsMain] = useState(true);
 
     useEffect(() => {
         const saved = sessionStorage.getItem('admin_auth');
@@ -221,7 +494,18 @@ export const AdminPanel = () => {
     const handleUploadClick = () => fileInputRef.current?.click();
     const handleMultiUploadClick = () => multiFileInputRef.current?.click();
 
-    const uploadImage = async (file: File, isMain: boolean = true) => {
+    const openImageEditor = (file: File, isMain: boolean) => {
+        setImageEditorFile(file);
+        setImageEditorIsMain(isMain);
+        setPendingFile(null);
+    };
+
+    const handleFileSelected = (file: File, isMain: boolean) => {
+        setPendingFile(file);
+        setPendingIsMain(isMain);
+    };
+
+    const uploadDirect = async (file: File, isMain: boolean) => {
         setUploadingImage(true);
         try {
             const fileExt = file.name.split('.').pop();
@@ -248,6 +532,44 @@ export const AdminPanel = () => {
         } finally {
             setUploadingImage(false);
         }
+    };
+
+    const uploadBlob = async (blob: Blob, isMain: boolean) => {
+        setUploadingImage(true);
+        try {
+            const fileName = `${Math.random()}.png`;
+            const filePath = `cars/${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('car-images')
+                .upload(filePath, blob, { contentType: 'image/png' });
+
+            if (uploadError) throw uploadError;
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('car-images')
+                .getPublicUrl(filePath);
+
+            if (isMain) {
+                setEditingCar(prev => prev ? { ...prev, image: publicUrl } : null);
+            } else {
+                setEditingCar(prev => prev ? { ...prev, images: [...(prev.images || []), publicUrl] } : null);
+            }
+        } catch (error: any) {
+            alert('Errore caricamento: ' + error.message);
+        } finally {
+            setUploadingImage(false);
+        }
+    };
+
+    const handleImageEditorComplete = async (blob: Blob) => {
+        const isMain = imageEditorIsMain;
+        setImageEditorFile(null);
+        await uploadBlob(blob, isMain);
+    };
+
+    const handleImageEditorCancel = () => {
+        setImageEditorFile(null);
     };
 
     const filteredOrders = orders.filter(o => {
@@ -329,6 +651,12 @@ export const AdminPanel = () => {
                             onClick={() => setActiveTab('fleet')}
                         >
                             <LayoutGrid size={18} /> <span>Flotta</span>
+                        </button>
+                        <button
+                            className={`nav-item ${activeTab === 'search' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('search')}
+                        >
+                            <Search size={18} /> <span>Ricerca</span>
                         </button>
                         <button
                             className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`}
@@ -596,6 +924,28 @@ export const AdminPanel = () => {
                                 </div>
                             </div>
 
+                            <div className="settings-card">
+                                <h3><Shield size={20} /> Assistenza Stradale</h3>
+                                <p className="settings-desc">Configura i numeri di contatto e il prezzo per km dell'assistenza stradale.</p>
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label>Numero Verde</label>
+                                        <input value={siteSettings.assistancePhone || ''} onChange={e => setSiteSettings({ ...siteSettings, assistancePhone: e.target.value })} placeholder="800 123 456" />
+                                        <small style={{ color: '#888', marginTop: '4px' }}>Numero verde gratuito mostrato nel pannello.</small>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Cellulare 24/7</label>
+                                        <input value={siteSettings.phone || ''} onChange={e => setSiteSettings({ ...siteSettings, phone: e.target.value })} placeholder="+39 329 116 3843" />
+                                        <small style={{ color: '#888', marginTop: '4px' }}>Numero di cellulare mostrato accanto al numero verde.</small>
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label>Prezzo per KM (€)</label>
+                                    <input type="number" step="0.1" min="0" value={siteSettings.assistancePricePerKm || ''} onChange={e => setSiteSettings({ ...siteSettings, assistancePricePerKm: parseFloat(e.target.value) || 0 })} placeholder="2.50" />
+                                    <small style={{ color: '#888', marginTop: '4px' }}>Il prezzo verrà moltiplicato per i km inseriti dal cliente per calcolare il preventivo.</small>
+                                </div>
+                            </div>
+
                             <div className="settings-card full-width">
                                 <h3><Award size={20} /> Piani Perizia / Valutazione</h3>
                                 <p className="settings-desc">Configura i pacchetti di perizia tecnica e i prezzi relativi.</p>
@@ -668,7 +1018,58 @@ export const AdminPanel = () => {
                         </div>
                     </div>
                 )}
+
+                {activeTab === 'search' && (
+                    <SearchFormEditor siteSettings={siteSettings} setSiteSettings={setSiteSettings} savingSettings={savingSettings} setSavingSettings={setSavingSettings} refreshSettings={refreshSettings} />
+                )}
             </div>
+
+            {/* Upload Choice Prompt */}
+            {pendingFile && !imageEditorFile && (
+                <div className="img-editor-overlay">
+                    <div className="upload-choice-modal">
+                        <div className="upload-choice-header">
+                            <Upload size={28} />
+                            <h3>Come vuoi caricare l'immagine?</h3>
+                        </div>
+                        <div className="upload-choice-options">
+                            <button
+                                className="upload-choice-btn direct"
+                                onClick={async () => {
+                                    const file = pendingFile;
+                                    const isMain = pendingIsMain;
+                                    setPendingFile(null);
+                                    await uploadDirect(file, isMain);
+                                }}
+                            >
+                                <Upload size={22} />
+                                <span className="upload-choice-title">Carica Direttamente</span>
+                                <span className="upload-choice-desc">Usa l'immagine originale senza modifiche</span>
+                            </button>
+                            <button
+                                className="upload-choice-btn editor"
+                                onClick={() => openImageEditor(pendingFile, pendingIsMain)}
+                            >
+                                <Wand2 size={22} />
+                                <span className="upload-choice-title">Modifica Sfondo</span>
+                                <span className="upload-choice-desc">Rimuovi lo sfondo e applicane uno nuovo con l'AI</span>
+                            </button>
+                        </div>
+                        <button className="upload-choice-cancel" onClick={() => setPendingFile(null)}>
+                            Annulla
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Image Editor Modal */}
+            {imageEditorFile && (
+                <CarImageEditor
+                    file={imageEditorFile}
+                    onComplete={handleImageEditorComplete}
+                    onCancel={handleImageEditorCancel}
+                />
+            )}
 
             {/* Car Editor Modal */}
             {showCarModal && editingCar && (
@@ -768,7 +1169,7 @@ export const AdminPanel = () => {
                                                 <span>{uploadingImage ? 'Caricamento...' : 'Cambia Immagine Principal'}</span>
                                             </div>
                                         </div>
-                                        <input type="file" ref={fileInputRef} hidden accept="image/*" onChange={e => e.target.files?.[0] && uploadImage(e.target.files[0], true)} />
+                                        <input type="file" ref={fileInputRef} hidden accept="image/*" onChange={e => { if (e.target.files?.[0]) { handleFileSelected(e.target.files[0], true); e.target.value = ''; } }} />
                                     </div>
 
                                     <div className="multi-images-grid">
@@ -781,11 +1182,7 @@ export const AdminPanel = () => {
                                         <button type="button" className="add-thumb-btn" onClick={handleMultiUploadClick}>
                                             <Plus size={20} />
                                         </button>
-                                        <input type="file" ref={multiFileInputRef} hidden multiple accept="image/*" onChange={e => {
-                                            if (e.target.files) {
-                                                Array.from(e.target.files).forEach(f => uploadImage(f, false));
-                                            }
-                                        }} />
+                                        <input type="file" ref={multiFileInputRef} hidden accept="image/*" onChange={e => { if (e.target.files?.[0]) { handleFileSelected(e.target.files[0], false); e.target.value = ''; } }} />
                                     </div>
                                 </div>
                             </div>

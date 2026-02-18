@@ -278,6 +278,38 @@
         padding: 0.9rem 2rem;
     }
 
+    /* Advanced search mobile overrides */
+    .adv-section-header h4 {
+        font-size: 0.8rem;
+    }
+
+    .adv-checkbox-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .adv-checkbox-grid.cols-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .adv-color-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .adv-segment-btn {
+        padding: 0.55rem 0.5rem;
+        font-size: 0.72rem;
+    }
+
+    .hero-search-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .adv-reset-btn {
+        width: 100%;
+        text-align: center;
+    }
+
     .hero-panel-desc {
         font-size: 0.88rem;
         line-height: 1.4;

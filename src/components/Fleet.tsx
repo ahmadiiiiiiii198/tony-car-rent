@@ -1,9 +1,10 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     ChevronRight, ChevronLeft, Star, Fuel, Users, Gauge, X, Calendar,
-    Check, Filter, ChevronDown, ArrowUpDown, Navigation, Info, Tag, ShoppingCart, Car as CarIcon
+    Check, Filter, ChevronDown, ArrowUpDown, Navigation, Info, Tag, ShoppingCart, Car as CarIcon,
+    ZoomIn, ZoomOut, RotateCcw, Maximize2
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { OrderForm } from './OrderForm';
@@ -48,14 +49,29 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
     const [filters, setFilters] = useState({
         brands: [] as string[],
         categories: [] as string[],
+        fuel: [] as string[], // Legacy fuel
+        filters_fuelType: [] as string[], // Advanced fuel type
         minPrice: 0,
         maxPrice: 1000000,
-        fuel: [] as string[],
         listingType: 'all' as 'all' | 'sale' | 'rental' | 'both',
-        model: ''
+        model: '',
+        // Advanced Filters
+        bodyType: '',
+        transmission: '',
+        powerMin: 0,
+        powerMax: 1000,
+        year: 0,
+        km: 1000000,
+        color: [] as string[],
+        interiorColor: [] as string[],
+        features: [] as string[],
+        condition: [] as string[],
+        sellerType: 'all' as 'all' | 'dealer' | 'private',
+        doors: ''
     });
     const [compareList, setCompareList] = useState<Car[]>([]);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [brandLetter, setBrandLetter] = useState('');  // Alphabetic brand filter
 
     // Detail Modal State
     const [selectedCar, setSelectedCar] = useState<Car | null>(null);
@@ -68,6 +84,14 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
     // Lightbox state
     const [lightboxImages, setLightboxImages] = useState<string[]>([]);
     const [lightboxIndex, setLightboxIndex] = useState(0);
+
+    // Zoom state
+    const [zoomLevel, setZoomLevel] = useState(1);
+    const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState(false);
+    const dragStart = useRef({ x: 0, y: 0 });
+    const panStart = useRef({ x: 0, y: 0 });
+    const lightboxImgRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (isSidebarOpen) {
@@ -93,6 +117,110 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
         }
     }, [lightboxImages, selectedCar, isSidebarOpen]);
 
+    // Reset zoom when lightbox image changes or closes
+    useEffect(() => {
+        setZoomLevel(1);
+        setPanOffset({ x: 0, y: 0 });
+    }, [lightboxIndex, lightboxImages]);
+
+    // Zoom handlers
+    const handleZoomIn = useCallback(() => {
+        setZoomLevel(prev => Math.min(prev + 0.5, 5));
+    }, []);
+
+    const handleZoomOut = useCallback(() => {
+        setZoomLevel(prev => {
+            const next = Math.max(prev - 0.5, 1);
+            if (next === 1) setPanOffset({ x: 0, y: 0 });
+            return next;
+        });
+    }, []);
+
+    const handleZoomReset = useCallback(() => {
+        setZoomLevel(1);
+        setPanOffset({ x: 0, y: 0 });
+    }, []);
+
+    const handleWheel = useCallback((e: React.WheelEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.deltaY < 0) {
+            setZoomLevel(prev => Math.min(prev + 0.25, 5));
+        } else {
+            setZoomLevel(prev => {
+                const next = Math.max(prev - 0.25, 1);
+                if (next === 1) setPanOffset({ x: 0, y: 0 });
+                return next;
+            });
+        }
+    }, []);
+
+    const handleMouseDown = useCallback((e: React.MouseEvent) => {
+        if (zoomLevel <= 1) return;
+        e.preventDefault();
+        setIsDragging(true);
+        dragStart.current = { x: e.clientX, y: e.clientY };
+        panStart.current = { ...panOffset };
+    }, [zoomLevel, panOffset]);
+
+    const handleMouseMove = useCallback((e: React.MouseEvent) => {
+        if (!isDragging) return;
+        const dx = e.clientX - dragStart.current.x;
+        const dy = e.clientY - dragStart.current.y;
+        setPanOffset({
+            x: panStart.current.x + dx,
+            y: panStart.current.y + dy
+        });
+    }, [isDragging]);
+
+    const handleMouseUp = useCallback(() => {
+        setIsDragging(false);
+    }, []);
+
+    // Touch handlers for mobile pinch-zoom
+    const lastTouchDist = useRef(0);
+    const lastTouchCenter = useRef({ x: 0, y: 0 });
+
+    const handleTouchStart = useCallback((e: React.TouchEvent) => {
+        if (e.touches.length === 2) {
+            const dx = e.touches[0].clientX - e.touches[1].clientX;
+            const dy = e.touches[0].clientY - e.touches[1].clientY;
+            lastTouchDist.current = Math.hypot(dx, dy);
+            lastTouchCenter.current = {
+                x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+                y: (e.touches[0].clientY + e.touches[1].clientY) / 2
+            };
+        } else if (e.touches.length === 1 && zoomLevel > 1) {
+            setIsDragging(true);
+            dragStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            panStart.current = { ...panOffset };
+        }
+    }, [zoomLevel, panOffset]);
+
+    const handleTouchMove = useCallback((e: React.TouchEvent) => {
+        if (e.touches.length === 2) {
+            e.preventDefault();
+            const dx = e.touches[0].clientX - e.touches[1].clientX;
+            const dy = e.touches[0].clientY - e.touches[1].clientY;
+            const dist = Math.hypot(dx, dy);
+            const scale = dist / lastTouchDist.current;
+            setZoomLevel(prev => Math.min(Math.max(prev * scale, 1), 5));
+            lastTouchDist.current = dist;
+        } else if (e.touches.length === 1 && isDragging) {
+            const tdx = e.touches[0].clientX - dragStart.current.x;
+            const tdy = e.touches[0].clientY - dragStart.current.y;
+            setPanOffset({
+                x: panStart.current.x + tdx,
+                y: panStart.current.y + tdy
+            });
+        }
+    }, [isDragging]);
+
+    const handleTouchEnd = useCallback(() => {
+        setIsDragging(false);
+        if (zoomLevel <= 1) setPanOffset({ x: 0, y: 0 });
+    }, [zoomLevel]);
+
     // Sync with SearchParams from Hero
     useEffect(() => {
         if (searchParams) {
@@ -104,7 +232,21 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                 minPrice: searchParams.minPrice || 0,
                 maxPrice: searchParams.maxPrice > 0 ? searchParams.maxPrice : 1000000,
                 listingType: searchParams.listingType,
-                model: searchParams.model || ''
+                model: searchParams.model || '',
+                // Sync advanced filters
+                bodyType: searchParams.bodyType || '',
+                filters_fuelType: searchParams.fuelType || [],
+                transmission: searchParams.transmission || '',
+                powerMin: searchParams.powerMin || 0,
+                powerMax: searchParams.powerMax || 1000,
+                year: searchParams.year || 0,
+                km: searchParams.km || 1000000,
+                doors: searchParams.doors || '',
+                color: searchParams.color || [],
+                interiorColor: searchParams.interiorColor || [],
+                features: searchParams.features || [],
+                condition: searchParams.condition as string[] || [],
+                sellerType: searchParams.sellerType || 'all'
             }));
         }
     }, [searchParams]);
@@ -184,6 +326,52 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
         if (filters.model) {
             result = result.filter(c => c.name.toLowerCase().includes(filters.model.toLowerCase()));
         }
+
+        // Advanced Filters Implementation
+        if (filters.bodyType) {
+            result = result.filter(c => c.category === filters.bodyType);
+        }
+
+        if (filters.filters_fuelType.length > 0) {
+            result = result.filter(c => filters.filters_fuelType.includes(c.specs.fuel));
+        }
+
+        if (filters.transmission) {
+            result = result.filter(c => c.specs.transmission === filters.transmission);
+        }
+
+        if (filters.powerMin > 0) {
+            // Try to parse power from string "XX kW (YY CV)"
+            result = result.filter(c => {
+                const powerStr = c.specs.power || '';
+                const powerKw = parseInt(powerStr.split(' ')[0]) || 0;
+                return powerKw >= filters.powerMin;
+            });
+        }
+
+        if (filters.powerMax < 1000) {
+            result = result.filter(c => {
+                const powerStr = c.specs.power || '';
+                const powerKw = parseInt(powerStr.split(' ')[0]) || 0;
+                return powerKw <= filters.powerMax;
+            });
+        }
+
+        if (filters.year > 0) {
+            result = result.filter(c => (c.year || 0) >= filters.year);
+        }
+
+        if (filters.km < 1000000) {
+            result = result.filter(c => {
+                const kmVal = typeof c.km === 'string' ? parseInt(c.km.replace('.', '').replace(' km', '')) : (c.km || 0);
+                return kmVal <= filters.km;
+            });
+        }
+
+        // Note: colors, interiorColors, features, doors, sellerType, condition 
+        // are currently not in the Car interface but logic is prepared:
+        // if (filters.doors && c.specs.doors) ...
+        // if (filters.color.length && c.color) ...
 
 
         // Apply Sorting
@@ -282,7 +470,11 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                 <button
                                     className="reset-btn"
                                     onClick={() => {
-                                        setFilters({ brands: [], categories: [], minPrice: 0, maxPrice: 1000000, fuel: [], listingType: 'all' as 'all' | 'sale' | 'rental' | 'both', model: '' });
+                                        setFilters({
+                                            brands: [], categories: [], minPrice: 0, maxPrice: 1000000, fuel: [], listingType: 'all' as 'all' | 'sale' | 'rental' | 'both', model: '',
+                                            filters_fuelType: [], bodyType: '', transmission: '', powerMin: 0, powerMax: 1000, year: 0, km: 1000000,
+                                            color: [], interiorColor: [], features: [], condition: [], sellerType: 'all', doors: ''
+                                        });
                                         if (onClearSearch) onClearSearch();
                                     }}
                                 >
@@ -334,17 +526,34 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                 <span>Brand</span>
                                 <ChevronDown size={16} />
                             </div>
-                            <div className="filter-options">
-                                {availableBrands.map(brand => (
-                                    <label key={brand} className="filter-checkbox">
-                                        <input
-                                            type="checkbox"
-                                            checked={filters.brands.includes(brand)}
-                                            onChange={() => toggleFilter('brands', brand)}
-                                        />
-                                        <span>{brand}</span>
-                                    </label>
+                            {/* Alphabetic letter bar */}
+                            <div className="brand-alpha-bar">
+                                <button
+                                    className={`alpha-btn ${brandLetter === '' ? 'active' : ''}`}
+                                    onClick={() => setBrandLetter('')}
+                                >Tutti</button>
+                                {Array.from(new Set(availableBrands.map(b => b[0]?.toUpperCase()).filter(Boolean))).sort().map(letter => (
+                                    <button
+                                        key={letter}
+                                        className={`alpha-btn ${brandLetter === letter ? 'active' : ''}`}
+                                        onClick={() => setBrandLetter(brandLetter === letter ? '' : letter)}
+                                    >{letter}</button>
                                 ))}
+                            </div>
+                            <div className="filter-options">
+                                {availableBrands
+                                    .filter(brand => brandLetter === '' || brand[0]?.toUpperCase() === brandLetter)
+                                    .sort()
+                                    .map(brand => (
+                                        <label key={brand} className="filter-checkbox">
+                                            <input
+                                                type="checkbox"
+                                                checked={filters.brands.includes(brand)}
+                                                onChange={() => toggleFilter('brands', brand)}
+                                            />
+                                            <span>{brand}</span>
+                                        </label>
+                                    ))}
                             </div>
                         </div>
 
@@ -457,7 +666,11 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                 <button
                                     className="clear-all-btn"
                                     onClick={() => {
-                                        setFilters({ brands: [], categories: [], minPrice: 0, maxPrice: 1000000, fuel: [], listingType: 'all' as 'all' | 'sale' | 'rental' | 'both', model: '' });
+                                        setFilters({
+                                            brands: [], categories: [], minPrice: 0, maxPrice: 1000000, fuel: [], listingType: 'all' as 'all' | 'sale' | 'rental' | 'both', model: '',
+                                            filters_fuelType: [], bodyType: '', transmission: '', powerMin: 0, powerMax: 1000, year: 0, km: 1000000,
+                                            color: [], interiorColor: [], features: [], condition: [], sellerType: 'all', doors: ''
+                                        });
                                         if (onClearSearch) onClearSearch();
                                     }}
                                 >
@@ -499,7 +712,11 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                         <button
                                             className="book-btn"
                                             onClick={() => {
-                                                setFilters({ brands: [], categories: [], minPrice: 0, maxPrice: 1000000, fuel: [], listingType: 'all' as 'all' | 'sale' | 'rental' | 'both', model: '' });
+                                                setFilters({
+                                                    brands: [], categories: [], minPrice: 0, maxPrice: 1000000, fuel: [], listingType: 'all' as 'all' | 'sale' | 'rental' | 'both', model: '',
+                                                    filters_fuelType: [], bodyType: '', transmission: '', powerMin: 0, powerMax: 1000, year: 0, km: 1000000,
+                                                    color: [], interiorColor: [], features: [], condition: [], sellerType: 'all', doors: ''
+                                                });
                                                 if (onClearSearch) onClearSearch();
                                             }}
                                             style={{ margin: '0 auto' }}
@@ -512,7 +729,6 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                     <motion.div
                                         key={car.id}
                                         className="car-card"
-                                        layout
                                         initial={{ opacity: 0, scale: 0.9 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0, scale: 0.9 }}
@@ -722,7 +938,25 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                             src={(selectedCar.images && selectedCar.images.length > 0) ? selectedCar.images[currentImageIndex] : selectedCar.image}
                                             alt={selectedCar.name}
                                             className="modal-gallery-image"
+                                            onClick={() => {
+                                                const imgs = (selectedCar.images && selectedCar.images.length > 0) ? selectedCar.images : [selectedCar.image];
+                                                setLightboxImages(imgs);
+                                                setLightboxIndex(currentImageIndex);
+                                            }}
+                                            style={{ cursor: 'zoom-in' }}
                                         />
+                                        <button
+                                            className="gallery-zoom-btn"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                const imgs = (selectedCar.images && selectedCar.images.length > 0) ? selectedCar.images : [selectedCar.image];
+                                                setLightboxImages(imgs);
+                                                setLightboxIndex(currentImageIndex);
+                                            }}
+                                            title="Zoom"
+                                        >
+                                            <Maximize2 size={18} />
+                                        </button>
 
                                         {(selectedCar.images && selectedCar.images.length > 1) && (
                                             <>
@@ -873,7 +1107,7 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                 )}
             </AnimatePresence>
 
-            {/* Fullscreen Lightbox */}
+            {/* Fullscreen Lightbox with Zoom */}
             <AnimatePresence>
                 {lightboxImages.length > 0 && (
                     <motion.div
@@ -881,19 +1115,79 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        onClick={() => setLightboxImages([])}
+                        onClick={() => { setLightboxImages([]); handleZoomReset(); }}
+                        onMouseMove={handleMouseMove}
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseUp}
                     >
                         <button
                             className="lightbox-close"
-                            onClick={() => setLightboxImages([])}
+                            onClick={() => { setLightboxImages([]); handleZoomReset(); }}
                         >
                             <X size={28} />
                         </button>
 
-                        <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+                        {/* Zoom Controls */}
+                        <div className="lightbox-zoom-controls" onClick={(e) => e.stopPropagation()}>
+                            <button
+                                className="zoom-ctrl-btn"
+                                onClick={handleZoomIn}
+                                disabled={zoomLevel >= 5}
+                                title="Zoom In"
+                            >
+                                <ZoomIn size={20} />
+                            </button>
+                            <span className="zoom-level-display">{Math.round(zoomLevel * 100)}%</span>
+                            <button
+                                className="zoom-ctrl-btn"
+                                onClick={handleZoomOut}
+                                disabled={zoomLevel <= 1}
+                                title="Zoom Out"
+                            >
+                                <ZoomOut size={20} />
+                            </button>
+                            <button
+                                className="zoom-ctrl-btn"
+                                onClick={handleZoomReset}
+                                disabled={zoomLevel === 1}
+                                title="Reset Zoom"
+                            >
+                                <RotateCcw size={18} />
+                            </button>
+                        </div>
+
+                        <div
+                            className="lightbox-content"
+                            ref={lightboxImgRef}
+                            onClick={(e) => e.stopPropagation()}
+                            onWheel={handleWheel}
+                            onMouseDown={handleMouseDown}
+                            onTouchStart={handleTouchStart}
+                            onTouchMove={handleTouchMove}
+                            onTouchEnd={handleTouchEnd}
+                            style={{
+                                cursor: zoomLevel > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in',
+                                touchAction: 'none',
+                                overflow: 'hidden'
+                            }}
+                        >
                             <img
                                 src={lightboxImages[lightboxIndex]}
                                 alt="Car"
+                                draggable={false}
+                                style={{
+                                    transform: `scale(${zoomLevel}) translate(${panOffset.x / zoomLevel}px, ${panOffset.y / zoomLevel}px)`,
+                                    transition: isDragging ? 'none' : 'transform 0.2s ease-out',
+                                    userSelect: 'none'
+                                }}
+                                onDoubleClick={(e) => {
+                                    e.stopPropagation();
+                                    if (zoomLevel > 1) {
+                                        handleZoomReset();
+                                    } else {
+                                        setZoomLevel(2.5);
+                                    }
+                                }}
                             />
                         </div>
 
