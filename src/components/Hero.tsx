@@ -75,7 +75,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
     useEffect(() => {
         if (animationStage === 'intro') {
-            const intervalTime = isMobile ? 1800 : 1000; // Slower on desktop for better UX
+            const intervalTime = isMobile ? 1600 : 1000; // Slower on desktop for better UX
             const timer = setInterval(() => {
                 setCurrentPanelIndex(prev => {
                     if (prev < features.length - 1) {
@@ -97,7 +97,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
                             setTimeout(() => {
                                 setAnimationStage('complete');
                                 setShowPanels(false);
-                            }, 1800);
+                            }, 1600);
                         }
                         return prev;
                     }
@@ -561,10 +561,10 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                         scale: 1.1,
                                         y: -30,
                                         filter: "blur(15px)",
-                                        transition: { duration: 1.35 }
+                                        transition: { duration: 1.2 }
                                     }}
                                     transition={{
-                                        duration: 1.35,
+                                        duration: 1.2,
                                         ease: [0.22, 1, 0.36, 1]
                                     }}
                                 >
