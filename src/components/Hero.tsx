@@ -75,7 +75,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
     useEffect(() => {
         if (animationStage === 'intro') {
-            const intervalTime = 500; // Uniform 0.5s speed
+            const intervalTime = 1000; // Uniform 1.0s speed
             const timer = setInterval(() => {
                 setCurrentPanelIndex(prev => {
                     if (prev < features.length - 1) {
@@ -90,14 +90,14 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                 setTimeout(() => {
                                     setAnimationStage('complete');
                                     setShowPanels(false);
-                                }, 500);
-                            }, 500);
+                                }, 1000);
+                            }, 1000);
                         } else {
                             // Mobile sequence ends - wait for the last panel's full duration
                             setTimeout(() => {
                                 setAnimationStage('complete');
                                 setShowPanels(false);
-                            }, 500);
+                            }, 1000);
                         }
                         return prev;
                     }
@@ -507,7 +507,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
             scale: 1,
             y: 0,
             transition: {
-                duration: 0.5,
+                duration: 1.0,
                 ease: [0.22, 1, 0.36, 1]
             }
         },
@@ -516,7 +516,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
             scale: 0.8,
             y: -100,
             transition: {
-                duration: 0.5,
+                duration: 1.0,
                 ease: [0.22, 1, 0.36, 1]
             }
         }
@@ -561,10 +561,10 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                         scale: 1.1,
                                         y: -30,
                                         filter: "blur(15px)",
-                                        transition: { duration: 0.5 }
+                                        transition: { duration: 1.0 }
                                     }}
                                     transition={{
-                                        duration: 0.5,
+                                        duration: 1.0,
                                         ease: [0.22, 1, 0.36, 1]
                                     }}
                                 >
