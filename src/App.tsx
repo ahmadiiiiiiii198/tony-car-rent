@@ -6,6 +6,7 @@ import { Fleet } from './components/Fleet';
 import { Services } from './components/Services';
 import { Footer } from './components/Footer';
 import { AdminPanel } from './components/AdminPanel';
+import { TestCarShowcase } from './components/TestCarShowcase';
 import { LanguageProvider } from './context/LanguageContext';
 import { SettingsProvider } from './context/SettingsContext';
 import { emptySearchParams, type SearchParams } from './types/SearchParams';
@@ -33,6 +34,7 @@ function App() {
         <Routes>
           <Route path="/" element={<MainSite />} />
           <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/test" element={<TestCarShowcase />} />
         </Routes>
       </SettingsProvider>
     </LanguageProvider>

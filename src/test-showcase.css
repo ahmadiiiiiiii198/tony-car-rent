@@ -1,0 +1,559 @@
+/* ════════════════════════════════════════════════════════
+   TEST CAR SHOWCASE — Exact clone from screenshot
+   Fully isolated – zero impact on main website
+   ════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600&display=swap');
+
+/* ── Local reset ── */
+.tcs,
+.tcs *,
+.tcs *::before,
+.tcs *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ════════════════════
+   PAGE
+   ════════════════════ */
+.tcs {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #f3ede6;
+    user-select: none;
+}
+
+/* Warm pinkish rose glow — top right (matching screenshot) */
+.tcs__glow {
+    position: absolute;
+    top: -8%;
+    right: -8%;
+    width: 70%;
+    height: 75%;
+    background: radial-gradient(ellipse at 65% 35%,
+            rgba(215, 175, 158, 0.3) 0%,
+            rgba(210, 170, 150, 0.15) 30%,
+            rgba(200, 165, 145, 0.05) 55%,
+            transparent 75%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ════════════════════
+   BRAND LOGO — top left
+   ════════════════════ */
+.tcs__logo {
+    position: absolute;
+    top: 28px;
+    left: 32px;
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+    z-index: 5;
+    opacity: 0.85;
+}
+
+/* ════════════════════
+   HEADER — name + price
+   ════════════════════ */
+.tcs__header {
+    position: absolute;
+    top: 28px;
+    left: 110px;
+    right: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 5;
+}
+
+.tcs__name {
+    display: flex;
+    flex-direction: column;
+}
+
+.tcs__title {
+    font-family: 'DM Serif Display', 'Georgia', serif;
+    font-size: 36px;
+    font-weight: 400;
+    color: #1a1714;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+}
+
+/* Golden/amber variant text — exactly like screenshot */
+.tcs__variant {
+    font-family: 'DM Serif Display', 'Georgia', serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: #c4a265;
+    letter-spacing: 0.02em;
+    margin-top: 2px;
+    font-style: italic;
+}
+
+.tcs__pricing {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.tcs__price {
+    font-family: 'DM Serif Display', 'Georgia', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: #1a1714;
+    letter-spacing: -0.01em;
+}
+
+.tcs__location {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: #a89c90;
+    margin-top: 2px;
+    letter-spacing: 0.02em;
+}
+
+/* ════════════════════
+   CAR IMAGE — center stage
+   ════════════════════ */
+.tcs__car {
+    position: absolute;
+    top: 50%;
+    left: 52%;
+    transform: translate(-50%, -52%);
+    width: 65%;
+    max-width: 820px;
+    max-height: 440px;
+    object-fit: contain;
+    z-index: 2;
+    pointer-events: none;
+    filter: drop-shadow(0 35px 50px rgba(25, 20, 15, 0.15)) drop-shadow(0 10px 20px rgba(25, 20, 15, 0.06));
+}
+
+/* ════════════════════
+   LEFT NAV — arrows
+   ════════════════════ */
+.tcs__nav {
+    position: absolute;
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 10;
+}
+
+.tcs__arr {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.tcs__arr svg {
+    width: 15px;
+    height: 15px;
+}
+
+/* UP — light outline (matching screenshot) */
+.tcs__arr--up {
+    background: rgba(255, 255, 255, 0.35);
+    border: 1.5px solid rgba(30, 28, 24, 0.14);
+    color: #2a2520;
+}
+
+.tcs__arr--up:hover {
+    background: rgba(255, 255, 255, 0.65);
+    border-color: rgba(30, 28, 24, 0.28);
+}
+
+/* DOWN — dark filled (matching screenshot exactly) */
+.tcs__arr--dn {
+    background: #2a2520;
+    border: 1.5px solid #2a2520;
+    color: #eae5df;
+}
+
+.tcs__arr--dn:hover {
+    background: #1a1714;
+    border-color: #1a1714;
+}
+
+/* ════════════════════
+   COUNTER — bottom left
+   ════════════════════ */
+.tcs__counter {
+    position: absolute;
+    bottom: 32px;
+    left: 32px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #2a2520;
+    opacity: 0.4;
+    letter-spacing: 0.06em;
+    z-index: 5;
+}
+
+/* ════════════════════
+   BOTTOM — stats strip
+   ════════════════════ */
+.tcs__stats {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 48px 28px 110px;
+    z-index: 5;
+    /* Subtle fade from bottom */
+    background: linear-gradient(to top,
+            rgba(243, 237, 230, 0.95) 0%,
+            rgba(243, 237, 230, 0.6) 40%,
+            rgba(243, 237, 230, 0.15) 70%,
+            transparent 100%);
+}
+
+/* Thin separator line above stats */
+.tcs__stats::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 110px;
+    right: 48px;
+    height: 1px;
+    background: rgba(30, 28, 24, 0.06);
+}
+
+.tcs__stat {
+    display: flex;
+    flex-direction: column;
+    margin-right: 56px;
+}
+
+.tcs__stat strong {
+    font-family: 'DM Serif Display', 'Georgia', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: #1a1714;
+    line-height: 1;
+}
+
+.tcs__stat small {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    color: #b3a798;
+    text-transform: capitalize;
+    letter-spacing: 0.08em;
+    margin-top: 5px;
+}
+
+/* Full details link — right side */
+.tcs__details {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: #2a2520;
+    text-decoration: none;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: gap 0.25s ease, color 0.2s ease;
+    white-space: nowrap;
+    padding-bottom: 2px;
+}
+
+.tcs__details:hover {
+    color: #1a1714;
+    gap: 18px;
+}
+
+.tcs__details-arrow {
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1;
+    transition: transform 0.25s ease;
+}
+
+.tcs__details:hover .tcs__details-arrow {
+    transform: translateX(4px);
+}
+
+/* ════════════════════════════════════════
+   ANIMATIONS
+   ════════════════════════════════════════ */
+
+/* Text enter */
+.tcs--in {
+    animation: tcsIn 0.5s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+.tcs--out-up {
+    animation: tcsOutUp 0.4s ease both;
+}
+
+.tcs--out-down {
+    animation: tcsOutDn 0.4s ease both;
+}
+
+@keyframes tcsIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes tcsOutUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes tcsOutDn {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+/* Car image */
+.tcs--img-in {
+    animation: tcsCarIn 0.55s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+.tcs--img-out-l {
+    animation: tcsCarOutL 0.4s ease both;
+}
+
+.tcs--img-out-r {
+    animation: tcsCarOutR 0.4s ease both;
+}
+
+@keyframes tcsCarIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -52%) translateX(45px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -52%) translateX(0) scale(1);
+    }
+}
+
+@keyframes tcsCarOutL {
+    from {
+        opacity: 1;
+        transform: translate(-50%, -52%) translateX(0) scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: translate(-50%, -52%) translateX(-55px) scale(0.95);
+    }
+}
+
+@keyframes tcsCarOutR {
+    from {
+        opacity: 1;
+        transform: translate(-50%, -52%) translateX(0) scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: translate(-50%, -52%) translateX(55px) scale(0.95);
+    }
+}
+
+/* ════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════ */
+@media (max-width: 900px) {
+    .tcs__logo {
+        top: 20px;
+        left: 18px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .tcs__header {
+        top: 20px;
+        left: 70px;
+        right: 20px;
+    }
+
+    .tcs__title {
+        font-size: 28px;
+    }
+
+    .tcs__variant {
+        font-size: 16px;
+    }
+
+    .tcs__price {
+        font-size: 22px;
+    }
+
+    .tcs__car {
+        width: 80%;
+        left: 50%;
+    }
+
+    .tcs__stats {
+        padding: 0 20px 24px 70px;
+    }
+
+    .tcs__stat {
+        margin-right: 36px;
+    }
+
+    .tcs__stat strong {
+        font-size: 24px;
+    }
+
+    .tcs__stats::before {
+        left: 70px;
+        right: 20px;
+    }
+
+    .tcs__counter {
+        left: 18px;
+        bottom: 26px;
+        font-size: 12px;
+    }
+
+    .tcs__nav {
+        left: 12px;
+    }
+
+    .tcs__arr {
+        width: 34px;
+        height: 34px;
+    }
+
+    .tcs__arr svg {
+        width: 12px;
+        height: 12px;
+    }
+}
+
+@media (max-width: 600px) {
+    .tcs__header {
+        left: 18px;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .tcs__logo {
+        display: none;
+    }
+
+    .tcs__pricing {
+        align-items: flex-start;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .tcs__title {
+        font-size: 24px;
+    }
+
+    .tcs__variant {
+        font-size: 14px;
+    }
+
+    .tcs__price {
+        font-size: 20px;
+    }
+
+    .tcs__location {
+        font-size: 11px;
+        margin-top: 3px;
+    }
+
+    .tcs__car {
+        width: 94%;
+        max-height: 260px;
+    }
+
+    .tcs__stats {
+        padding: 0 16px 18px 16px;
+        flex-wrap: wrap;
+    }
+
+    .tcs__stat {
+        margin-right: 22px;
+    }
+
+    .tcs__stat strong {
+        font-size: 20px;
+    }
+
+    .tcs__stat small {
+        font-size: 9px;
+    }
+
+    .tcs__details {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(30, 28, 24, 0.06);
+        font-size: 13px;
+    }
+
+    .tcs__stats::before {
+        left: 16px;
+        right: 16px;
+    }
+
+    .tcs__nav {
+        left: 6px;
+    }
+
+    .tcs__arr {
+        width: 30px;
+        height: 30px;
+    }
+
+    .tcs__counter {
+        left: 10px;
+        bottom: 20px;
+        font-size: 11px;
+    }
+}
