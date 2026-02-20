@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Key, Car, Search, MapPin, Calendar, Gauge,
     Send, User, Mail, Phone, MessageSquare, CheckCircle,
-    Loader2, Shield, Clock, Award, ChevronDown, Fuel, Sliders, Palette, Check, Leaf, Info, Armchair
+    Loader2, Shield, Clock, Award, ChevronDown, Fuel, Sliders, Palette, Check, Leaf, Info, Armchair, Sparkles, Heart
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useSettings } from '../context/SettingsContext';
@@ -914,7 +914,69 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                                 {/* ===== SECTION 1: Dati principali & Località ===== */}
                                                 <div className="adv-section">
                                                     <div className="adv-section-header" onClick={() => toggleSection('main')}>
-                                                        <h4><Car size={16} /> Dati principali & Località</h4>
+                                                        {(activeTab === 'rental' || activeTab === 'sale') ? (
+                                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                                    <motion.div
+                                                                        animate={{
+                                                                            scale: [1, 1.1, 1],
+                                                                            rotate: [0, 5, -5, 0]
+                                                                        }}
+                                                                        transition={{
+                                                                            duration: 3,
+                                                                            repeat: Infinity,
+                                                                            ease: "easeInOut"
+                                                                        }}
+                                                                    >
+                                                                        <Car size={24} color="#ff8fa3" fill="#ff8fa3" fillOpacity={0.2} style={{ filter: 'drop-shadow(0 0 8px rgba(255, 143, 163, 0.6))' }} />
+                                                                    </motion.div>
+                                                                    <h4 style={{
+                                                                        fontSize: '1.2rem',
+                                                                        background: 'linear-gradient(to right, #ff9a9e, #fad0c4)',
+                                                                        WebkitBackgroundClip: 'text',
+                                                                        WebkitTextFillColor: 'transparent',
+                                                                        display: 'flex',
+                                                                        alignItems: 'center',
+                                                                        gap: '8px',
+                                                                        fontWeight: 'bold'
+                                                                    }}>
+                                                                        Configura la tua prossima auto 🌸
+                                                                    </h4>
+                                                                </div>
+                                                                <div style={{ paddingLeft: '32px', display: 'flex', alignItems: 'center', gap: '8px', position: 'relative' }}>
+                                                                    <div style={{ position: 'relative', width: '12px', height: '12px' }}>
+                                                                        <motion.div
+                                                                            animate={{ scale: [1, 1.2, 1] }}
+                                                                            transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
+                                                                        >
+                                                                            <Heart size={12} fill="#ff8fa3" color="#ff8fa3" />
+                                                                        </motion.div>
+
+                                                                        {[0, 1].map((i) => (
+                                                                            <motion.div
+                                                                                key={i}
+                                                                                initial={{ opacity: 0, y: 0, x: 0, scale: 0 }}
+                                                                                animate={{ opacity: [0, 1, 0], y: -15, x: i % 2 === 0 ? 5 : -5, scale: 0.8 }}
+                                                                                transition={{
+                                                                                    duration: 1.5,
+                                                                                    repeat: Infinity,
+                                                                                    delay: i * 0.7,
+                                                                                    ease: "easeOut"
+                                                                                }}
+                                                                                style={{ position: 'absolute', top: -5, left: 2 }}
+                                                                            >
+                                                                                <Heart size={8} fill="#ffb7b2" color="#ffb7b2" />
+                                                                            </motion.div>
+                                                                        ))}
+                                                                    </div>
+                                                                    <span style={{ fontSize: '0.85rem', color: '#ff8fa3', fontWeight: 500 }}>
+                                                                        {language === 'it' ? 'Il lusso di guidare i tuoi sogni' : 'The luxury of driving your dreams'}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            <h4><Car size={16} /> Dati principali & Località</h4>
+                                                        )}
                                                         <ChevronDown size={18} className={`adv-chevron ${expandedSections.main ? 'open' : ''}`} />
                                                     </div>
                                                     {expandedSections.main && (
@@ -1246,8 +1308,8 @@ export const Hero = ({ onSearch }: HeroProps) => {
                         </AnimatePresence>
                     </div>
                 </motion.div>
-            </div>
+            </div >
 
-        </section>
+        </section >
     );
 };
