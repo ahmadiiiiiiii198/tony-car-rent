@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Key, Car, Search, MapPin, Calendar, Gauge,
     Send, User, Mail, Phone, MessageSquare, CheckCircle,
-    Loader2, Shield, Clock, Award, ChevronDown, Fuel, Sliders, Palette, Check, Leaf, Info, Armchair, Sparkles, Heart
+    Loader2, Shield, Clock, Award, ChevronDown, Fuel, Sliders, Palette, Check, Leaf, Info, Armchair, Heart
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useSettings } from '../context/SettingsContext';
