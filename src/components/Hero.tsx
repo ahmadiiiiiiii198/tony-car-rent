@@ -915,47 +915,12 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                                 <div className="adv-section">
                                                     <div className="adv-section-header" onClick={() => toggleSection('main')}>
                                                         {(activeTab === 'rental' || activeTab === 'sale') ? (
-                                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                                                    <motion.div
-                                                                        animate={{ scale: [1, 1.05, 1] }}
-                                                                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                                                                    >
-                                                                        <Car size={32} color="#D4AF37" fill="#D4AF37" fillOpacity={0.4} style={{ filter: 'drop-shadow(0 0 10px rgba(212, 175, 55, 0.6))' }} />
-                                                                    </motion.div>
-                                                                    <h4 style={{
-                                                                        fontSize: '1.5rem',
-                                                                        background: 'linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C)',
-                                                                        WebkitBackgroundClip: 'text',
-                                                                        WebkitTextFillColor: 'transparent',
-                                                                        display: 'flex',
-                                                                        alignItems: 'center',
-                                                                        gap: '8px',
-                                                                        fontWeight: '900',
-                                                                        textTransform: 'uppercase',
-                                                                        letterSpacing: '1px'
-                                                                    }}>
-                                                                        {language === 'it' ? 'CONFIGURA LA TUA PROSSIMA AUTO' : 'CONFIGURE YOUR NEXT CAR'}
-                                                                    </h4>
-                                                                    <motion.div
-                                                                        animate={{ scale: [1, 1.05, 1], rotate: [0, 5, -5, 0] }}
-                                                                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                                                                    >
-                                                                        <Key size={30} color="#D4AF37" fill="#D4AF37" fillOpacity={0.4} style={{ filter: 'drop-shadow(0 0 10px rgba(212, 175, 55, 0.6))' }} />
-                                                                    </motion.div>
-                                                                </div>
-                                                                <div style={{ paddingRight: '48px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-                                                                    <span style={{
-                                                                        fontSize: '1.2rem',
-                                                                        color: '#D4AF37',
-                                                                        fontWeight: 400,
-                                                                        fontFamily: 'serif',
-                                                                        letterSpacing: '2px',
-                                                                        textShadow: '0 0 8px rgba(212, 175, 55, 0.4)'
-                                                                    }}>
-                                                                        {language === 'it' ? 'tuoi sogni' : 'your dreams'}
-                                                                    </span>
-                                                                </div>
+                                                            <div style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '10px 0' }}>
+                                                                <img
+                                                                    src="/configura-header.png"
+                                                                    alt={language === 'it' ? 'CONFIGURA LA TUA PROSSIMA AUTO' : 'CONFIGURE YOUR NEXT CAR'}
+                                                                    style={{ height: '80px', objectFit: 'contain' }}
+                                                                />
                                                             </div>
                                                         ) : (
                                                             <h4><Car size={16} /> Dati principali & Località</h4>
