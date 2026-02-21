@@ -917,7 +917,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                                         {(activeTab === 'rental' || activeTab === 'sale') ? (
                                                             <div style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '20px 0' }}>
                                                                 <img
-                                                                    src="/configura-header-banner-5.png"
+                                                                    src="/configura-header-banner-final.png"
                                                                     alt={language === 'it' ? 'CONFIGURA LA TUA PROSSIMA AUTO' : 'CONFIGURE YOUR NEXT CAR'}
                                                                     style={{
                                                                         width: '100%',
