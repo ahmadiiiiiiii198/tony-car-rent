@@ -915,18 +915,11 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                                 <div className="adv-section">
                                                     <div className="adv-section-header" onClick={() => toggleSection('main')}>
                                                         {(activeTab === 'rental' || activeTab === 'sale') ? (
-                                                            <div style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '20px 0' }}>
+                                                            <div className="hero-banner-wrapper">
                                                                 <img
                                                                     src="/configura-header-banner-final.png"
                                                                     alt={language === 'it' ? 'CONFIGURA LA TUA PROSSIMA AUTO' : 'CONFIGURE YOUR NEXT CAR'}
-                                                                    style={{
-                                                                        width: '100%',
-                                                                        maxWidth: '1000px',
-                                                                        height: 'auto',
-                                                                        maxHeight: '350px',
-                                                                        objectFit: 'contain',
-                                                                        transform: 'scale(1.2)'
-                                                                    }}
+                                                                    className="hero-banner-image"
                                                                 />
                                                             </div>
                                                         ) : (
