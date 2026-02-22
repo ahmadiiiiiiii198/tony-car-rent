@@ -50,6 +50,39 @@ interface Car {
 
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'tonaydin2026';
 
+const CAR_BRANDS_AND_MODELS: Record<string, string[]> = {
+    'Abarth': ['595', '695', '124 Spider'],
+    'Alfa Romeo': ['Giulia', 'Stelvio', '4C', '8C', 'Tonale'],
+    'Aston Martin': ['DB11', 'DB12', 'DBS Superleggera', 'Vantage', 'DBX', 'Vanquish', 'Valhalla', 'Valkyrie'],
+    'Audi': ['A1', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'Q2', 'Q3', 'Q5', 'Q7', 'Q8', 'R8', 'RS3', 'RS4', 'RS5', 'RS6', 'RS7', 'RS Q3', 'RS Q8', 'e-tron', 'e-tron GT'],
+    'Bentley': ['Bentayga', 'Continental GT', 'Flying Spur', 'Mulsanne'],
+    'BMW': ['Serie 1', 'Serie 2', 'Serie 3', 'Serie 4', 'Serie 5', 'Serie 6', 'Serie 7', 'Serie 8', 'X1', 'X2', 'X3', 'X4', 'X5', 'X6', 'X7', 'M2', 'M3', 'M4', 'M5', 'M8', 'Z4', 'iX', 'i4', 'i7', 'XM'],
+    'Bugatti': ['Chiron', 'Veyron', 'Divo', 'Bolide', 'Centodieci', 'Mistral'],
+    'Chevrolet': ['Camaro', 'Corvette'],
+    'Cupra': ['Formentor', 'Leon', 'Ateca', 'Born'],
+    'Dodge': ['Challenger', 'Charger', 'Durango', 'Viper'],
+    'Ferrari': ['296 GTB', '296 GTS', '488 GTB', '488 Spider', '488 Pista', '812 Superfast', '812 GTS', '812 Competizione', 'F8 Tributo', 'F8 Spider', 'SF90 Stradale', 'SF90 Spider', 'Roma', 'Portofino', 'Portofino M', 'Monza SP1', 'Monza SP2', 'Daytona SP3', 'Purosangue', 'LaFerrari', 'Enzo', 'F40', 'F50', 'GTC4Lusso'],
+    'Ford': ['Mustang', 'Bronco', 'GT', 'Raptor'],
+    'Jaguar': ['E-Pace', 'F-Pace', 'F-Type', 'I-Pace', 'XE', 'XF'],
+    'Jeep': ['Avenger', 'Compass', 'Grand Cherokee', 'Renegade', 'Wrangler', 'Gladiator'],
+    'Koenigsegg': ['Agera', 'Jesko', 'Gemera', 'Regera'],
+    'Lamborghini': ['Aventador', 'Huracán', 'Urus', 'Revuelto', 'Gallardo', 'Murciélago', 'Diablo', 'Countach', 'Sian'],
+    'Land Rover': ['Defender', 'Discovery', 'Discovery Sport', 'Range Rover', 'Range Rover Evoque', 'Range Rover Sport', 'Range Rover Velar'],
+    'Lexus': ['ES', 'IS', 'LC', 'LS', 'NX', 'RX', 'UX', 'LFA'],
+    'Lotus': ['Emira', 'Evora', 'Eletre', 'Evija', 'Exige'],
+    'Maserati': ['Ghibli', 'Grecale', 'Levante', 'Quattroporte', 'MC20', 'MC20 Cielo', 'GranTurismo', 'GranCabrio'],
+    'McLaren': ['720S', '750S', '765LT', 'Artura', 'GT', 'P1', 'Senna', 'Speedtail', 'Elva', '600LT', '675LT', '570S'],
+    'Mercedes-Benz': ['Classe A', 'Classe B', 'Classe C', 'Classe E', 'Classe G', 'Classe S', 'Classe V', 'CLA', 'CLE', 'CLS', 'GLA', 'GLB', 'GLC', 'GLE', 'GLS', 'SL', 'AMG GT', 'EQA', 'EQB', 'EQC', 'EQE', 'EQS', 'Maybach'],
+    'Mini': ['Clubman', 'Countryman', 'Cooper'],
+    'Pagani': ['Zonda', 'Huayra', 'Utopia'],
+    'Porsche': ['718 Boxster', '718 Cayman', '911', '918 Spyder', 'Carrera GT', 'Cayenne', 'Macan', 'Panamera', 'Taycan'],
+    'Rolls-Royce': ['Cullinan', 'Dawn', 'Ghost', 'Phantom', 'Wraith', 'Spectre'],
+    'Tesla': ['Model 3', 'Model S', 'Model X', 'Model Y', 'Cybertruck', 'Roadster'],
+    'Toyota': ['GR Yaris', 'GR86', 'Supra', 'Land Cruiser'],
+    'Volvo': ['EX30', 'EX90', 'XC40', 'XC60', 'XC90', 'V60', 'V90'],
+    'Altro': ['Altro Modello']
+};
+
 // ====================================================================
 // Search Form Configuration Editor Component
 // ====================================================================
@@ -460,17 +493,17 @@ export const AdminPanel = () => {
         if (!editingCar) return;
 
         setLoadingCars(true);
-        const carData = { ...editingCar };
+        // Remove ID from the data we send to Supabase to prevent "cannot insert a non-DEFAULT value" errors
+        const { id, ...carDataToSave } = editingCar;
 
-        // Remove ID if adding new car
-        const isNew = !carData.id;
+        const isNew = !id;
 
         let error;
         if (isNew) {
-            const { error: insertError } = await supabase.from('cars').insert([carData]);
+            const { error: insertError } = await supabase.from('cars').insert([carDataToSave]);
             error = insertError;
         } else {
-            const { error: updateError } = await supabase.from('cars').update(carData).eq('id', carData.id);
+            const { error: updateError } = await supabase.from('cars').update(carDataToSave).eq('id', id);
             error = updateError;
         }
 
@@ -1086,11 +1119,33 @@ export const AdminPanel = () => {
                                     <div className="form-row">
                                         <div className="form-group">
                                             <label>Marca</label>
-                                            <input required value={editingCar.brand} onChange={e => setEditingCar({ ...editingCar, brand: e.target.value })} placeholder="Es: Ferrari" />
+                                            <select required value={editingCar.brand} onChange={e => {
+                                                const newBrand = e.target.value;
+                                                const availableModels = CAR_BRANDS_AND_MODELS[newBrand] || [];
+                                                setEditingCar({
+                                                    ...editingCar,
+                                                    brand: newBrand,
+                                                    name: availableModels.length > 0 ? availableModels[0] : ''
+                                                });
+                                            }}>
+                                                <option value="" disabled>Seleziona Marca</option>
+                                                {Object.keys(CAR_BRANDS_AND_MODELS).sort().map(brand => (
+                                                    <option key={brand} value={brand}>{brand}</option>
+                                                ))}
+                                            </select>
                                         </div>
                                         <div className="form-group">
                                             <label>Modello</label>
-                                            <input required value={editingCar.name} onChange={e => setEditingCar({ ...editingCar, name: e.target.value })} placeholder="Es: 488 Pista" />
+                                            {editingCar.brand === 'Altro' ? (
+                                                <input required value={editingCar.name} onChange={e => setEditingCar({ ...editingCar, name: e.target.value })} placeholder="Es: Modello Custom" />
+                                            ) : (
+                                                <select required value={editingCar.name} onChange={e => setEditingCar({ ...editingCar, name: e.target.value })}>
+                                                    <option value="" disabled>Seleziona Modello</option>
+                                                    {(CAR_BRANDS_AND_MODELS[editingCar.brand] || [editingCar.name]).map(model => (
+                                                        <option key={model} value={model}>{model}</option>
+                                                    ))}
+                                                </select>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="form-row">
@@ -1115,6 +1170,13 @@ export const AdminPanel = () => {
                                             <option value="Hypercar">Hypercar</option>
                                             <option value="SUV">SUV</option>
                                             <option value="LUXURY">Luxury</option>
+                                            <option value="Berlina">Berlina</option>
+                                            <option value="Cabriolet">Cabrio / Spider</option>
+                                            <option value="Coupe">Coupé</option>
+                                            <option value="GT">Gran Turismo (GT)</option>
+                                            <option value="Station Wagon">Station Wagon</option>
+                                            <option value="Classic">Epoca / Classic</option>
+                                            <option value="Van">Van / Minivan</option>
                                         </select>
                                     </div>
                                     <div className="form-group">
@@ -1132,20 +1194,36 @@ export const AdminPanel = () => {
                                         </div>
                                         <div className="form-group">
                                             <label><Fuel size={14} /> Carburante</label>
-                                            <input value={editingCar.fuel} onChange={e => setEditingCar({ ...editingCar, fuel: e.target.value })} />
+                                            <select value={editingCar.fuel} onChange={e => setEditingCar({ ...editingCar, fuel: e.target.value })}>
+                                                <option value="Benzina">Benzina</option>
+                                                <option value="Diesel">Diesel</option>
+                                                <option value="Elettrica">Elettrica</option>
+                                                <option value="Ibrida">Ibrida</option>
+                                                <option value="Plug-in Hybrid">Plug-in Hybrid</option>
+                                                <option value="GPL">GPL</option>
+                                                <option value="Metano">Metano</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div className="form-row">
+                                        <div className="form-group">
+                                            <label><Gauge size={14} /> Trasmissione (Marce)</label>
+                                            <select value={editingCar.transmission || 'Automatico'} onChange={e => setEditingCar({ ...editingCar, transmission: e.target.value })}>
+                                                <option value="Automatico">Automatico</option>
+                                                <option value="Manuale">Manuale</option>
+                                                <option value="Semiautomatico">Semiautomatico</option>
+                                            </select>
+                                        </div>
                                         <div className="form-group">
                                             <label><Gauge size={14} /> Potenza (CV)</label>
                                             <input value={editingCar.power} onChange={e => setEditingCar({ ...editingCar, power: e.target.value })} />
                                         </div>
+                                    </div>
+                                    <div className="form-row">
                                         <div className="form-group">
                                             <label>Anno</label>
                                             <input type="number" value={editingCar.year || 0} onChange={e => setEditingCar({ ...editingCar, year: Number(e.target.value) })} />
                                         </div>
-                                    </div>
-                                    <div className="form-row">
                                         <div className="form-group">
                                             <label>Chilometri</label>
                                             <input value={editingCar.km || ''} onChange={e => setEditingCar({ ...editingCar, km: e.target.value })} />

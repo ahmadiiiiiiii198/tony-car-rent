@@ -167,7 +167,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
     // Collapsible sections state
     const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-        main: true, specs: false, condition: false, features: false, colors: false, interior: false, ambiente: false, other: false
+        main: true, advanced: false, specs: false, condition: false, features: false, colors: false, interior: false, ambiente: false, other: false
     });
     const toggleSection = (key: string) => setExpandedSections(prev => ({ ...prev, [key]: !prev[key] }));
 
@@ -1014,221 +1014,234 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                                     )}
                                                 </div>
 
-                                                {/* ===== SECTION 2: Specifiche Tecniche ===== */}
+                                                {/* ===== RICERCA AVANZATA ===== */}
                                                 <div className="adv-section">
-                                                    <div className="adv-section-header" onClick={() => toggleSection('specs')}>
-                                                        <h4><Sliders size={16} /> Specifiche Tecniche</h4>
-                                                        <ChevronDown size={18} className={`adv-chevron ${expandedSections.specs ? 'open' : ''}`} />
+                                                    <div className="adv-section-header" onClick={() => toggleSection('advanced')}>
+                                                        <h4><Sliders size={16} /> Ricerca Avanzata</h4>
+                                                        <ChevronDown size={18} className={`adv-chevron ${expandedSections.advanced ? 'open' : ''}`} />
                                                     </div>
-                                                    {expandedSections.specs && (
-                                                        <div className="adv-section-body">
-                                                            <div className="hero-search-row">
-                                                                <label className="hero-search-field">
-                                                                    <span className="field-label"><Fuel size={14} /> Carburante</span>
-                                                                    <select value={fuelType} onChange={(e) => setFuelType(e.target.value)}>
-                                                                        <option value="">Tutto</option>
-                                                                        {dbFuels.map(f => <option key={f} value={f}>{f}</option>)}
-                                                                    </select>
-                                                                </label>
-                                                                <label className="hero-search-field">
-                                                                    <span className="field-label">Cambio</span>
-                                                                    <select value={transmission} onChange={(e) => setTransmission(e.target.value)}>
-                                                                        <option value="">Tutto</option>
-                                                                        {dbTransmissions.map(t => <option key={t} value={t}>{t}</option>)}
-                                                                    </select>
-                                                                </label>
-                                                            </div>
-                                                            <div className="hero-search-row">
-                                                                <label className="hero-search-field hero-search-field-half">
-                                                                    <span className="field-label">Potenza Da (kW)</span>
-                                                                    <input type="number" placeholder="kW" value={powerMin} onChange={(e) => setPowerMin(e.target.value)} />
-                                                                </label>
-                                                                <label className="hero-search-field hero-search-field-half">
-                                                                    <span className="field-label">Potenza A (kW)</span>
-                                                                    <input type="number" placeholder="kW" value={powerMax} onChange={(e) => setPowerMax(e.target.value)} />
-                                                                </label>
-                                                            </div>
-                                                            <div className="hero-search-row" style={{ alignItems: 'end' }}>
-                                                                <div className="hero-search-field">
-                                                                    <span className="field-label">N. di porte</span>
-                                                                    <div className="adv-segment-group">
-                                                                        <button type="button" className={`adv-segment-btn ${doorsFilter === '' ? 'active' : ''}`} onClick={() => setDoorsFilter('')}>Tutto</button>
-                                                                        {doorOptions.map(d => (
-                                                                            <button type="button" key={d} className={`adv-segment-btn ${doorsFilter === d ? 'active' : ''}`} onClick={() => setDoorsFilter(d)}>{d}</button>
-                                                                        ))}
-                                                                    </div>
+                                                    {expandedSections.advanced && (
+                                                        <div className="advanced-search-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '1rem', paddingLeft: '0.5rem', borderLeft: '2px solid rgba(212,175,55,0.3)' }}>
+
+                                                            {/* ===== SECTION 2: Specifiche Tecniche ===== */}
+                                                            <div className="adv-section">
+                                                                <div className="adv-section-header" onClick={() => toggleSection('specs')}>
+                                                                    <h4><Sliders size={16} /> Specifiche Tecniche</h4>
+                                                                    <ChevronDown size={18} className={`adv-chevron ${expandedSections.specs ? 'open' : ''}`} />
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                {/* ===== SECTION 3: Condizione del veicolo ===== */}
-                                                <div className="adv-section">
-                                                    <div className="adv-section-header" onClick={() => toggleSection('condition')}>
-                                                        <h4><Award size={16} /> Condizione del veicolo</h4>
-                                                        <ChevronDown size={18} className={`adv-chevron ${expandedSections.condition ? 'open' : ''}`} />
-                                                    </div>
-                                                    {expandedSections.condition && (
-                                                        <div className="adv-section-body">
-                                                            <span className="field-label" style={{ marginBottom: '0.5rem', display: 'block' }}>Tipo di veicolo</span>
-                                                            <div className="adv-checkbox-grid">
-                                                                {allConditions.map(c => (
-                                                                    <label key={c.value} className="adv-checkbox-item">
-                                                                        <div className={`adv-checkbox ${conditionFilters.includes(c.value) ? 'checked' : ''}`}>
-                                                                            {conditionFilters.includes(c.value) && <Check size={12} />}
+                                                                {expandedSections.specs && (
+                                                                    <div className="adv-section-body">
+                                                                        <div className="hero-search-row">
+                                                                            <label className="hero-search-field">
+                                                                                <span className="field-label"><Fuel size={14} /> Carburante</span>
+                                                                                <select value={fuelType} onChange={(e) => setFuelType(e.target.value)}>
+                                                                                    <option value="">Tutto</option>
+                                                                                    {dbFuels.map(f => <option key={f} value={f}>{f}</option>)}
+                                                                                </select>
+                                                                            </label>
+                                                                            <label className="hero-search-field">
+                                                                                <span className="field-label">Cambio</span>
+                                                                                <select value={transmission} onChange={(e) => setTransmission(e.target.value)}>
+                                                                                    <option value="">Tutto</option>
+                                                                                    {dbTransmissions.map(t => <option key={t} value={t}>{t}</option>)}
+                                                                                </select>
+                                                                            </label>
                                                                         </div>
-                                                                        <input type="checkbox" hidden checked={conditionFilters.includes(c.value)} onChange={() => toggleCondition(c.value)} />
-                                                                        <span>{c.label}</span>
-                                                                    </label>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                {/* ===== SECTION 4: Dotazioni ===== */}
-                                                <div className="adv-section">
-                                                    <div className="adv-section-header" onClick={() => toggleSection('features')}>
-                                                        <h4><Sliders size={16} /> Dotazioni</h4>
-                                                        <ChevronDown size={18} className={`adv-chevron ${expandedSections.features ? 'open' : ''}`} />
-                                                    </div>
-                                                    {expandedSections.features && (
-                                                        <div className="adv-section-body">
-                                                            <div className="adv-checkbox-grid cols-2">
-                                                                {allFeatures.map(f => (
-                                                                    <label key={f} className="adv-checkbox-item">
-                                                                        <div className={`adv-checkbox ${featureFilters.includes(f) ? 'checked' : ''}`}>
-                                                                            {featureFilters.includes(f) && <Check size={12} />}
+                                                                        <div className="hero-search-row">
+                                                                            <label className="hero-search-field hero-search-field-half">
+                                                                                <span className="field-label">Potenza Da (kW)</span>
+                                                                                <input type="number" placeholder="kW" value={powerMin} onChange={(e) => setPowerMin(e.target.value)} />
+                                                                            </label>
+                                                                            <label className="hero-search-field hero-search-field-half">
+                                                                                <span className="field-label">Potenza A (kW)</span>
+                                                                                <input type="number" placeholder="kW" value={powerMax} onChange={(e) => setPowerMax(e.target.value)} />
+                                                                            </label>
                                                                         </div>
-                                                                        <input type="checkbox" hidden checked={featureFilters.includes(f)} onChange={() => toggleFeature(f)} />
-                                                                        <span>{f}</span>
-                                                                    </label>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                {/* ===== SECTION 5: Esterni (Colors) ===== */}
-                                                <div className="adv-section">
-                                                    <div className="adv-section-header" onClick={() => toggleSection('colors')}>
-                                                        <h4><Palette size={16} /> Esterni</h4>
-                                                        <ChevronDown size={18} className={`adv-chevron ${expandedSections.colors ? 'open' : ''}`} />
-                                                    </div>
-                                                    {expandedSections.colors && (
-                                                        <div className="adv-section-body">
-                                                            <span className="field-label" style={{ marginBottom: '0.75rem', display: 'block' }}>Colore carrozzeria</span>
-                                                            <div className="adv-color-grid">
-                                                                {exteriorColors.map(color => (
-                                                                    <button
-                                                                        type="button"
-                                                                        key={color.name}
-                                                                        className={`adv-color-btn ${colorFilters.includes(color.name) ? 'selected' : ''}`}
-                                                                        onClick={() => toggleColor(color.name)}
-                                                                    >
-                                                                        <span className="adv-color-swatch" style={{ backgroundColor: color.hex }} />
-                                                                        <span className="adv-color-label">{color.name}</span>
-                                                                    </button>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                {/* ===== SECTION 6: Interni (Interior) ===== */}
-                                                <div className="adv-section">
-                                                    <div className="adv-section-header" onClick={() => toggleSection('interior')}>
-                                                        <h4><Armchair size={16} /> Interni</h4>
-                                                        <ChevronDown size={18} className={`adv-chevron ${expandedSections.interior ? 'open' : ''}`} />
-                                                    </div>
-                                                    {expandedSections.interior && (
-                                                        <div className="adv-section-body">
-                                                            <span className="field-label" style={{ marginBottom: '0.75rem', display: 'block' }}>Colore interni</span>
-                                                            <div className="adv-color-grid">
-                                                                {interiorColors.map(color => (
-                                                                    <button
-                                                                        type="button"
-                                                                        key={color.name}
-                                                                        className={`adv-color-btn ${interiorColorFilters.includes(color.name) ? 'selected' : ''}`}
-                                                                        onClick={() => toggleInteriorColor(color.name)}
-                                                                    >
-                                                                        <span className="adv-color-swatch" style={{ backgroundColor: color.hex }} />
-                                                                        <span className="adv-color-label">{color.name}</span>
-                                                                    </button>
-                                                                ))}
-                                                            </div>
-                                                            <span className="field-label" style={{ marginTop: '1rem', marginBottom: '0.5rem', display: 'block' }}>Materiale</span>
-                                                            <div className="adv-checkbox-grid cols-2">
-                                                                {allMaterials.map(m => (
-                                                                    <label key={m} className="adv-checkbox-item">
-                                                                        <div className={`adv-checkbox ${materialFilters.includes(m) ? 'checked' : ''}`}>
-                                                                            {materialFilters.includes(m) && <Check size={12} />}
+                                                                        <div className="hero-search-row" style={{ alignItems: 'end' }}>
+                                                                            <div className="hero-search-field">
+                                                                                <span className="field-label">N. di porte</span>
+                                                                                <div className="adv-segment-group">
+                                                                                    <button type="button" className={`adv-segment-btn ${doorsFilter === '' ? 'active' : ''}`} onClick={() => setDoorsFilter('')}>Tutto</button>
+                                                                                    {doorOptions.map(d => (
+                                                                                        <button type="button" key={d} className={`adv-segment-btn ${doorsFilter === d ? 'active' : ''}`} onClick={() => setDoorsFilter(d)}>{d}</button>
+                                                                                    ))}
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
-                                                                        <input type="checkbox" hidden checked={materialFilters.includes(m)} onChange={() => toggleMaterial(m)} />
-                                                                        <span>{m}</span>
-                                                                    </label>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                {/* ===== SECTION 7: Ambiente ===== */}
-                                                <div className="adv-section">
-                                                    <div className="adv-section-header" onClick={() => toggleSection('ambiente')}>
-                                                        <h4><Leaf size={16} /> Ambiente</h4>
-                                                        <ChevronDown size={18} className={`adv-chevron ${expandedSections.ambiente ? 'open' : ''}`} />
-                                                    </div>
-                                                    {expandedSections.ambiente && (
-                                                        <div className="adv-section-body">
-                                                            <div className="hero-search-row">
-                                                                <label className="hero-search-field">
-                                                                    <span className="field-label">Classe emissioni (da)</span>
-                                                                    <select value={emissionClass} onChange={(e) => setEmissionClass(e.target.value)}>
-                                                                        <option value="">Tutto</option>
-                                                                        {emissionClasses.map(ec => <option key={ec} value={ec}>{ec}</option>)}
-                                                                    </select>
-                                                                </label>
-                                                                <div className="hero-search-field">
-                                                                    <span className="field-label">Bollino ambientale (da)</span>
-                                                                    <div className="adv-segment-group">
-                                                                        <button type="button" className={`adv-segment-btn ${ecoBadge === '' ? 'active' : ''}`} onClick={() => setEcoBadge('')}>Tutto</button>
-                                                                        {ecoBadgeLevels.map(level => (
-                                                                            <button
-                                                                                type="button"
-                                                                                key={level}
-                                                                                className={`adv-segment-btn eco-badge-btn ${ecoBadge === level ? 'active' : ''}`}
-                                                                                onClick={() => setEcoBadge(level)}
-                                                                            >
-                                                                                <span className={`eco-badge-dot eco-badge-${level}`} />
-                                                                                {level}
-                                                                            </button>
-                                                                        ))}
                                                                     </div>
+                                                                )}
+                                                            </div>
+
+                                                            {/* ===== SECTION 3: Condizione del veicolo ===== */}
+                                                            <div className="adv-section">
+                                                                <div className="adv-section-header" onClick={() => toggleSection('condition')}>
+                                                                    <h4><Award size={16} /> Condizione del veicolo</h4>
+                                                                    <ChevronDown size={18} className={`adv-chevron ${expandedSections.condition ? 'open' : ''}`} />
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                {/* ===== SECTION 8: Altre informazioni ===== */}
-                                                <div className="adv-section">
-                                                    <div className="adv-section-header" onClick={() => toggleSection('other')}>
-                                                        <h4><Info size={16} /> Altre informazioni</h4>
-                                                        <ChevronDown size={18} className={`adv-chevron ${expandedSections.other ? 'open' : ''}`} />
-                                                    </div>
-                                                    {expandedSections.other && (
-                                                        <div className="adv-section-body">
-                                                            <div className="hero-search-row" style={{ alignItems: 'center' }}>
-                                                                <label className="adv-checkbox-item" style={{ cursor: 'pointer' }}>
-                                                                    <div className={`adv-checkbox ${vatDeductible ? 'checked' : ''}`}>
-                                                                        {vatDeductible && <Check size={12} />}
+                                                                {expandedSections.condition && (
+                                                                    <div className="adv-section-body">
+                                                                        <span className="field-label" style={{ marginBottom: '0.5rem', display: 'block' }}>Tipo di veicolo</span>
+                                                                        <div className="adv-checkbox-grid">
+                                                                            {allConditions.map(c => (
+                                                                                <label key={c.value} className="adv-checkbox-item">
+                                                                                    <div className={`adv-checkbox ${conditionFilters.includes(c.value) ? 'checked' : ''}`}>
+                                                                                        {conditionFilters.includes(c.value) && <Check size={12} />}
+                                                                                    </div>
+                                                                                    <input type="checkbox" hidden checked={conditionFilters.includes(c.value)} onChange={() => toggleCondition(c.value)} />
+                                                                                    <span>{c.label}</span>
+                                                                                </label>
+                                                                            ))}
+                                                                        </div>
                                                                     </div>
-                                                                    <input type="checkbox" hidden checked={vatDeductible} onChange={() => setVatDeductible(!vatDeductible)} />
-                                                                    <span>IVA deducibile</span>
-                                                                </label>
+                                                                )}
                                                             </div>
+
+                                                            {/* ===== SECTION 4: Dotazioni ===== */}
+                                                            <div className="adv-section">
+                                                                <div className="adv-section-header" onClick={() => toggleSection('features')}>
+                                                                    <h4><Sliders size={16} /> Dotazioni</h4>
+                                                                    <ChevronDown size={18} className={`adv-chevron ${expandedSections.features ? 'open' : ''}`} />
+                                                                </div>
+                                                                {expandedSections.features && (
+                                                                    <div className="adv-section-body">
+                                                                        <div className="adv-checkbox-grid cols-2">
+                                                                            {allFeatures.map(f => (
+                                                                                <label key={f} className="adv-checkbox-item">
+                                                                                    <div className={`adv-checkbox ${featureFilters.includes(f) ? 'checked' : ''}`}>
+                                                                                        {featureFilters.includes(f) && <Check size={12} />}
+                                                                                    </div>
+                                                                                    <input type="checkbox" hidden checked={featureFilters.includes(f)} onChange={() => toggleFeature(f)} />
+                                                                                    <span>{f}</span>
+                                                                                </label>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+
+                                                            {/* ===== SECTION 5: Esterni (Colors) ===== */}
+                                                            <div className="adv-section">
+                                                                <div className="adv-section-header" onClick={() => toggleSection('colors')}>
+                                                                    <h4><Palette size={16} /> Esterni</h4>
+                                                                    <ChevronDown size={18} className={`adv-chevron ${expandedSections.colors ? 'open' : ''}`} />
+                                                                </div>
+                                                                {expandedSections.colors && (
+                                                                    <div className="adv-section-body">
+                                                                        <span className="field-label" style={{ marginBottom: '0.75rem', display: 'block' }}>Colore carrozzeria</span>
+                                                                        <div className="adv-color-grid">
+                                                                            {exteriorColors.map(color => (
+                                                                                <button
+                                                                                    type="button"
+                                                                                    key={color.name}
+                                                                                    className={`adv-color-btn ${colorFilters.includes(color.name) ? 'selected' : ''}`}
+                                                                                    onClick={() => toggleColor(color.name)}
+                                                                                >
+                                                                                    <span className="adv-color-swatch" style={{ backgroundColor: color.hex }} />
+                                                                                    <span className="adv-color-label">{color.name}</span>
+                                                                                </button>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+
+                                                            {/* ===== SECTION 6: Interni (Interior) ===== */}
+                                                            <div className="adv-section">
+                                                                <div className="adv-section-header" onClick={() => toggleSection('interior')}>
+                                                                    <h4><Armchair size={16} /> Interni</h4>
+                                                                    <ChevronDown size={18} className={`adv-chevron ${expandedSections.interior ? 'open' : ''}`} />
+                                                                </div>
+                                                                {expandedSections.interior && (
+                                                                    <div className="adv-section-body">
+                                                                        <span className="field-label" style={{ marginBottom: '0.75rem', display: 'block' }}>Colore interni</span>
+                                                                        <div className="adv-color-grid">
+                                                                            {interiorColors.map(color => (
+                                                                                <button
+                                                                                    type="button"
+                                                                                    key={color.name}
+                                                                                    className={`adv-color-btn ${interiorColorFilters.includes(color.name) ? 'selected' : ''}`}
+                                                                                    onClick={() => toggleInteriorColor(color.name)}
+                                                                                >
+                                                                                    <span className="adv-color-swatch" style={{ backgroundColor: color.hex }} />
+                                                                                    <span className="adv-color-label">{color.name}</span>
+                                                                                </button>
+                                                                            ))}
+                                                                        </div>
+                                                                        <span className="field-label" style={{ marginTop: '1rem', marginBottom: '0.5rem', display: 'block' }}>Materiale</span>
+                                                                        <div className="adv-checkbox-grid cols-2">
+                                                                            {allMaterials.map(m => (
+                                                                                <label key={m} className="adv-checkbox-item">
+                                                                                    <div className={`adv-checkbox ${materialFilters.includes(m) ? 'checked' : ''}`}>
+                                                                                        {materialFilters.includes(m) && <Check size={12} />}
+                                                                                    </div>
+                                                                                    <input type="checkbox" hidden checked={materialFilters.includes(m)} onChange={() => toggleMaterial(m)} />
+                                                                                    <span>{m}</span>
+                                                                                </label>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+
+                                                            {/* ===== SECTION 7: Ambiente ===== */}
+                                                            <div className="adv-section">
+                                                                <div className="adv-section-header" onClick={() => toggleSection('ambiente')}>
+                                                                    <h4><Leaf size={16} /> Ambiente</h4>
+                                                                    <ChevronDown size={18} className={`adv-chevron ${expandedSections.ambiente ? 'open' : ''}`} />
+                                                                </div>
+                                                                {expandedSections.ambiente && (
+                                                                    <div className="adv-section-body">
+                                                                        <div className="hero-search-row">
+                                                                            <label className="hero-search-field">
+                                                                                <span className="field-label">Classe emissioni (da)</span>
+                                                                                <select value={emissionClass} onChange={(e) => setEmissionClass(e.target.value)}>
+                                                                                    <option value="">Tutto</option>
+                                                                                    {emissionClasses.map(ec => <option key={ec} value={ec}>{ec}</option>)}
+                                                                                </select>
+                                                                            </label>
+                                                                            <div className="hero-search-field">
+                                                                                <span className="field-label">Bollino ambientale (da)</span>
+                                                                                <div className="adv-segment-group">
+                                                                                    <button type="button" className={`adv-segment-btn ${ecoBadge === '' ? 'active' : ''}`} onClick={() => setEcoBadge('')}>Tutto</button>
+                                                                                    {ecoBadgeLevels.map(level => (
+                                                                                        <button
+                                                                                            type="button"
+                                                                                            key={level}
+                                                                                            className={`adv-segment-btn eco-badge-btn ${ecoBadge === level ? 'active' : ''}`}
+                                                                                            onClick={() => setEcoBadge(level)}
+                                                                                        >
+                                                                                            <span className={`eco-badge-dot eco-badge-${level}`} />
+                                                                                            {level}
+                                                                                        </button>
+                                                                                    ))}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+
+                                                            {/* ===== SECTION 8: Altre informazioni ===== */}
+                                                            <div className="adv-section">
+                                                                <div className="adv-section-header" onClick={() => toggleSection('other')}>
+                                                                    <h4><Info size={16} /> Altre informazioni</h4>
+                                                                    <ChevronDown size={18} className={`adv-chevron ${expandedSections.other ? 'open' : ''}`} />
+                                                                </div>
+                                                                {expandedSections.other && (
+                                                                    <div className="adv-section-body">
+                                                                        <div className="hero-search-row" style={{ alignItems: 'center' }}>
+                                                                            <label className="adv-checkbox-item" style={{ cursor: 'pointer' }}>
+                                                                                <div className={`adv-checkbox ${vatDeductible ? 'checked' : ''}`}>
+                                                                                    {vatDeductible && <Check size={12} />}
+                                                                                </div>
+                                                                                <input type="checkbox" hidden checked={vatDeductible} onChange={() => setVatDeductible(!vatDeductible)} />
+                                                                                <span>IVA deducibile</span>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+
                                                         </div>
                                                     )}
                                                 </div>
