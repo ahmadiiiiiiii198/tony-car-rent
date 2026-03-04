@@ -6,7 +6,7 @@ import {
     Mail, Phone, Car as CarIcon, Calendar, Search, RefreshCw,
     ChevronDown, ChevronUp, MessageSquare, Trash2, ArrowLeft,
     Plus, Edit, Save, X, Upload, LayoutGrid, Settings as SettingsIcon,
-    Fuel, Users, Gauge,
+    Fuel,
     Award, Palette, Wand2, Shield
 } from 'lucide-react';
 import { useSettings, type SearchFormConfig, type ColorOption, type ConditionOption } from '../context/SettingsContext';
