@@ -1104,174 +1104,307 @@ export const AdminPanel = () => {
                 />
             )}
 
-            {/* Car Editor Modal */}
+            {/* Car Editor Modal — Subito-style full-page form */}
             {showCarModal && editingCar && (
-                <div className="admin-modal-overlay">
-                    <div className="admin-modal">
-                        <div className="modal-header">
+                <div className="admin-modal-overlay car-editor-overlay">
+                    <div className="admin-modal car-editor-modal">
+                        <div className="modal-header car-editor-header">
                             <h3>{editingCar.id ? 'Modifica Veicolo' : 'Nuovo Veicolo'}</h3>
                             <button onClick={() => { setShowCarModal(false); setEditingCar(null); }}><X size={24} /></button>
                         </div>
-                        <form onSubmit={handleSaveCar} className="modal-form">
-                            <div className="form-grid">
-                                <div className="form-section">
-                                    <h4>Informazioni Base</h4>
-                                    <div className="form-row">
-                                        <div className="form-group">
-                                            <label>Marca</label>
-                                            <select required value={editingCar.brand} onChange={e => {
-                                                const newBrand = e.target.value;
-                                                const availableModels = CAR_BRANDS_AND_MODELS[newBrand] || [];
-                                                setEditingCar({
-                                                    ...editingCar,
-                                                    brand: newBrand,
-                                                    name: availableModels.length > 0 ? availableModels[0] : ''
-                                                });
-                                            }}>
-                                                <option value="" disabled>Seleziona Marca</option>
-                                                {Object.keys(CAR_BRANDS_AND_MODELS).sort().map(brand => (
-                                                    <option key={brand} value={brand}>{brand}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Modello</label>
-                                            {editingCar.brand === 'Altro' ? (
-                                                <input required value={editingCar.name} onChange={e => setEditingCar({ ...editingCar, name: e.target.value })} placeholder="Es: Modello Custom" />
-                                            ) : (
-                                                <select required value={editingCar.name} onChange={e => setEditingCar({ ...editingCar, name: e.target.value })}>
-                                                    <option value="" disabled>Seleziona Modello</option>
-                                                    {(CAR_BRANDS_AND_MODELS[editingCar.brand] || [editingCar.name]).map(model => (
-                                                        <option key={model} value={model}>{model}</option>
-                                                    ))}
-                                                </select>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div className="form-row">
-                                        <div className="form-group">
-                                            <label>Prezzo (€)</label>
-                                            <input required type="number" value={editingCar.price} onChange={e => setEditingCar({ ...editingCar, price: Number(e.target.value) })} />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Tipo Listing</label>
-                                            <select value={editingCar.listing_type} onChange={e => setEditingCar({ ...editingCar, listing_type: e.target.value as any })}>
-                                                <option value="rental">Noleggio</option>
-                                                <option value="sale">Vendita</option>
-                                                <option value="both">Entrambi</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Categoria</label>
-                                        <select value={editingCar.category} onChange={e => setEditingCar({ ...editingCar, category: e.target.value })}>
-                                            <option value="Sports">Sportive</option>
-                                            <option value="Supercar">Supercar</option>
-                                            <option value="Hypercar">Hypercar</option>
-                                            <option value="SUV">SUV</option>
-                                            <option value="LUXURY">Luxury</option>
-                                            <option value="Berlina">Berlina</option>
-                                            <option value="Cabriolet">Cabrio / Spider</option>
-                                            <option value="Coupe">Coupé</option>
-                                            <option value="GT">Gran Turismo (GT)</option>
-                                            <option value="Station Wagon">Station Wagon</option>
-                                            <option value="Classic">Epoca / Classic</option>
-                                            <option value="Van">Van / Minivan</option>
-                                        </select>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Descrizione</label>
-                                        <textarea value={editingCar.description || ''} onChange={e => setEditingCar({ ...editingCar, description: e.target.value })} rows={4} placeholder="Descrizione del veicolo..." />
-                                    </div>
+                        <form onSubmit={handleSaveCar} className="car-editor-form">
+                            {/* ── SECTION: Immagini ── */}
+                            <div className="ce-section">
+                                <div className="ce-section-title">
+                                    <span>Immagini</span>
+                                    <span className="ce-counter">{(editingCar.image ? 1 : 0) + (editingCar.images?.length || 0)}/6</span>
                                 </div>
-
-                                <div className="form-section">
-                                    <h4>Specifiche Tecniche</h4>
-                                    <div className="form-row">
-                                        <div className="form-group">
-                                            <label><Users size={14} /> Posti</label>
-                                            <input type="number" value={editingCar.seats} onChange={e => setEditingCar({ ...editingCar, seats: Number(e.target.value) })} />
-                                        </div>
-                                        <div className="form-group">
-                                            <label><Fuel size={14} /> Carburante</label>
-                                            <select value={editingCar.fuel} onChange={e => setEditingCar({ ...editingCar, fuel: e.target.value })}>
-                                                <option value="Benzina">Benzina</option>
-                                                <option value="Diesel">Diesel</option>
-                                                <option value="Elettrica">Elettrica</option>
-                                                <option value="Ibrida">Ibrida</option>
-                                                <option value="Plug-in Hybrid">Plug-in Hybrid</option>
-                                                <option value="GPL">GPL</option>
-                                                <option value="Metano">Metano</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="form-row">
-                                        <div className="form-group">
-                                            <label><Gauge size={14} /> Trasmissione (Marce)</label>
-                                            <select value={editingCar.transmission || 'Automatico'} onChange={e => setEditingCar({ ...editingCar, transmission: e.target.value })}>
-                                                <option value="Automatico">Automatico</option>
-                                                <option value="Manuale">Manuale</option>
-                                                <option value="Semiautomatico">Semiautomatico</option>
-                                            </select>
-                                        </div>
-                                        <div className="form-group">
-                                            <label><Gauge size={14} /> Potenza (CV)</label>
-                                            <input value={editingCar.power} onChange={e => setEditingCar({ ...editingCar, power: e.target.value })} />
-                                        </div>
-                                    </div>
-                                    <div className="form-row">
-                                        <div className="form-group">
-                                            <label>Anno</label>
-                                            <input type="number" value={editingCar.year || 0} onChange={e => setEditingCar({ ...editingCar, year: Number(e.target.value) })} />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Chilometri</label>
-                                            <input value={editingCar.km || ''} onChange={e => setEditingCar({ ...editingCar, km: e.target.value })} />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Disponibile</label>
-                                            <div className="toggle-switch">
-                                                <input type="checkbox" checked={editingCar.available} onChange={e => setEditingCar({ ...editingCar, available: e.target.checked })} />
+                                <p className="ce-hint">Trascina per riordinare o clicca per ingrandire</p>
+                                <div className="ce-image-grid">
+                                    {/* Main image slot */}
+                                    <div className={`ce-image-slot ce-main-slot ${editingCar.image ? 'has-image' : ''}`} onClick={handleUploadClick}>
+                                        {editingCar.image ? (
+                                            <>
+                                                <img src={editingCar.image} alt="Principale" />
+                                                <div className="ce-slot-overlay">
+                                                    <Upload size={18} />
+                                                    <span>Cambia</span>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div className="ce-slot-empty">
+                                                <Plus size={24} className="ce-camera-icon" />
+                                                <span>Aggiungi foto</span>
                                             </div>
-                                        </div>
+                                        )}
                                     </div>
+                                    <input type="file" ref={fileInputRef} hidden accept="image/*" onChange={e => { if (e.target.files?.[0]) { handleFileSelected(e.target.files[0], true); e.target.value = ''; } }} />
+
+                                    {/* Gallery image slots (up to 5 more) */}
+                                    {Array.from({ length: 5 }).map((_, idx) => {
+                                        const img = editingCar.images?.[idx];
+                                        return (
+                                            <div key={idx} className={`ce-image-slot ${img ? 'has-image' : ''}`} onClick={() => { if (!img) handleMultiUploadClick(); }}>
+                                                {img ? (
+                                                    <>
+                                                        <img src={img} alt="" />
+                                                        <button type="button" className="ce-slot-remove" onClick={e => { e.stopPropagation(); setEditingCar({ ...editingCar, images: editingCar.images.filter((_, i) => i !== idx) }); }}>
+                                                            <X size={12} />
+                                                        </button>
+                                                    </>
+                                                ) : (
+                                                    <div className="ce-slot-empty">
+                                                        <CarIcon size={20} className="ce-camera-placeholder" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                    <input type="file" ref={multiFileInputRef} hidden accept="image/*" onChange={e => { if (e.target.files?.[0]) { handleFileSelected(e.target.files[0], false); e.target.value = ''; } }} />
                                 </div>
+                                {uploadingImage && <p className="ce-uploading-text"><RefreshCw size={14} className="spin" /> Caricamento in corso...</p>}
+                            </div>
 
-                                <div className="form-section images-section">
-                                    <h4>Galleria Immagini</h4>
-                                    <div className="main-image-upload">
-                                        <div className="preview-container" onClick={handleUploadClick}>
-                                            <img src={editingCar.image || '/hero.png'} alt="Preview" />
-                                            <div className="upload-overlay">
-                                                <Upload size={24} />
-                                                <span>{uploadingImage ? 'Caricamento...' : 'Cambia Immagine Principal'}</span>
-                                            </div>
-                                        </div>
-                                        <input type="file" ref={fileInputRef} hidden accept="image/*" onChange={e => { if (e.target.files?.[0]) { handleFileSelected(e.target.files[0], true); e.target.value = ''; } }} />
-                                    </div>
-
-                                    <div className="multi-images-grid">
-                                        {editingCar.images?.map((img, idx) => (
-                                            <div key={idx} className="thumb-preview">
-                                                <img src={img} alt="" />
-                                                <button type="button" onClick={() => setEditingCar({ ...editingCar, images: editingCar.images.filter((_, i) => i !== idx) })} className="remove-img"><X size={12} /></button>
-                                            </div>
+                            {/* ── SECTION: Titolo (Modello) ── */}
+                            <div className="ce-section">
+                                <div className="ce-section-title">
+                                    <span>Titolo</span>
+                                    <span className="ce-counter">{(editingCar.name?.length || 0)}/50</span>
+                                </div>
+                                {editingCar.brand === 'Altro' ? (
+                                    <input
+                                        className="ce-input"
+                                        required
+                                        maxLength={50}
+                                        value={editingCar.name}
+                                        onChange={e => setEditingCar({ ...editingCar, name: e.target.value })}
+                                        placeholder="Scrivi il nome del veicolo"
+                                    />
+                                ) : (
+                                    <select className="ce-select" required value={editingCar.name} onChange={e => setEditingCar({ ...editingCar, name: e.target.value })}>
+                                        <option value="" disabled>Seleziona Modello</option>
+                                        {(CAR_BRANDS_AND_MODELS[editingCar.brand] || [editingCar.name]).map(model => (
+                                            <option key={model} value={model}>{model}</option>
                                         ))}
-                                        <button type="button" className="add-thumb-btn" onClick={handleMultiUploadClick}>
-                                            <Plus size={20} />
-                                        </button>
-                                        <input type="file" ref={multiFileInputRef} hidden accept="image/*" onChange={e => { if (e.target.files?.[0]) { handleFileSelected(e.target.files[0], false); e.target.value = ''; } }} />
-                                    </div>
+                                    </select>
+                                )}
+                            </div>
+
+                            {/* ── SECTION: Descrizione ── */}
+                            <div className="ce-section">
+                                <div className="ce-section-title">
+                                    <span>Descrizione</span>
+                                    <span className="ce-counter">{(editingCar.description?.length || 0)}/2000</span>
+                                </div>
+                                <textarea
+                                    className="ce-textarea"
+                                    maxLength={2000}
+                                    value={editingCar.description || ''}
+                                    onChange={e => setEditingCar({ ...editingCar, description: e.target.value })}
+                                    rows={5}
+                                    placeholder="Inserisci dettagli e caratteristiche del veicolo."
+                                />
+                            </div>
+
+                            {/* ── SECTION: Marca ── */}
+                            <div className="ce-section">
+                                <div className="ce-section-title"><span>Marca</span></div>
+                                <select className="ce-select" required value={editingCar.brand} onChange={e => {
+                                    const newBrand = e.target.value;
+                                    const availableModels = CAR_BRANDS_AND_MODELS[newBrand] || [];
+                                    setEditingCar({
+                                        ...editingCar,
+                                        brand: newBrand,
+                                        name: availableModels.length > 0 ? availableModels[0] : ''
+                                    });
+                                }}>
+                                    <option value="" disabled>Seleziona la marca</option>
+                                    {Object.keys(CAR_BRANDS_AND_MODELS).sort().map(brand => (
+                                        <option key={brand} value={brand}>{brand}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* ── SECTION: Chilometraggio ── */}
+                            <div className="ce-section">
+                                <div className="ce-section-title"><span>Chilometraggio (km)</span></div>
+                                <input
+                                    className="ce-input"
+                                    value={editingCar.km || ''}
+                                    onChange={e => setEditingCar({ ...editingCar, km: e.target.value })}
+                                    placeholder="Inserisci il chilometraggio"
+                                />
+                            </div>
+
+                            {/* ── SECTION: Anno di immatricolazione ── */}
+                            <div className="ce-section">
+                                <div className="ce-section-title"><span>Anno di immatricolazione</span></div>
+                                <select className="ce-select" value={editingCar.year || ''} onChange={e => setEditingCar({ ...editingCar, year: Number(e.target.value) })}>
+                                    <option value="" disabled>Seleziona l'anno di immatricolazione</option>
+                                    {Array.from({ length: 50 }, (_, i) => new Date().getFullYear() - i).map(year => (
+                                        <option key={year} value={year}>{year}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* ── SECTION: Carburante ── */}
+                            <div className="ce-section">
+                                <div className="ce-section-title">
+                                    <span>Carburante</span>
+                                    <span className="ce-optional">opzionale</span>
+                                </div>
+                                <select className="ce-select" value={editingCar.fuel} onChange={e => setEditingCar({ ...editingCar, fuel: e.target.value })}>
+                                    <option value="" disabled>Seleziona la tipologia di carburante</option>
+                                    <option value="Benzina">Benzina</option>
+                                    <option value="Diesel">Diesel</option>
+                                    <option value="Elettrica">Elettrica</option>
+                                    <option value="Ibrida">Ibrida</option>
+                                    <option value="Plug-in Hybrid">Plug-in Hybrid</option>
+                                    <option value="GPL">GPL</option>
+                                    <option value="Metano">Metano</option>
+                                </select>
+                            </div>
+
+                            {/* ── SECTION: Carrozzeria (Categoria) ── */}
+                            <div className="ce-section">
+                                <div className="ce-section-title">
+                                    <span>Carrozzeria</span>
+                                    <span className="ce-optional">opzionale</span>
+                                </div>
+                                <select className="ce-select" value={editingCar.category} onChange={e => setEditingCar({ ...editingCar, category: e.target.value })}>
+                                    <option value="" disabled>Seleziona la carrozzeria</option>
+                                    <option value="Sports">Sportive</option>
+                                    <option value="Supercar">Supercar</option>
+                                    <option value="Hypercar">Hypercar</option>
+                                    <option value="SUV">SUV</option>
+                                    <option value="LUXURY">Luxury</option>
+                                    <option value="Berlina">Berlina</option>
+                                    <option value="Cabriolet">Cabrio / Spider</option>
+                                    <option value="Coupe">Coupé</option>
+                                    <option value="GT">Gran Turismo (GT)</option>
+                                    <option value="Station Wagon">Station Wagon</option>
+                                    <option value="Classic">Epoca / Classic</option>
+                                    <option value="Van">Van / Minivan</option>
+                                </select>
+                            </div>
+
+                            {/* ── SECTION: Cambio ── */}
+                            <div className="ce-section">
+                                <div className="ce-section-title">
+                                    <span>Cambio</span>
+                                    <span className="ce-optional">opzionale</span>
+                                </div>
+                                <select className="ce-select" value={editingCar.transmission || 'Automatico'} onChange={e => setEditingCar({ ...editingCar, transmission: e.target.value })}>
+                                    <option value="" disabled>Seleziona il tipo di cambio</option>
+                                    <option value="Automatico">Automatico</option>
+                                    <option value="Manuale">Manuale</option>
+                                    <option value="Semiautomatico">Semiautomatico</option>
+                                </select>
+                            </div>
+
+                            {/* ── SECTION: Classe emissioni ── */}
+                            <div className="ce-section">
+                                <div className="ce-section-title">
+                                    <span>Classe emissioni</span>
+                                    <span className="ce-optional">opzionale</span>
+                                </div>
+                                <select className="ce-select" value={editingCar.euro_standard || ''} onChange={e => setEditingCar({ ...editingCar, euro_standard: e.target.value })}>
+                                    <option value="" disabled>Seleziona la classe di emissioni</option>
+                                    <option value="Euro 6">Euro 6</option>
+                                    <option value="Euro 5">Euro 5</option>
+                                    <option value="Euro 4">Euro 4</option>
+                                    <option value="Euro 3">Euro 3</option>
+                                    <option value="Euro 2">Euro 2</option>
+                                    <option value="Euro 1">Euro 1</option>
+                                    <option value="Euro 0">Euro 0</option>
+                                </select>
+                            </div>
+
+                            {/* ── SECTION: Posti ── */}
+                            <div className="ce-section">
+                                <div className="ce-section-title">
+                                    <span>Posti</span>
+                                    <span className="ce-optional">opzionale</span>
+                                </div>
+                                <select className="ce-select" value={editingCar.seats} onChange={e => setEditingCar({ ...editingCar, seats: Number(e.target.value) })}>
+                                    <option value="" disabled>Seleziona il numero di posti</option>
+                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
+                                        <option key={n} value={n}>{n}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* ── SECTION: Potenza ── */}
+                            <div className="ce-section">
+                                <div className="ce-section-title">
+                                    <span>Potenza (CV)</span>
+                                    <span className="ce-optional">opzionale</span>
+                                </div>
+                                <input
+                                    className="ce-input"
+                                    value={editingCar.power}
+                                    onChange={e => setEditingCar({ ...editingCar, power: e.target.value })}
+                                    placeholder="Inserisci la potenza in CV"
+                                />
+                            </div>
+
+                            {/* ── SECTION: Prezzo ── */}
+                            <div className="ce-section">
+                                <div className="ce-section-title"><span>Prezzo</span></div>
+                                <div className="ce-prefixed-input">
+                                    <span className="ce-prefix">€</span>
+                                    <input
+                                        className="ce-input ce-input-prefixed"
+                                        required
+                                        type="number"
+                                        value={editingCar.price}
+                                        onChange={e => setEditingCar({ ...editingCar, price: Number(e.target.value) })}
+                                        placeholder="0,00"
+                                    />
                                 </div>
                             </div>
 
-                            <div className="modal-actions">
-                                <button type="button" className="btn-cancel" onClick={() => setShowCarModal(false)}>Annulla</button>
-                                <button type="submit" className="btn-save" disabled={loadingCars}>
-                                    {loadingCars ? <RefreshCw className="spin" size={18} /> : <Save size={18} />}
-                                    Salva Veicolo
-                                </button>
+                            {/* ── SECTION: Tipo Annuncio ── */}
+                            <div className="ce-section">
+                                <div className="ce-section-title"><span>Tipo Annuncio</span></div>
+                                <div className="ce-segmented-control">
+                                    <button
+                                        type="button"
+                                        className={`ce-segment ${editingCar.listing_type === 'sale' ? 'active' : ''}`}
+                                        onClick={() => setEditingCar({ ...editingCar, listing_type: 'sale' })}
+                                    >Vendita</button>
+                                    <button
+                                        type="button"
+                                        className={`ce-segment ${editingCar.listing_type === 'rental' ? 'active' : ''}`}
+                                        onClick={() => setEditingCar({ ...editingCar, listing_type: 'rental' })}
+                                    >Noleggio</button>
+                                    <button
+                                        type="button"
+                                        className={`ce-segment ${editingCar.listing_type === 'both' ? 'active' : ''}`}
+                                        onClick={() => setEditingCar({ ...editingCar, listing_type: 'both' })}
+                                    >Entrambi</button>
+                                </div>
                             </div>
+
+                            {/* ── SECTION: Disponibilità ── */}
+                            <div className="ce-section ce-toggle-section">
+                                <div className="ce-toggle-row">
+                                    <div>
+                                        <span className="ce-toggle-label">Disponibile</span>
+                                        <span className="ce-toggle-desc">Il veicolo è attualmente disponibile per la vendita o il noleggio.</span>
+                                    </div>
+                                    <label className="ce-toggle">
+                                        <input type="checkbox" checked={editingCar.available} onChange={e => setEditingCar({ ...editingCar, available: e.target.checked })} />
+                                        <span className="ce-toggle-slider" />
+                                    </label>
+                                </div>
+                            </div>
+
+                            {/* ── Submit ── */}
+                            <button type="submit" className="ce-submit-btn" disabled={loadingCars}>
+                                {loadingCars ? <RefreshCw className="spin" size={18} /> : <Save size={18} />}
+                                {editingCar.id ? 'Salva Modifiche' : 'Pubblica Annuncio'}
+                            </button>
                         </form>
                     </div>
                 </div>
