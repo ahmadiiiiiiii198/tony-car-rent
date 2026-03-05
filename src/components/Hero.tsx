@@ -22,7 +22,7 @@ interface HeroProps {
 export const Hero = ({ onSearch }: HeroProps) => {
     const { t, language } = useLanguage();
     const [activeTab, setActiveTab] = useState<TabKey | null>('sale');
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
     const [dbBrands, setDbBrands] = useState<string[]>([]);
     const [allCars, setAllCars] = useState<{ brand: string, name: string }[]>([]);
     const [animationStage, setAnimationStage] = useState<'intro' | 'settling' | 'complete'>('intro');
@@ -296,16 +296,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
         }
     };
 
-    useEffect(() => {
-        const handleMouseMove = (e: MouseEvent) => {
-            setMousePosition({
-                x: (e.clientX / window.innerWidth - 0.5) * 10,
-                y: (e.clientY / window.innerHeight - 0.5) * 10
-            });
-        };
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => window.removeEventListener('mousemove', handleMouseMove);
-    }, []);
+
 
     useEffect(() => {
         const fetchFilters = async () => {
@@ -524,14 +515,8 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
     return (
         <section className="hero-section" id="home">
-            <motion.div
+            <div
                 className="hero-bg"
-                style={{ scale: 1.1 }}
-                animate={{
-                    x: mousePosition.x * -1,
-                    y: mousePosition.y * -1
-                }}
-                transition={{ type: "tween", ease: "linear", duration: 0.2 }}
             >
                 <video
                     autoPlay
@@ -543,7 +528,8 @@ export const Hero = ({ onSearch }: HeroProps) => {
                     <source src="/bmw.mp4" type="video/mp4" />
                 </video>
                 <div className="hero-overlay" />
-            </motion.div>
+                <div className={`hero-tab-overlay ${activeTab || ''}`} />
+            </div>
 
             {/* Panels Animation Stage */}
             <div className={`hero-panels-container ${isMobile ? 'mobile-sequential' : ''}`}>

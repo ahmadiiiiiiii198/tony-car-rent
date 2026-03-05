@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     ChevronRight, ChevronLeft, Star, Fuel, Users, Gauge, X, Calendar,
-    Check, Filter, ChevronDown, ArrowUpDown, Navigation, Info, Tag, ShoppingCart, Car as CarIcon,
+    Check, Filter, ChevronDown, ArrowUpDown, Navigation, Tag, ShoppingCart, Car as CarIcon,
     ZoomIn, ZoomOut, RotateCcw, Maximize2
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
@@ -867,7 +867,7 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                                     className="book-btn"
                                                     onClick={() => handleViewDetails(car)}
                                                 >
-                                                    <Info size={16} /> {t.details} <ChevronRight size={16} />
+                                                    {t.details} <ChevronRight size={16} />
                                                 </button>
                                             </div>
                                         </div>
