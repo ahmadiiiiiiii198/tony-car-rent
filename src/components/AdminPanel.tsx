@@ -50,37 +50,63 @@ interface Car {
 
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'tonaydin2026';
 
+
+
 const CAR_BRANDS_AND_MODELS: Record<string, string[]> = {
-    'Abarth': ['595', '695', '124 Spider'],
-    'Alfa Romeo': ['Giulia', 'Stelvio', '4C', '8C', 'Tonale'],
-    'Aston Martin': ['DB11', 'DB12', 'DBS Superleggera', 'Vantage', 'DBX', 'Vanquish', 'Valhalla', 'Valkyrie'],
-    'Audi': ['A1', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'Q2', 'Q3', 'Q5', 'Q7', 'Q8', 'R8', 'RS3', 'RS4', 'RS5', 'RS6', 'RS7', 'RS Q3', 'RS Q8', 'e-tron', 'e-tron GT'],
-    'Bentley': ['Bentayga', 'Continental GT', 'Flying Spur', 'Mulsanne'],
-    'BMW': ['Serie 1', 'Serie 2', 'Serie 3', 'Serie 4', 'Serie 5', 'Serie 6', 'Serie 7', 'Serie 8', 'X1', 'X2', 'X3', 'X4', 'X5', 'X6', 'X7', 'M2', 'M3', 'M4', 'M5', 'M8', 'Z4', 'iX', 'i4', 'i7', 'XM'],
-    'Bugatti': ['Chiron', 'Veyron', 'Divo', 'Bolide', 'Centodieci', 'Mistral'],
-    'Chevrolet': ['Camaro', 'Corvette'],
-    'Cupra': ['Formentor', 'Leon', 'Ateca', 'Born'],
-    'Dodge': ['Challenger', 'Charger', 'Durango', 'Viper'],
-    'Ferrari': ['296 GTB', '296 GTS', '488 GTB', '488 Spider', '488 Pista', '812 Superfast', '812 GTS', '812 Competizione', 'F8 Tributo', 'F8 Spider', 'SF90 Stradale', 'SF90 Spider', 'Roma', 'Portofino', 'Portofino M', 'Monza SP1', 'Monza SP2', 'Daytona SP3', 'Purosangue', 'LaFerrari', 'Enzo', 'F40', 'F50', 'GTC4Lusso'],
-    'Ford': ['Mustang', 'Bronco', 'GT', 'Raptor'],
-    'Jaguar': ['E-Pace', 'F-Pace', 'F-Type', 'I-Pace', 'XE', 'XF'],
-    'Jeep': ['Avenger', 'Compass', 'Grand Cherokee', 'Renegade', 'Wrangler', 'Gladiator'],
-    'Koenigsegg': ['Agera', 'Jesko', 'Gemera', 'Regera'],
-    'Lamborghini': ['Aventador', 'Huracán', 'Urus', 'Revuelto', 'Gallardo', 'Murciélago', 'Diablo', 'Countach', 'Sian'],
-    'Land Rover': ['Defender', 'Discovery', 'Discovery Sport', 'Range Rover', 'Range Rover Evoque', 'Range Rover Sport', 'Range Rover Velar'],
-    'Lexus': ['ES', 'IS', 'LC', 'LS', 'NX', 'RX', 'UX', 'LFA'],
-    'Lotus': ['Emira', 'Evora', 'Eletre', 'Evija', 'Exige'],
-    'Maserati': ['Ghibli', 'Grecale', 'Levante', 'Quattroporte', 'MC20', 'MC20 Cielo', 'GranTurismo', 'GranCabrio'],
-    'McLaren': ['720S', '750S', '765LT', 'Artura', 'GT', 'P1', 'Senna', 'Speedtail', 'Elva', '600LT', '675LT', '570S'],
-    'Mercedes-Benz': ['Classe A', 'Classe B', 'Classe C', 'Classe E', 'Classe G', 'Classe S', 'Classe V', 'CLA', 'CLE', 'CLS', 'GLA', 'GLB', 'GLC', 'GLE', 'GLS', 'SL', 'AMG GT', 'EQA', 'EQB', 'EQC', 'EQE', 'EQS', 'Maybach'],
-    'Mini': ['Clubman', 'Countryman', 'Cooper'],
-    'Pagani': ['Zonda', 'Huayra', 'Utopia'],
-    'Porsche': ['718 Boxster', '718 Cayman', '911', '918 Spyder', 'Carrera GT', 'Cayenne', 'Macan', 'Panamera', 'Taycan'],
-    'Rolls-Royce': ['Cullinan', 'Dawn', 'Ghost', 'Phantom', 'Wraith', 'Spectre'],
-    'Tesla': ['Model 3', 'Model S', 'Model X', 'Model Y', 'Cybertruck', 'Roadster'],
-    'Toyota': ['GR Yaris', 'GR86', 'Supra', 'Land Cruiser'],
-    'Volvo': ['EX30', 'EX90', 'XC40', 'XC60', 'XC90', 'V60', 'V90'],
-    'Altro': ['Altro Modello']
+    'Abarth': ['500e', '595', '595 Competizione', '695', '695 Rivale', '124 Spider'],
+    'Alfa Romeo': ['Giulia', 'Giulia Quadrifoglio', 'Stelvio', 'Stelvio Quadrifoglio', 'Tonale', 'Junior', '4C', '8C', '33 Stradale', 'Giulietta', 'MiTo'],
+    'Aston Martin': ['DB11', 'DB12', 'DBS Superleggera', 'Vantage', 'Vanquish', 'DBX', 'DBX707', 'Valhalla', 'Valkyrie', 'V12 Speedster'],
+    'Audi': ['A1', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'Q2', 'Q3', 'Q4 e-tron', 'Q5', 'Q6 e-tron', 'Q7', 'Q8', 'Q8 e-tron', 'R8', 'RS3', 'RS4', 'RS5', 'RS6', 'RS7', 'RS Q3', 'RS Q8', 'RS e-tron GT', 'e-tron GT', 'TT', 'TT RS', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'SQ5', 'SQ7', 'SQ8'],
+    'Bentley': ['Bentayga', 'Bentayga EWB', 'Continental GT', 'Continental GT Speed', 'Flying Spur', 'Mulsanne', 'Batur'],
+    'BMW': ['Serie 1', 'Serie 2', 'Serie 2 Active Tourer', 'Serie 2 Gran Coupé', 'Serie 3', 'Serie 4', 'Serie 4 Gran Coupé', 'Serie 5', 'Serie 7', 'Serie 8', 'X1', 'X2', 'X3', 'X4', 'X5', 'X6', 'X7', 'XM', 'M2', 'M3', 'M3 Touring', 'M4', 'M5', 'M8', 'Z4', 'i4', 'i5', 'i7', 'iX', 'iX1', 'iX2', 'iX3'],
+    'Bugatti': ['Chiron', 'Chiron Sport', 'Chiron Pur Sport', 'Chiron Super Sport', 'Veyron', 'Divo', 'Bolide', 'Centodieci', 'Mistral', 'Tourbillon'],
+    'BYD': ['Atto 3', 'Han', 'Tang', 'Seal', 'Dolphin', 'Seal U'],
+    'Chevrolet': ['Camaro', 'Camaro ZL1', 'Corvette', 'Corvette Z06', 'Corvette E-Ray', 'Tahoe', 'Suburban'],
+    'Citroën': ['C3', 'C3 Aircross', 'C4', 'C4 X', 'C5 Aircross', 'ë-C3', 'ë-C4', 'Berlingo'],
+    'Cupra': ['Formentor', 'Leon', 'Leon Sportstourer', 'Ateca', 'Born', 'Tavascan', 'Terramar'],
+    'Dacia': ['Sandero', 'Sandero Stepway', 'Duster', 'Jogger', 'Spring'],
+    'Dodge': ['Challenger', 'Challenger SRT Hellcat', 'Charger', 'Charger Daytona', 'Durango', 'Durango SRT', 'Viper'],
+    'DS Automobiles': ['DS 3', 'DS 4', 'DS 7', 'DS 9'],
+    'Ferrari': ['12Cilindri', '12Cilindri Spider', '296 GTB', '296 GTS', '296 Challenge', '488 GTB', '488 Spider', '488 Pista', '812 Superfast', '812 GTS', '812 Competizione', 'F8 Tributo', 'F8 Spider', 'SF90 Stradale', 'SF90 XX Stradale', 'SF90 Spider', 'SF90 XX Spider', 'Roma', 'Roma Spider', 'Portofino M', 'Purosangue', 'Daytona SP3', 'LaFerrari', 'Enzo', 'F40', 'F50', 'GTC4Lusso', 'Monza SP1', 'Monza SP2'],
+    'Fiat': ['500', '500e', '500X', '500L', '600', '600e', 'Panda', 'Tipo', 'Tipo Cross', 'Doblò'],
+    'Ford': ['Mustang', 'Mustang Mach-E', 'Mustang Dark Horse', 'Bronco', 'Bronco Sport', 'GT', 'Raptor', 'Puma', 'Kuga', 'Explorer', 'Focus', 'Fiesta', 'Ranger'],
+    'Genesis': ['G70', 'G80', 'G90', 'GV60', 'GV70', 'GV80', 'X Speedium Coupé'],
+    'Honda': ['Civic', 'Civic Type R', 'CR-V', 'HR-V', 'ZR-V', 'e:Ny1', 'Jazz'],
+    'Hyundai': ['i10', 'i20', 'i20 N', 'i30', 'i30 N', 'Kona', 'Tucson', 'Santa Fe', 'IONIQ 5', 'IONIQ 5 N', 'IONIQ 6', 'Bayon'],
+    'Jaguar': ['E-Pace', 'F-Pace', 'F-Pace SVR', 'F-Type', 'F-Type R', 'I-Pace', 'XE', 'XF', 'XJ'],
+    'Jeep': ['Avenger', 'Avenger e-Hybrid', 'Compass', 'Grand Cherokee', 'Grand Cherokee 4xe', 'Renegade', 'Wrangler', 'Wrangler 4xe', 'Gladiator'],
+    'Kia': ['Picanto', 'Rio', 'Ceed', 'Proceed', 'XCeed', 'Sportage', 'Sorento', 'Stinger', 'EV6', 'EV6 GT', 'EV9', 'Niro'],
+    'Koenigsegg': ['Agera', 'Agera RS', 'Jesko', 'Jesko Absolut', 'Gemera', 'Regera', 'CC850'],
+    'Lamborghini': ['Revuelto', 'Huracán', 'Huracán Tecnica', 'Huracán Sterrato', 'Huracán STO', 'Urus', 'Urus SE', 'Urus Performante', 'Temerario', 'Aventador', 'Aventador SVJ', 'Gallardo', 'Murciélago', 'Diablo', 'Countach LPI 800-4', 'Sian'],
+    'Lancia': ['Ypsilon', 'Ypsilon HF'],
+    'Land Rover': ['Defender 90', 'Defender 110', 'Defender 130', 'Discovery', 'Discovery Sport', 'Range Rover', 'Range Rover Sport', 'Range Rover Sport SV', 'Range Rover Evoque', 'Range Rover Velar'],
+    'Lexus': ['CT', 'ES', 'IS', 'IS F Sport', 'LC', 'LC Convertible', 'LS', 'LBX', 'NX', 'RX', 'RZ', 'UX', 'LFA', 'GX'],
+    'Lotus': ['Emira', 'Emira V6', 'Evora GT', 'Eletre', 'Eletre R', 'Emeya', 'Emeya R', 'Evija', 'Exige'],
+    'Maserati': ['Ghibli', 'Ghibli Trofeo', 'Grecale', 'Grecale Trofeo', 'Grecale Folgore', 'Levante', 'Levante Trofeo', 'Quattroporte', 'MC20', 'MC20 Cielo', 'GranTurismo', 'GranTurismo Folgore', 'GranCabrio', 'GranCabrio Folgore'],
+    'Mazda': ['2', '3', 'CX-3', 'CX-30', 'CX-5', 'CX-60', 'CX-80', 'MX-5', 'MX-30'],
+    'McLaren': ['750S', '750S Spider', '720S', '765LT', '765LT Spider', 'Artura', 'Artura Spider', 'GT', 'GTS', 'W1', 'P1', 'Senna', 'Speedtail', 'Elva', '600LT', '570S'],
+    'Mercedes-Benz': ['Classe A', 'AMG A 45', 'Classe B', 'Classe C', 'AMG C 63', 'CLA', 'CLE', 'CLE Coupé', 'Classe E', 'AMG E 53', 'CLS', 'Classe G', 'AMG G 63', 'Classe S', 'AMG S 63', 'Maybach Classe S', 'Classe V', 'GLA', 'GLB', 'GLC', 'GLC Coupé', 'GLE', 'GLE Coupé', 'GLS', 'AMG GT', 'AMG GT 4-Door', 'AMG GT 63', 'AMG ONE', 'SL', 'AMG SL 63', 'EQA', 'EQB', 'EQC', 'EQE', 'EQE SUV', 'EQS', 'EQS SUV'],
+    'MG': ['MG4', 'MG4 XPower', 'ZS', 'ZS EV', 'HS', 'Marvel R', 'Cyberster'],
+    'Mini': ['Cooper', 'Cooper S', 'Cooper SE', 'Clubman', 'Countryman', 'Countryman SE', 'John Cooper Works', 'Aceman'],
+    'Mitsubishi': ['ASX', 'Eclipse Cross', 'Outlander', 'Space Star'],
+    'Nissan': ['Micra', 'Juke', 'Qashqai', 'X-Trail', 'Ariya', 'Leaf', '370Z', 'GT-R', 'GT-R Nismo'],
+    'Opel': ['Corsa', 'Corsa-e', 'Astra', 'Mokka', 'Mokka-e', 'Grandland', 'Crossland'],
+    'Pagani': ['Zonda', 'Zonda R', 'Huayra', 'Huayra Roadster BC', 'Utopia', 'Utopia Roadster'],
+    'Peugeot': ['208', 'e-208', '308', '408', '508', '2008', 'e-2008', '3008', '5008'],
+    'Polestar': ['Polestar 2', 'Polestar 3', 'Polestar 4', 'Polestar 5', 'Polestar 6'],
+    'Porsche': ['718 Boxster', '718 Cayman', '718 Cayman GT4', '718 Spyder', '911', '911 Turbo', '911 Turbo S', '911 GT3', '911 GT3 RS', '911 Dakar', '911 S/T', '918 Spyder', 'Carrera GT', 'Cayenne', 'Cayenne Coupé', 'Cayenne Turbo GT', 'Macan', 'Macan Electric', 'Panamera', 'Panamera Turbo', 'Taycan', 'Taycan Turbo S', 'Taycan Cross Turismo'],
+    'Renault': ['Clio', 'Captur', 'Mégane E-Tech', 'Arkana', 'Austral', 'Espace', 'Scénic E-Tech', 'Twingo', 'Zoe', 'R5 E-Tech'],
+    'Rimac': ['Nevera'],
+    'Rolls-Royce': ['Cullinan', 'Cullinan Black Badge', 'Dawn', 'Ghost', 'Ghost Black Badge', 'Phantom', 'Phantom EWB', 'Wraith', 'Spectre'],
+    'SEAT': ['Ibiza', 'Leon', 'Arona', 'Ateca', 'Tarraco'],
+    'Škoda': ['Fabia', 'Scala', 'Octavia', 'Superb', 'Kamiq', 'Karoq', 'Kodiaq', 'Enyaq', 'Enyaq Coupé'],
+    'smart': ['#1', '#3', 'EQ fortwo', 'EQ forfour'],
+    'Subaru': ['Impreza', 'WRX', 'BRZ', 'Crosstrek', 'Forester', 'Outback', 'Solterra'],
+    'Suzuki': ['Swift', 'Swift Sport', 'Ignis', 'Vitara', 'S-Cross', 'Jimny', 'Across'],
+    'Tesla': ['Model 3', 'Model 3 Highland', 'Model S', 'Model S Plaid', 'Model X', 'Model X Plaid', 'Model Y', 'Model Y Juniper', 'Cybertruck', 'Cybertruck Cyberbeast', 'Roadster', 'Semi'],
+    'Toyota': ['Yaris', 'Yaris Cross', 'GR Yaris', 'Corolla', 'Corolla Cross', 'C-HR', 'RAV4', 'Highlander', 'Land Cruiser', 'GR86', 'Supra', 'GR Supra', 'bZ4X', 'Aygo X', 'Hilux', 'Proace'],
+    'Volkswagen': ['Polo', 'Golf', 'Golf R', 'Golf GTI', 'T-Roc', 'T-Roc R', 'T-Cross', 'Tiguan', 'Tiguan R', 'Touareg', 'Passat', 'Arteon', 'ID.3', 'ID.4', 'ID.4 GTX', 'ID.5', 'ID.5 GTX', 'ID.7', 'ID. Buzz', 'Taigo', 'Up!'],
+    'Volvo': ['C40 Recharge', 'EX30', 'EX90', 'S60', 'S90', 'V60', 'V60 Cross Country', 'V90', 'V90 Cross Country', 'XC40', 'XC40 Recharge', 'XC60', 'XC90']
 };
 
 // ====================================================================
@@ -396,6 +422,28 @@ export const AdminPanel = () => {
     const [uploadingImage, setUploadingImage] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const multiFileInputRef = useRef<HTMLInputElement>(null);
+
+    // Custom brand/model state
+    const [customBrands, setCustomBrands] = useState<Record<string, string[]>>({});
+    const [isCustomBrand, setIsCustomBrand] = useState(false);
+    const [isCustomModel, setIsCustomModel] = useState(false);
+    const [customBrandInput, setCustomBrandInput] = useState('');
+    const [customModelInput, setCustomModelInput] = useState('');
+
+    // Get merged brands (predefined + custom)
+    const getAllBrands = (): Record<string, string[]> => {
+        const merged = { ...CAR_BRANDS_AND_MODELS };
+        for (const [brand, models] of Object.entries(customBrands)) {
+            if (merged[brand]) {
+                merged[brand] = [...new Set([...merged[brand], ...models])];
+            } else {
+                merged[brand] = models;
+            }
+        }
+        return merged;
+    };
+
+    const allBrandsAndModels = getAllBrands();
 
     // Image Editor State
     const [imageEditorFile, setImageEditorFile] = useState<File | null>(null);
@@ -1165,27 +1213,124 @@ export const AdminPanel = () => {
                                 {uploadingImage && <p className="ce-uploading-text"><RefreshCw size={14} className="spin" /> Caricamento in corso...</p>}
                             </div>
 
-                            {/* ── SECTION: Titolo (Modello) ── */}
+                            {/* ── SECTION: Marca ── */}
                             <div className="ce-section">
                                 <div className="ce-section-title">
-                                    <span>Titolo</span>
-                                    <span className="ce-counter">{(editingCar.name?.length || 0)}/50</span>
+                                    <span>Marca</span>
+                                    {!isCustomBrand && (
+                                        <button type="button" className="ce-add-custom-btn" onClick={() => { setIsCustomBrand(true); setCustomBrandInput(''); }}>
+                                            <Plus size={14} /> Aggiungi Marca
+                                        </button>
+                                    )}
                                 </div>
-                                {editingCar.brand === 'Altro' ? (
-                                    <input
-                                        className="ce-input"
-                                        required
-                                        maxLength={50}
-                                        value={editingCar.name}
-                                        onChange={e => setEditingCar({ ...editingCar, name: e.target.value })}
-                                        placeholder="Scrivi il nome del veicolo"
-                                    />
+                                {isCustomBrand ? (
+                                    <div className="ce-custom-input-row">
+                                        <input
+                                            className="ce-input"
+                                            autoFocus
+                                            placeholder="Scrivi il nome della marca"
+                                            value={customBrandInput}
+                                            onChange={e => setCustomBrandInput(e.target.value)}
+                                            onKeyDown={e => {
+                                                if (e.key === 'Enter' && customBrandInput.trim()) {
+                                                    e.preventDefault();
+                                                    const newBrand = customBrandInput.trim();
+                                                    setCustomBrands(prev => ({ ...prev, [newBrand]: prev[newBrand] || [] }));
+                                                    setEditingCar({ ...editingCar, brand: newBrand, name: '' });
+                                                    setIsCustomBrand(false);
+                                                    setIsCustomModel(true);
+                                                    setCustomModelInput('');
+                                                }
+                                            }}
+                                        />
+                                        <button type="button" className="ce-confirm-custom-btn" onClick={() => {
+                                            if (customBrandInput.trim()) {
+                                                const newBrand = customBrandInput.trim();
+                                                setCustomBrands(prev => ({ ...prev, [newBrand]: prev[newBrand] || [] }));
+                                                setEditingCar({ ...editingCar, brand: newBrand, name: '' });
+                                                setIsCustomBrand(false);
+                                                setIsCustomModel(true);
+                                                setCustomModelInput('');
+                                            }
+                                        }}><Save size={14} /></button>
+                                        <button type="button" className="ce-cancel-custom-btn" onClick={() => setIsCustomBrand(false)}><X size={14} /></button>
+                                    </div>
+                                ) : (
+                                    <select className="ce-select" required value={editingCar.brand} onChange={e => {
+                                        const newBrand = e.target.value;
+                                        const availableModels = allBrandsAndModels[newBrand] || [];
+                                        setIsCustomModel(false);
+                                        setEditingCar({
+                                            ...editingCar,
+                                            brand: newBrand,
+                                            name: availableModels.length > 0 ? availableModels[0] : ''
+                                        });
+                                    }}>
+                                        <option value="" disabled>Seleziona la marca</option>
+                                        {Object.keys(allBrandsAndModels).sort().map(brand => (
+                                            <option key={brand} value={brand}>{brand}</option>
+                                        ))}
+                                    </select>
+                                )}
+                            </div>
+
+                            {/* ── SECTION: Modello ── */}
+                            <div className="ce-section">
+                                <div className="ce-section-title">
+                                    <span>Modello</span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <span className="ce-counter">{(editingCar.name?.length || 0)}/50</span>
+                                        {!isCustomModel && (
+                                            <button type="button" className="ce-add-custom-btn" onClick={() => { setIsCustomModel(true); setCustomModelInput(''); }}>
+                                                <Plus size={14} /> Aggiungi Modello
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                                {isCustomModel ? (
+                                    <div className="ce-custom-input-row">
+                                        <input
+                                            className="ce-input"
+                                            autoFocus
+                                            maxLength={50}
+                                            placeholder="Scrivi il nome del modello"
+                                            value={customModelInput}
+                                            onChange={e => setCustomModelInput(e.target.value)}
+                                            onKeyDown={e => {
+                                                if (e.key === 'Enter' && customModelInput.trim()) {
+                                                    e.preventDefault();
+                                                    const newModel = customModelInput.trim();
+                                                    setCustomBrands(prev => ({
+                                                        ...prev,
+                                                        [editingCar.brand]: [...new Set([...(prev[editingCar.brand] || []), newModel])]
+                                                    }));
+                                                    setEditingCar({ ...editingCar, name: newModel });
+                                                    setIsCustomModel(false);
+                                                }
+                                            }}
+                                        />
+                                        <button type="button" className="ce-confirm-custom-btn" onClick={() => {
+                                            if (customModelInput.trim()) {
+                                                const newModel = customModelInput.trim();
+                                                setCustomBrands(prev => ({
+                                                    ...prev,
+                                                    [editingCar.brand]: [...new Set([...(prev[editingCar.brand] || []), newModel])]
+                                                }));
+                                                setEditingCar({ ...editingCar, name: newModel });
+                                                setIsCustomModel(false);
+                                            }
+                                        }}><Save size={14} /></button>
+                                        <button type="button" className="ce-cancel-custom-btn" onClick={() => setIsCustomModel(false)}><X size={14} /></button>
+                                    </div>
                                 ) : (
                                     <select className="ce-select" required value={editingCar.name} onChange={e => setEditingCar({ ...editingCar, name: e.target.value })}>
                                         <option value="" disabled>Seleziona Modello</option>
-                                        {(CAR_BRANDS_AND_MODELS[editingCar.brand] || [editingCar.name]).map(model => (
+                                        {(allBrandsAndModels[editingCar.brand] || []).map(model => (
                                             <option key={model} value={model}>{model}</option>
                                         ))}
+                                        {editingCar.name && !(allBrandsAndModels[editingCar.brand] || []).includes(editingCar.name) && (
+                                            <option value={editingCar.name}>{editingCar.name}</option>
+                                        )}
                                     </select>
                                 )}
                             </div>
@@ -1206,24 +1351,6 @@ export const AdminPanel = () => {
                                 />
                             </div>
 
-                            {/* ── SECTION: Marca ── */}
-                            <div className="ce-section">
-                                <div className="ce-section-title"><span>Marca</span></div>
-                                <select className="ce-select" required value={editingCar.brand} onChange={e => {
-                                    const newBrand = e.target.value;
-                                    const availableModels = CAR_BRANDS_AND_MODELS[newBrand] || [];
-                                    setEditingCar({
-                                        ...editingCar,
-                                        brand: newBrand,
-                                        name: availableModels.length > 0 ? availableModels[0] : ''
-                                    });
-                                }}>
-                                    <option value="" disabled>Seleziona la marca</option>
-                                    {Object.keys(CAR_BRANDS_AND_MODELS).sort().map(brand => (
-                                        <option key={brand} value={brand}>{brand}</option>
-                                    ))}
-                                </select>
-                            </div>
 
                             {/* ── SECTION: Chilometraggio ── */}
                             <div className="ce-section">
