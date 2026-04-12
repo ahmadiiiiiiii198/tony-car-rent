@@ -2405,16 +2405,16 @@ ul {
   border-radius: 8px;
   font-size: 0.78rem;
   font-weight: 500;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
   color: var(--color-text-muted);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .listing-type-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.06);
+  border-color: var(--border-color, rgba(0, 0, 0, 0.2));
 }
 
 .listing-type-btn.active {
@@ -2431,13 +2431,14 @@ ul {
 }
 
 .listing-type-btn.rental.active {
-  background: rgba(180, 190, 210, 0.12);
-  border-color: rgba(180, 190, 210, 0.35);
-  color: #b4bed2;
+  background: rgba(74, 85, 104, 0.12);
+  /* darker bluish grey for light mode */
+  border-color: rgba(74, 85, 104, 0.35);
+  color: #4a5568;
 }
 
 .listing-type-btn.both.active {
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.12), rgba(180, 190, 210, 0.12));
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.12), rgba(74, 85, 104, 0.12));
   border-color: rgba(212, 175, 55, 0.35);
   color: var(--color-gold);
 }
@@ -3469,12 +3470,12 @@ ul {
 }
 
 .fleet-sidebar {
-  background: rgba(15, 15, 15, 0.6);
-  backdrop-filter: blur(10px);
+  background: var(--color-card-bg, #ffffff);
   border-radius: 16px;
   padding: 1.5rem;
   padding-right: 1.25rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
   height: auto;
   position: relative;
   transition: transform 0.3s ease;
@@ -3499,7 +3500,7 @@ ul {
   align-items: center;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
 }
 
 .sidebar-header h3 {
@@ -3560,8 +3561,8 @@ ul {
   min-width: 28px;
   height: 26px;
   padding: 0 4px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
   border-radius: 6px;
   color: var(--color-text-muted);
   font-size: 0.7rem;
@@ -3609,8 +3610,8 @@ ul {
   appearance: none;
   width: 18px;
   height: 18px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.2));
   border-radius: 4px;
   position: relative;
   cursor: pointer;
@@ -3642,7 +3643,7 @@ ul {
   width: 100%;
   accent-color: var(--color-gold);
   height: 4px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--border-color, rgba(0, 0, 0, 0.1));
   border-radius: 2px;
   margin-bottom: 1rem;
 }
