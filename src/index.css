@@ -1146,6 +1146,132 @@ ul {
   border-color: rgba(212, 175, 55, 0.2);
 }
 
+/* ===== Premium Configurator Banner ===== */
+@keyframes bannerShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+.configurator-banner {
+  cursor: pointer;
+  user-select: none;
+  overflow: hidden;
+  border-radius: 14px 14px 0 0;
+}
+
+.configurator-banner-inner {
+  position: relative;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 40%, #1a1a1a 100%);
+  padding: 1.8rem 2rem;
+  overflow: hidden;
+  border-bottom: 2px solid var(--color-gold);
+}
+
+.configurator-banner-shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(212, 175, 55, 0.06) 40%,
+      rgba(212, 175, 55, 0.12) 50%,
+      rgba(212, 175, 55, 0.06) 60%,
+      transparent 100%);
+  animation: bannerShimmer 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.configurator-banner-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.configurator-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.configurator-banner-gold-line {
+  width: 4px;
+  height: 48px;
+  background: linear-gradient(180deg, var(--color-gold) 0%, rgba(212, 175, 55, 0.3) 100%);
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.configurator-banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.configurator-banner-title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.1rem, 3vw, 1.6rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.configurator-banner-subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.08em;
+  text-transform: none;
+  font-weight: 400;
+}
+
+.configurator-banner-chevron {
+  color: var(--color-gold);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.configurator-banner-chevron.open {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+.configurator-banner:hover .configurator-banner-inner {
+  background: linear-gradient(135deg, #1e1e1e 0%, #2e2e2e 40%, #1e1e1e 100%);
+}
+
+.configurator-banner:hover .configurator-banner-chevron {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .configurator-banner-inner {
+    padding: 1.2rem 1.25rem;
+  }
+
+  .configurator-banner-gold-line {
+    height: 36px;
+    width: 3px;
+  }
+
+  .configurator-banner-left {
+    gap: 0.75rem;
+  }
+}
+
+/* ===== End Configurator Banner ===== */
+
 .adv-section-header {
   display: flex;
   align-items: center;

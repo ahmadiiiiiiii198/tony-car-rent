@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Key, Car, Search, MapPin, Calendar, Gauge,
     Send, User, Mail, Phone, MessageSquare, CheckCircle,
-    Loader2, Shield, Clock, Award, ChevronDown, Fuel, Sliders, Palette, Check, Leaf, Info, Armchair
+    Loader2, Shield, Award, ChevronDown, Fuel, Sliders, Palette, Check, Leaf, Info, Armchair
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useSettings } from '../context/SettingsContext';
@@ -25,8 +25,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
     const [dbBrands, setDbBrands] = useState<string[]>([]);
     const [allCars, setAllCars] = useState<{ brand: string, name: string }[]>([]);
-    const [animationStage, setAnimationStage] = useState<'intro' | 'settling' | 'complete'>('intro');
-    const [showPanels, setShowPanels] = useState(true);
+    const [animationStage] = useState<'intro' | 'settling' | 'complete'>('complete');
 
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
@@ -40,72 +39,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const features = [
-        {
-            icon: <Shield size={32} />,
-            title: language === 'it' ? 'Assicurazione Premium' : 'Premium Insurance',
-            description: language === 'it'
-                ? 'Copertura completa per la tua tranquillità mentre guidi.'
-                : 'Comprehensive coverage for your peace of mind while you drive.',
-        },
-        {
-            icon: <Clock size={32} />,
-            title: language === 'it' ? 'Supporto 24/7' : '24/7 Support',
-            description: language === 'it'
-                ? 'Servizio concierge sempre disponibile per assisterti in qualsiasi momento.'
-                : 'Round-the-clock concierge service to assist you at any time.',
-        },
-        {
-            icon: <MapPin size={32} />,
-            title: language === 'it' ? 'Consegna a Domicilio' : 'Doorstep Delivery',
-            description: language === 'it'
-                ? 'Portiamo l\'auto direttamente da te, con il pieno e pronta all\'uso.'
-                : 'We bring the car to your location, fully fueled and ready.',
-        },
-        {
-            icon: <Award size={32} />,
-            title: language === 'it' ? 'Miglior Prezzo Garantito' : 'Best Price Guarantee',
-            description: language === 'it'
-                ? 'Tariffe competitive per i veicoli più esclusivi sul mercato.'
-                : 'Competitive rates for the most exclusive vehicles on the market.',
-        },
-    ];
 
-    const [currentPanelIndex, setCurrentPanelIndex] = useState(0);
-
-    useEffect(() => {
-        if (animationStage === 'intro') {
-            const intervalTime = 1000; // Uniform 1.0s speed
-            const timer = setInterval(() => {
-                setCurrentPanelIndex(prev => {
-                    if (prev < features.length - 1) {
-                        return prev + 1;
-                    } else {
-                        clearInterval(timer);
-
-                        // Desktop settling phase
-                        if (!isMobile) {
-                            setTimeout(() => {
-                                setAnimationStage('settling');
-                                setTimeout(() => {
-                                    setAnimationStage('complete');
-                                    setShowPanels(false);
-                                }, 1000);
-                            }, 1000);
-                        } else {
-                            // Mobile sequence ends - wait for the last panel's full duration
-                            setTimeout(() => {
-                                setAnimationStage('complete');
-                                setShowPanels(false);
-                            }, 1000);
-                        }
-                        return prev;
-                    }
-                });
-            }, intervalTime);
-            return () => clearInterval(timer);
-        }
-    }, [animationStage, features.length, isMobile]);
 
     // Search State
     const [selectedBrand, setSelectedBrand] = useState('');
@@ -167,7 +101,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
     // Collapsible sections state
     const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-        main: true, advanced: false, specs: false, condition: false, features: false, colors: false, interior: false, ambiente: false, other: false
+        main: false, advanced: false, specs: false, condition: false, features: false, colors: false, interior: false, ambiente: false, other: false
     });
     const toggleSection = (key: string) => setExpandedSections(prev => ({ ...prev, [key]: !prev[key] }));
 
@@ -489,30 +423,6 @@ export const Hero = ({ onSearch }: HeroProps) => {
         'Ford', 'Lamborghini', 'Lancia', 'Land Rover', 'Maserati', 'McLaren',
         'Mercedes-Benz', 'Nissan', 'Peugeot', 'Porsche', 'Smart', 'Toyota', 'Volkswagen'
     ];
-
-
-    const panelVariants: any = {
-        hidden: { opacity: 0, scale: 0.8, y: 30 },
-        visible: {
-            opacity: 1,
-            scale: 1,
-            y: 0,
-            transition: {
-                duration: 1.0,
-                ease: [0.22, 1, 0.36, 1]
-            }
-        },
-        exit: {
-            opacity: 0,
-            scale: 0.8,
-            y: -100,
-            transition: {
-                duration: 1.0,
-                ease: [0.22, 1, 0.36, 1]
-            }
-        }
-    };
-
     return (
         <section className="hero-section" id="home">
             <div
@@ -531,61 +441,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
                 <div className={`hero-tab-overlay ${activeTab || ''}`} />
             </div>
 
-            {/* Panels Animation Stage */}
-            <div className={`hero-panels-container ${isMobile ? 'mobile-sequential' : ''}`}>
-                {isMobile ? (
-                    <AnimatePresence mode="wait">
-                        {features.map((feature, index) => (
-                            index === currentPanelIndex && showPanels && (
-                                <motion.div
-                                    key={`mobile-panel-${index}`}
-                                    className="hero-animated-panel"
-                                    initial={{ opacity: 0, scale: 0.9, y: 30 }}
-                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                    exit={{
-                                        opacity: 0,
-                                        scale: 1.1,
-                                        y: -30,
-                                        filter: "blur(15px)",
-                                        transition: { duration: 1.0 }
-                                    }}
-                                    transition={{
-                                        duration: 1.0,
-                                        ease: [0.22, 1, 0.36, 1]
-                                    }}
-                                >
-                                    <div className="service-icon">
-                                        {feature.icon}
-                                    </div>
-                                    <h3 className="service-title">{feature.title}</h3>
-                                    <p className="service-desc">{feature.description}</p>
-                                </motion.div>
-                            )
-                        ))}
-                    </AnimatePresence>
-                ) : (
-                    <AnimatePresence>
-                        {showPanels && features.map((feature, index) => (
-                            index <= currentPanelIndex && (
-                                <motion.div
-                                    key={`desktop-panel-${index}`}
-                                    className="hero-animated-panel"
-                                    variants={panelVariants}
-                                    initial="hidden"
-                                    animate="visible"
-                                    exit="exit"
-                                >
-                                    <div className="service-icon">
-                                        {feature.icon}
-                                    </div>
-                                    <h3 className="service-title">{feature.title}</h3>
-                                    <p className="service-desc">{feature.description}</p>
-                                </motion.div>
-                            )
-                        ))}
-                    </AnimatePresence>
-                )}
-            </div>
+
 
             <div className="container hero-content">
                 {/* Search widget with category tabs */}
@@ -899,19 +755,24 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
                                                 {/* ===== SECTION 1: Dati principali & Località ===== */}
                                                 <div className="adv-section">
-                                                    <div className="adv-section-header" onClick={() => toggleSection('main')}>
-                                                        {(activeTab === 'rental' || activeTab === 'sale') ? (
-                                                            <div className="hero-banner-wrapper">
-                                                                <img
-                                                                    src="/configura-header-banner-final.png"
-                                                                    alt={language === 'it' ? 'CONFIGURA LA TUA PROSSIMA AUTO' : 'CONFIGURE YOUR NEXT CAR'}
-                                                                    className="hero-banner-image"
-                                                                />
+                                                    <div className="configurator-banner" onClick={() => toggleSection('main')}>
+                                                        <div className="configurator-banner-inner">
+                                                            <div className="configurator-banner-shimmer" />
+                                                            <div className="configurator-banner-content">
+                                                                <div className="configurator-banner-left">
+                                                                    <div className="configurator-banner-gold-line" />
+                                                                    <div className="configurator-banner-text">
+                                                                        <span className="configurator-banner-title">
+                                                                            {language === 'it' ? 'Configura la tua auto' : 'Configure your car'}
+                                                                        </span>
+                                                                        <span className="configurator-banner-subtitle">
+                                                                            {language === 'it' ? 'Seleziona i filtri per trovare la tua auto ideale' : 'Select filters to find your ideal car'}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                                <ChevronDown size={22} className={`configurator-banner-chevron ${expandedSections.main ? 'open' : ''}`} />
                                                             </div>
-                                                        ) : (
-                                                            <h4><Car size={16} /> Dati principali & Località</h4>
-                                                        )}
-                                                        <ChevronDown size={18} className={`adv-chevron ${expandedSections.main ? 'open' : ''}`} />
+                                                        </div>
                                                     </div>
                                                     {expandedSections.main && (
                                                         <div className="adv-section-body">
