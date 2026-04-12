@@ -2388,9 +2388,9 @@ ul {
   filter: grayscale(60%) brightness(0.7);
 }
 
-/* Listing Type Filter Buttons */
 .listing-type-buttons {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
   padding: 0.25rem 0;
 }
