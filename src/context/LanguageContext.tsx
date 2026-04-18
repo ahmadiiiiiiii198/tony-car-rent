@@ -25,6 +25,7 @@ interface Translations {
     tabNovita: string;
     tabAssistance: string;
     tabRecambi: string;
+    tabImportazione: string;
 
     // Search Widget
     searchBrand: string;
@@ -53,6 +54,7 @@ interface Translations {
     periziaDesc: string;
     assistanceDesc: string;
     recambiDesc: string;
+    importazioneDesc: string;
 
     // Commercial Subtypes
     commercialTrucks: string;
@@ -168,6 +170,7 @@ const translations: Record<Language, Translations> = {
         tabNovita: 'Novità',
         tabAssistance: 'Assistenza Stradale',
         tabRecambi: 'Ricambi',
+        tabImportazione: 'Importazione',
 
         // Search Widget
         searchBrand: 'Marca',
@@ -196,6 +199,7 @@ const translations: Record<Language, Translations> = {
         periziaDesc: 'Valutazione professionale del tuo veicolo per vendita o permuta.',
         assistanceDesc: 'Supporto professionale 24/7 per ogni emergenza su strada.',
         recambiDesc: 'Ricambi originali e compatibili per ogni marca e modello. Richiedi un preventivo.',
+        importazioneDesc: 'Importazione veicoli dall\'estero. Cerca l\'auto dei tuoi sogni e ci occupiamo di tutto noi.',
 
         // Commercial Subtypes
         commercialTrucks: 'Camion',
@@ -309,6 +313,7 @@ const translations: Record<Language, Translations> = {
         tabNovita: 'New',
         tabAssistance: 'Roadside Assistance',
         tabRecambi: 'Spare Parts',
+        tabImportazione: 'Import',
 
         // Search Widget
         searchBrand: 'Brand',
@@ -337,6 +342,7 @@ const translations: Record<Language, Translations> = {
         periziaDesc: 'Professional valuation of your vehicle for sale or trade-in.',
         assistanceDesc: 'Professional 24/7 support for any roadside emergency.',
         recambiDesc: 'Original and compatible spare parts for every make and model. Request a quote.',
+        importazioneDesc: 'Vehicle import from abroad. Search for your dream car and we\'ll handle everything.',
 
         // Commercial Subtypes
         commercialTrucks: 'Trucks',

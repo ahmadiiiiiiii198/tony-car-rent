@@ -1,4 +1,4 @@
-import { Shield, Clock, MapPin, Award } from 'lucide-react';
+import { Shield, Clock, MapPin, Award, Globe } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -42,6 +42,13 @@ export const Services = () => {
             description: language === 'it'
                 ? 'Tariffe competitive per i veicoli più esclusivi sul mercato.'
                 : 'Competitive rates for the most exclusive vehicles on the market.',
+        },
+        {
+            icon: <Globe size={32} />,
+            title: language === 'it' ? 'Importazione Veicoli' : 'Vehicle Import',
+            description: language === 'it'
+                ? 'Importiamo il veicolo dei tuoi sogni dall\'estero. Ricerca, trasporto e immatricolazione inclusi.'
+                : 'We import your dream vehicle from abroad. Search, transport and registration included.',
         },
     ];
 

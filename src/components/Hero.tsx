@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Key, Car, Search, MapPin, Calendar, Gauge,
     Send, User, Mail, Phone, MessageSquare, CheckCircle,
-    Loader2, Shield, Award, ChevronDown, Fuel, Sliders, Palette, Check, Leaf, Info, Armchair, Wrench
+    Loader2, Shield, Award, ChevronDown, Fuel, Sliders, Palette, Check, Leaf, Info, Armchair, Wrench, Globe
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useSettings } from '../context/SettingsContext';
@@ -11,7 +11,7 @@ import { supabase } from '../lib/supabase';
 import { PeriziaTable } from './PeriziaTable';
 import { type SearchParams } from '../types/SearchParams';
 
-type TabKey = 'sale' | 'rental' | 'perizia' | 'recambi' | 'assistance';
+type TabKey = 'sale' | 'rental' | 'perizia' | 'recambi' | 'importazione' | 'assistance';
 
 
 
@@ -285,6 +285,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
         if (newTab === 'sale') params.listingType = 'sale';
         else if (newTab === 'rental') params.listingType = 'rental';
         else if (newTab === 'recambi') params.listingType = 'both';
+        else if (newTab === 'importazione') params.listingType = 'all';
         else if (newTab === 'assistance') params.listingType = 'both';
 
         onSearch(params);
@@ -310,6 +311,9 @@ export const Hero = ({ onSearch }: HeroProps) => {
         } else if (activeTab === 'recambi') {
             requestType = 'Richiesta Ricambi';
             brandLabel = 'Ricambi';
+        } else if (activeTab === 'importazione') {
+            requestType = 'Richiesta Importazione Veicolo';
+            brandLabel = 'Importazione';
         } else if (activeTab === 'assistance') {
             requestType = 'Richiesta Assistenza Stradale';
             brandLabel = 'Assistenza';
@@ -419,6 +423,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
         { key: 'rental', label: t.tabRental, icon: <Key size={18} />, description: t.rentalDesc },
         { key: 'perizia', label: t.tabPerizia, icon: <Award size={18} />, description: t.periziaDesc, badge: t.tabNovita },
         { key: 'recambi', label: t.tabRecambi, icon: <Wrench size={18} />, description: t.recambiDesc },
+        { key: 'importazione', label: t.tabImportazione, icon: <Globe size={18} />, description: t.importazioneDesc },
         { key: 'assistance', label: t.tabAssistance, icon: <Phone size={18} />, description: t.assistanceDesc },
     ];
 
