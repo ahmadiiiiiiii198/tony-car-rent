@@ -278,7 +278,7 @@ const translations: Record<Language, Translations> = {
 
         // Placeholders
         namePlaceholder: 'Il tuo nome',
-        emailPlaceholder: 'La tua email',
+        emailPlaceholder: 'La tua email (opzionale)',
         phonePlaceholder: 'Il tuo telefono',
         messagePlaceholder: 'Il tuo messaggio',
 
