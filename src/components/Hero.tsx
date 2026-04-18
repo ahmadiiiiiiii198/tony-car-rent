@@ -58,6 +58,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
     const [requestMessage, setRequestMessage] = useState('');
     const [requestLoading, setRequestLoading] = useState(false);
     const [requestSuccess, setRequestSuccess] = useState(false);
+    const [requestTarga, setRequestTarga] = useState('');
 
     // Assistance (Pronto Interventi) fields
     const [assistanceFromAddress, setAssistanceFromAddress] = useState('');
@@ -319,6 +320,10 @@ export const Hero = ({ onSearch }: HeroProps) => {
             brandLabel = 'Assistenza';
         }
 
+        const fullMessage = activeTab === 'recambi' && requestTarga
+            ? `[Targa: ${requestTarga}] ${requestMessage || ''}`
+            : requestMessage || null;
+
         const { error } = await supabase.from('orders').insert({
             car_id: null,
             car_name: requestType,
@@ -327,7 +332,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
             customer_email: requestEmail,
             customer_phone: requestPhone,
             order_type: 'info',
-            message: requestMessage || null,
+            message: fullMessage,
             status: 'pending'
         });
         setRequestLoading(false);
@@ -694,6 +699,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                                                     setRequestEmail('');
                                                                     setRequestPhone('');
                                                                     setRequestMessage('');
+                                                                    setRequestTarga('');
                                                                 }}
                                                             >
                                                                 {language === 'it' ? 'Nuova Richiesta' : 'New Request'}
@@ -734,6 +740,18 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                                                         required
                                                                     />
                                                                 </div>
+                                                                <div className="hero-request-field">
+                                                                    <Car size={18} />
+                                                                    <input
+                                                                        type="text"
+                                                                        placeholder={language === 'it' ? 'Targa del veicolo' : 'Vehicle license plate'}
+                                                                        value={requestTarga}
+                                                                        onChange={(e) => setRequestTarga(e.target.value.toUpperCase())}
+                                                                        style={{ textTransform: 'uppercase' }}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <div className="hero-request-row">
                                                                 <div className="hero-request-field hero-request-message">
                                                                     <MessageSquare size={18} />
                                                                     <input
