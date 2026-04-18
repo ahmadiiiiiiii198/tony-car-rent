@@ -300,7 +300,8 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
     const handleRequestSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!requestName || !requestEmail || !requestPhone) return;
+        if (!requestName || !requestPhone) return;
+        if (activeTab !== 'recambi' && !requestEmail) return;
         setRequestLoading(true);
 
         let requestType = 'Richiesta Generale';
@@ -725,7 +726,6 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                                                         placeholder={t.emailPlaceholder}
                                                                         value={requestEmail}
                                                                         onChange={(e) => setRequestEmail(e.target.value)}
-                                                                        required
                                                                     />
                                                                 </div>
                                                             </div>
