@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Key, Car, Search, MapPin, Calendar, Gauge,
     Send, User, Mail, Phone, MessageSquare, CheckCircle,
-    Loader2, Shield, Award, ChevronDown, Fuel, Sliders, Palette, Check, Leaf, Info, Armchair
+    Loader2, Shield, Award, ChevronDown, Fuel, Sliders, Palette, Check, Leaf, Info, Armchair, Wrench
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useSettings } from '../context/SettingsContext';
@@ -11,7 +11,7 @@ import { supabase } from '../lib/supabase';
 import { PeriziaTable } from './PeriziaTable';
 import { type SearchParams } from '../types/SearchParams';
 
-type TabKey = 'sale' | 'rental' | 'perizia' | 'assistance';
+type TabKey = 'sale' | 'rental' | 'perizia' | 'recambi' | 'assistance';
 
 
 
@@ -284,6 +284,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
         if (newTab === 'sale') params.listingType = 'sale';
         else if (newTab === 'rental') params.listingType = 'rental';
+        else if (newTab === 'recambi') params.listingType = 'both';
         else if (newTab === 'assistance') params.listingType = 'both';
 
         onSearch(params);
@@ -306,6 +307,9 @@ export const Hero = ({ onSearch }: HeroProps) => {
         if (activeTab === 'perizia') {
             requestType = 'Richiesta Perizia / Valutazione';
             brandLabel = 'Perizia';
+        } else if (activeTab === 'recambi') {
+            requestType = 'Richiesta Ricambi';
+            brandLabel = 'Ricambi';
         } else if (activeTab === 'assistance') {
             requestType = 'Richiesta Assistenza Stradale';
             brandLabel = 'Assistenza';
@@ -414,6 +418,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
         { key: 'sale', label: t.tabUsedCars, icon: <Car size={18} />, description: t.usedCarsDesc },
         { key: 'rental', label: t.tabRental, icon: <Key size={18} />, description: t.rentalDesc },
         { key: 'perizia', label: t.tabPerizia, icon: <Award size={18} />, description: t.periziaDesc, badge: t.tabNovita },
+        { key: 'recambi', label: t.tabRecambi, icon: <Wrench size={18} />, description: t.recambiDesc },
         { key: 'assistance', label: t.tabAssistance, icon: <Phone size={18} />, description: t.assistanceDesc },
     ];
 
@@ -654,6 +659,99 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                                         <Phone size={18} />
                                                         {language === 'it' ? 'Richiedi Assistenza' : 'Request Assistance'}
                                                     </a>
+                                                </div>
+                                            </div>
+                                        ) : activeTab === 'recambi' ? (
+                                            <div className="recambi-layout">
+                                                <div className="recambi-info">
+                                                    <div className="recambi-icon-row">
+                                                        <Wrench size={28} />
+                                                        <h3>{language === 'it' ? 'Ricambi Auto' : 'Car Spare Parts'}</h3>
+                                                    </div>
+                                                    <p style={{ color: 'var(--color-text-muted)', marginBottom: '1rem', lineHeight: 1.6 }}>
+                                                        {language === 'it'
+                                                            ? 'Forniamo ricambi originali e compatibili per tutte le marche. Compila il modulo con i dettagli del pezzo di cui hai bisogno e ti invieremo un preventivo rapidamente.'
+                                                            : 'We supply original and compatible spare parts for all makes. Fill out the form with the details of the part you need and we\'ll send you a quote quickly.'}
+                                                    </p>
+                                                </div>
+                                                <div className="recambi-form-section">
+                                                    {requestSuccess ? (
+                                                        <div className="hero-request-success">
+                                                            <CheckCircle size={48} />
+                                                            <h4>{language === 'it' ? 'Richiesta Inviata!' : 'Request Sent!'}</h4>
+                                                            <p>{language === 'it' ? 'Ti contatteremo al più presto con il preventivo.' : 'We will contact you soon with the quote.'}</p>
+                                                            <button
+                                                                className="hero-search-btn"
+                                                                style={{ marginTop: '1rem' }}
+                                                                onClick={() => {
+                                                                    setRequestSuccess(false);
+                                                                    setRequestName('');
+                                                                    setRequestEmail('');
+                                                                    setRequestPhone('');
+                                                                    setRequestMessage('');
+                                                                }}
+                                                            >
+                                                                {language === 'it' ? 'Nuova Richiesta' : 'New Request'}
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <form className="hero-request-form compact" onSubmit={handleRequestSubmit}>
+                                                            <div className="hero-request-row">
+                                                                <div className="hero-request-field">
+                                                                    <User size={18} />
+                                                                    <input
+                                                                        type="text"
+                                                                        placeholder={t.namePlaceholder}
+                                                                        value={requestName}
+                                                                        onChange={(e) => setRequestName(e.target.value)}
+                                                                        required
+                                                                    />
+                                                                </div>
+                                                                <div className="hero-request-field">
+                                                                    <Mail size={18} />
+                                                                    <input
+                                                                        type="email"
+                                                                        placeholder={t.emailPlaceholder}
+                                                                        value={requestEmail}
+                                                                        onChange={(e) => setRequestEmail(e.target.value)}
+                                                                        required
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <div className="hero-request-row">
+                                                                <div className="hero-request-field">
+                                                                    <Phone size={18} />
+                                                                    <input
+                                                                        type="tel"
+                                                                        placeholder={t.phonePlaceholder}
+                                                                        value={requestPhone}
+                                                                        onChange={(e) => setRequestPhone(e.target.value)}
+                                                                        required
+                                                                    />
+                                                                </div>
+                                                                <div className="hero-request-field hero-request-message">
+                                                                    <MessageSquare size={18} />
+                                                                    <input
+                                                                        ref={messageInputRef}
+                                                                        type="text"
+                                                                        placeholder={language === 'it' ? 'Descrivi il ricambio di cui hai bisogno...' : 'Describe the part you need...'}
+                                                                        value={requestMessage}
+                                                                        onChange={(e) => setRequestMessage(e.target.value)}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <motion.button
+                                                                type="submit"
+                                                                className="hero-request-submit"
+                                                                whileHover={{ scale: 1.02 }}
+                                                                whileTap={{ scale: 0.98 }}
+                                                                disabled={requestLoading}
+                                                            >
+                                                                {requestLoading ? <Loader2 className="animate-spin" /> : <Send size={18} />}
+                                                                {language === 'it' ? 'Richiedi Preventivo' : 'Request Quote'}
+                                                            </motion.button>
+                                                        </form>
+                                                    )}
                                                 </div>
                                             </div>
                                         ) : activeTab === 'perizia' ? (

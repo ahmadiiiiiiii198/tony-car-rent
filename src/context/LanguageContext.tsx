@@ -24,6 +24,7 @@ interface Translations {
     tabPerizia: string;
     tabNovita: string;
     tabAssistance: string;
+    tabRecambi: string;
 
     // Search Widget
     searchBrand: string;
@@ -51,6 +52,7 @@ interface Translations {
     rentalDesc: string;
     periziaDesc: string;
     assistanceDesc: string;
+    recambiDesc: string;
 
     // Commercial Subtypes
     commercialTrucks: string;
@@ -165,6 +167,7 @@ const translations: Record<Language, Translations> = {
         tabPerizia: 'Perizia',
         tabNovita: 'Novità',
         tabAssistance: 'Assistenza Stradale',
+        tabRecambi: 'Ricambi',
 
         // Search Widget
         searchBrand: 'Marca',
@@ -192,6 +195,7 @@ const translations: Record<Language, Translations> = {
         rentalDesc: 'Scegli l\'auto perfetta per il tuo prossimo viaggio o evento speciale.',
         periziaDesc: 'Valutazione professionale del tuo veicolo per vendita o permuta.',
         assistanceDesc: 'Supporto professionale 24/7 per ogni emergenza su strada.',
+        recambiDesc: 'Ricambi originali e compatibili per ogni marca e modello. Richiedi un preventivo.',
 
         // Commercial Subtypes
         commercialTrucks: 'Camion',
@@ -304,6 +308,7 @@ const translations: Record<Language, Translations> = {
         tabPerizia: 'Valuation',
         tabNovita: 'New',
         tabAssistance: 'Roadside Assistance',
+        tabRecambi: 'Spare Parts',
 
         // Search Widget
         searchBrand: 'Brand',
@@ -331,6 +336,7 @@ const translations: Record<Language, Translations> = {
         rentalDesc: 'Choose the perfect car for your next trip or special event.',
         periziaDesc: 'Professional valuation of your vehicle for sale or trade-in.',
         assistanceDesc: 'Professional 24/7 support for any roadside emergency.',
+        recambiDesc: 'Original and compatible spare parts for every make and model. Request a quote.',
 
         // Commercial Subtypes
         commercialTrucks: 'Trucks',

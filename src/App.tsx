@@ -15,9 +15,9 @@ function MainSite() {
   const [searchParams, setSearchParams] = useState<SearchParams>(emptySearchParams);
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', width: '100%', overflowX: 'hidden' }}>
       <Navbar />
-      <main style={{ flex: 1 }}>
+      <main style={{ flex: 1, width: '100%', overflowX: 'hidden' }}>
         <Hero onSearch={(params) => setSearchParams(params)} />
         <Fleet searchParams={searchParams} onClearSearch={() => setSearchParams(emptySearchParams)} />
         <Services />
