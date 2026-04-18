@@ -4,7 +4,7 @@ export interface SearchParams {
     fuel: string;
     minPrice: number;
     maxPrice: number;
-    listingType: 'all' | 'sale' | 'rental' | 'both';
+    listingType: 'all' | 'sale' | 'rental' | 'both' | 'importazione';
     category: string;
     year?: number;
     km?: number;

@@ -6,7 +6,7 @@ interface OrderFormProps {
     carId: number;
     carName: string;
     carBrand: string;
-    listingType: 'sale' | 'rental' | 'both';
+    listingType: 'sale' | 'rental' | 'both' | 'importazione';
     onClose?: () => void;
 }
 

@@ -2392,6 +2392,12 @@ ul {
   border: 1px solid rgba(180, 190, 210, 0.4);
 }
 
+.listing-type-badge.importazione {
+  background: rgba(59, 130, 246, 0.9);
+  color: #ffffff;
+  border: 1px solid rgba(59, 130, 246, 0.5);
+}
+
 .listing-type-badge.both {
   background: linear-gradient(135deg, rgba(212, 175, 55, 0.9), rgba(180, 190, 210, 0.9));
   color: #0a0a0a;
@@ -2449,6 +2455,12 @@ ul {
   /* darker bluish grey for light mode */
   border-color: rgba(74, 85, 104, 0.35);
   color: #4a5568;
+}
+
+.listing-type-btn.importazione.active {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.35);
+  color: #3b82f6;
 }
 
 .listing-type-btn.both.active {

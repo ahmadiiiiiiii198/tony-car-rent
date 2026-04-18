@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     ChevronRight, ChevronLeft, Star, Fuel, Users, Gauge, X, Calendar,
     Check, Filter, ChevronDown, ArrowUpDown, Navigation, Tag, ShoppingCart, Car as CarIcon,
-    ZoomIn, ZoomOut, RotateCcw, Maximize2
+    ZoomIn, ZoomOut, RotateCcw, Maximize2, Globe
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { OrderForm } from './OrderForm';
@@ -28,7 +28,7 @@ interface Car {
     km: string | null;
     euro_standard: string | null;
     description?: string;
-    listing_type: 'sale' | 'rental' | 'both';
+    listing_type: 'sale' | 'rental' | 'both' | 'importazione';
     images?: string[];
 }
 
@@ -53,7 +53,7 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
         filters_fuelType: [] as string[], // Advanced fuel type
         minPrice: 0,
         maxPrice: 1000000,
-        listingType: 'all' as 'all' | 'sale' | 'rental' | 'both',
+        listingType: 'all' as 'all' | 'sale' | 'rental' | 'both' | 'importazione',
         model: '',
         // Advanced Filters
         bodyType: '',
@@ -320,6 +320,8 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                 result = result.filter(c => c.listing_type === 'rental' || c.listing_type === 'both');
             } else if (filters.listingType === 'both') {
                 result = result.filter(c => c.listing_type === 'both');
+            } else if (filters.listingType === 'importazione') {
+                result = result.filter(c => c.listing_type === 'importazione');
             }
         }
 
@@ -516,6 +518,12 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                     onClick={() => setFilters({ ...filters, listingType: 'both' })}
                                 >
                                     <ShoppingCart size={14} /> Entrambi
+                                </button>
+                                <button
+                                    className={`listing-type-btn importazione ${filters.listingType === 'importazione' ? 'active' : ''}`}
+                                    onClick={() => setFilters({ ...filters, listingType: 'importazione' })}
+                                >
+                                    <Globe size={14} /> Importazione
                                 </button>
                             </div>
                         </div>
@@ -794,6 +802,8 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                                     <><ShoppingCart size={12} /> Vendita</>
                                                 ) : car.listing_type === 'both' ? (
                                                     <><ShoppingCart size={12} /> Vendita / Noleggio</>
+                                                ) : car.listing_type === 'importazione' ? (
+                                                    <><Globe size={12} /> Importazione</>
                                                 ) : (
                                                     <><CarIcon size={12} /> Noleggio</>
                                                 )}
@@ -1000,6 +1010,8 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                             <><ShoppingCart size={12} /> Vendita</>
                                         ) : selectedCar.listing_type === 'both' ? (
                                             <><ShoppingCart size={12} /> Vendita / Noleggio</>
+                                        ) : selectedCar.listing_type === 'importazione' ? (
+                                            <><Globe size={12} /> Importazione</>
                                         ) : (
                                             <><CarIcon size={12} /> Noleggio</>
                                         )}

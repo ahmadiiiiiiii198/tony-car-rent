@@ -286,7 +286,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
         if (newTab === 'sale') params.listingType = 'sale';
         else if (newTab === 'rental') params.listingType = 'rental';
         else if (newTab === 'recambi') params.listingType = 'both';
-        else if (newTab === 'importazione') params.listingType = 'all';
+        else if (newTab === 'importazione') params.listingType = 'importazione';
         else if (newTab === 'assistance') params.listingType = 'both';
 
         onSearch(params);
@@ -341,10 +341,11 @@ export const Hero = ({ onSearch }: HeroProps) => {
     };
 
     const handleSearch = () => {
-        let listingType: 'all' | 'sale' | 'rental' | 'both' = 'all';
+        let listingType: 'all' | 'sale' | 'rental' | 'both' | 'importazione' = 'all';
 
         if (activeTab === 'sale') listingType = 'sale';
         else if (activeTab === 'rental') listingType = 'rental';
+        else if (activeTab === 'importazione') listingType = 'importazione';
 
         onSearch({
             brand: selectedBrand,
