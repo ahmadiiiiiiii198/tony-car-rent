@@ -1002,9 +1002,82 @@ export const AdminPanel = () => {
                             <div className="settings-card">
                                 <h3><CarIcon size={20} /> Sezione Hero</h3>
                                 <div className="form-group">
-                                    <label>Video URL (Sfondo)</label>
-                                    <input value={siteSettings.heroVideo} onChange={e => setSiteSettings({ ...siteSettings, heroVideo: e.target.value })} />
-                                    <small style={{ color: '#888', marginTop: '4px' }}>Inserisci un link diretto a un file .mp4</small>
+                                    <label>Video Sfondo</label>
+                                    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                                        <input value={siteSettings.heroVideo} onChange={e => setSiteSettings({ ...siteSettings, heroVideo: e.target.value })} placeholder="URL del video .mp4" style={{ flex: 1 }} />
+                                        <label className="admin-upload-btn" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1rem', background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '10px', color: '#d4af37', fontSize: '0.85rem', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                                            <Upload size={16} /> Carica
+                                            <input type="file" accept="video/mp4,video/webm" hidden onChange={async (e) => {
+                                                const file = e.target.files?.[0];
+                                                if (!file) return;
+                                                const btn = e.target.parentElement;
+                                                if (btn) btn.textContent = 'Caricamento...';
+                                                try {
+                                                    const fd = new FormData();
+                                                    fd.append('file', file);
+                                                    const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/upload-to-r2`, {
+                                                        method: 'POST',
+                                                        headers: { 'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}` },
+                                                        body: fd
+                                                    });
+                                                    const data = await res.json();
+                                                    if (data.url) {
+                                                        setSiteSettings(prev => ({ ...prev, heroVideo: data.url }));
+                                                        alert('Video caricato con successo!');
+                                                    } else {
+                                                        alert('Errore: ' + (data.error || 'Upload fallito'));
+                                                    }
+                                                } catch (err: any) {
+                                                    alert('Errore upload: ' + err.message);
+                                                }
+                                                e.target.value = '';
+                                                if (btn) btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Carica';
+                                            }} />
+                                        </label>
+                                    </div>
+                                    {siteSettings.heroVideo && siteSettings.heroVideo !== '/bmw.mp4' && (
+                                        <small style={{ color: '#22c55e', marginTop: '4px' }}>✓ Video personalizzato attivo</small>
+                                    )}
+                                </div>
+                                <div className="form-group">
+                                    <label>Immagine Poster (Copertina)</label>
+                                    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                                        <input value={siteSettings.heroPoster} onChange={e => setSiteSettings({ ...siteSettings, heroPoster: e.target.value })} placeholder="URL immagine poster" style={{ flex: 1 }} />
+                                        <label className="admin-upload-btn" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1rem', background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '10px', color: '#d4af37', fontSize: '0.85rem', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                                            <Upload size={16} /> Carica
+                                            <input type="file" accept="image/*" hidden onChange={async (e) => {
+                                                const file = e.target.files?.[0];
+                                                if (!file) return;
+                                                const btn = e.target.parentElement;
+                                                if (btn) btn.textContent = 'Caricamento...';
+                                                try {
+                                                    const fd = new FormData();
+                                                    fd.append('file', file);
+                                                    const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/upload-to-r2`, {
+                                                        method: 'POST',
+                                                        headers: { 'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}` },
+                                                        body: fd
+                                                    });
+                                                    const data = await res.json();
+                                                    if (data.url) {
+                                                        setSiteSettings(prev => ({ ...prev, heroPoster: data.url }));
+                                                        alert('Immagine caricata con successo!');
+                                                    } else {
+                                                        alert('Errore: ' + (data.error || 'Upload fallito'));
+                                                    }
+                                                } catch (err: any) {
+                                                    alert('Errore upload: ' + err.message);
+                                                }
+                                                e.target.value = '';
+                                                if (btn) btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Carica';
+                                            }} />
+                                        </label>
+                                    </div>
+                                    {siteSettings.heroPoster && siteSettings.heroPoster !== '/hero.png' && (
+                                        <div style={{ marginTop: '0.75rem' }}>
+                                            <img src={siteSettings.heroPoster} alt="Hero poster preview" style={{ maxWidth: '200px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }} />
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="form-group">
                                     <label>Titolo Hero</label>

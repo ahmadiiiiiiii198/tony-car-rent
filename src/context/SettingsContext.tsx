@@ -30,6 +30,7 @@ interface SiteSettings {
     instagram: string;
     whatsapp: string;
     heroVideo: string;
+    heroPoster: string;
     heroTitle: string;
     heroSubtitle: string;
     heroTitleEn: string;
@@ -128,6 +129,7 @@ const defaultSettings: SiteSettings = {
     instagram: 'tonaydineurasia.italy',
     whatsapp: '+393291163843',
     heroVideo: '/bmw.mp4',
+    heroPoster: '/hero.png',
     heroTitle: 'TONAYDIN LUXURY CARS',
     heroSubtitle: 'Luxury Lifestyle. Exceptional Service.',
     heroTitleEn: 'TONAYDIN LUXURY CARS',

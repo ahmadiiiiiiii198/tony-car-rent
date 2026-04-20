@@ -450,11 +450,11 @@ export const Hero = ({ onSearch }: HeroProps) => {
                     loop
                     muted
                     playsInline
-                    poster="/hero.png"
+                    poster={siteSettings.heroPoster || '/hero.png'}
                     aria-hidden="true"
                     title={language === 'it' ? 'Auto di lusso in movimento' : 'Luxury car in motion'}
                 >
-                    <source src="/bmw.mp4" type="video/mp4" />
+                    <source src={siteSettings.heroVideo || '/bmw.mp4'} type="video/mp4" />
                 </video>
                 <div className="hero-overlay" />
                 <div className={`hero-tab-overlay ${activeTab || ''}`} />
