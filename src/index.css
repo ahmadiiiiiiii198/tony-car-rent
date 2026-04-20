@@ -4578,6 +4578,34 @@ ul {
   transform: none;
 }
 
+.recambi-catalog-btn {
+  width: 100%;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.5rem;
+  background: transparent;
+  border: 2px solid var(--color-gold);
+  color: var(--color-gold);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.recambi-catalog-btn:hover {
+  background: var(--color-gold);
+  color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+}
+
 @media (max-width: 768px) {
   .hero-request-row {
     flex-direction: column;

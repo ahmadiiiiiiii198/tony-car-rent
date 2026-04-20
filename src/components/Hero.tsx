@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Key, Car, Search, MapPin, Calendar, Gauge,
     Send, User, Mail, Phone, MessageSquare, CheckCircle,
-    Loader2, Shield, Award, ChevronDown, Fuel, Sliders, Palette, Check, Leaf, Info, Armchair, Wrench, Globe
+    Loader2, Shield, Award, ChevronDown, Fuel, Sliders, Palette, Check, Leaf, Info, Armchair, Wrench, Globe, Package
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useSettings } from '../context/SettingsContext';
@@ -786,6 +786,17 @@ export const Hero = ({ onSearch }: HeroProps) => {
                                                                 {requestLoading ? <Loader2 className="animate-spin" /> : <Send size={18} />}
                                                                 {language === 'it' ? 'Richiedi Preventivo' : 'Request Quote'}
                                                             </motion.button>
+                                                            <a
+                                                                href="#ricambi"
+                                                                className="recambi-catalog-btn"
+                                                                onClick={() => {
+                                                                    const el = document.getElementById('ricambi');
+                                                                    if (el) { el.scrollIntoView({ behavior: 'smooth' }); }
+                                                                }}
+                                                            >
+                                                                <Package size={18} />
+                                                                {language === 'it' ? 'Sfoglia Catalogo Ricambi' : 'Browse Parts Catalog'}
+                                                            </a>
                                                         </form>
                                                     )}
                                                 </div>
