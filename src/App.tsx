@@ -20,8 +20,8 @@ function MainSite() {
 
   useEffect(() => {
     document.title = language === 'it' 
-      ? 'Tonaydin Luxury Cars | Vendita e Noleggio Auto di Lusso a Legnano'
-      : 'Tonaydin Luxury Cars | Luxury Car Sales & Rental in Legnano';
+      ? 'Tonaydin Luxury Cars | Vendita e Noleggio Auto di Lusso a Torino'
+      : 'Tonaydin Luxury Cars | Luxury Car Sales & Rental in Turin';
   }, [language]);
 
   return (

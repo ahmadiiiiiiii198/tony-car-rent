@@ -125,7 +125,7 @@ const defaultSearchFormConfig: SearchFormConfig = {
 const defaultSettings: SiteSettings = {
     phone: '+39 329 116 3843',
     email: 'tonaydineurasia.italy@gmail.com',
-    address: 'Via per San Giorgio 70, Legnano (MI)',
+    address: 'Via per San Giorgio 70, Torino (TO)',
     instagram: 'tonaydineurasia.italy',
     whatsapp: '+393291163843',
     heroVideo: '/bmw.mp4',

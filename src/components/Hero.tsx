@@ -468,8 +468,8 @@ export const Hero = ({ onSearch }: HeroProps) => {
 
             <h1 className="sr-only">
                 {language === 'it'
-                    ? 'Tonaydin Luxury Cars - Vendita e Noleggio Auto di Lusso a Legnano (MI)'
-                    : 'Tonaydin Luxury Cars - Luxury Car Sales and Rental in Legnano, Milan'}
+                    ? 'Tonaydin Luxury Cars - Vendita e Noleggio Auto di Lusso a Torino'
+                    : 'Tonaydin Luxury Cars - Luxury Car Sales and Rental in Turin, Italy'}
             </h1>
 
             <div className="container hero-content">
