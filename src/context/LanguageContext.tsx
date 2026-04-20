@@ -151,7 +151,7 @@ const translations: Record<Language, Translations> = {
         // Navigation
         home: 'Home',
         fleet: 'Flotta',
-        services: 'Servizi',
+        services: 'Perché Noi',
         about: 'Chi Siamo',
         contact: 'Contatti',
         bookNow: 'Prenota Ora',
@@ -294,7 +294,7 @@ const translations: Record<Language, Translations> = {
         // Navigation
         home: 'Home',
         fleet: 'Fleet',
-        services: 'Services',
+        services: 'Why Choose Us',
         about: 'About',
         contact: 'Contact',
         bookNow: 'Book Now',

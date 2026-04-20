@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Instagram, Facebook, Mail, Phone, MapPin, MessageCircle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useSettings } from '../context/SettingsContext';
@@ -63,8 +64,8 @@ export const Footer = () => {
                 <div className="footer-bottom">
                     <p>&copy; {new Date().getFullYear()} Tonaydin Luxury Cars. {t.allRightsReserved}</p>
                     <div className="footer-legal">
-                        <a href="#">{t.privacyPolicy}</a>
-                        <a href="#">{t.termsConditions}</a>
+                        <Link to="/privacy-policy">{t.privacyPolicy}</Link>
+                        <Link to="/terms-conditions">{t.termsConditions}</Link>
                     </div>
                 </div>
             </div>

@@ -11,6 +11,9 @@ import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { SettingsProvider } from './context/SettingsContext';
 import { emptySearchParams, type SearchParams } from './types/SearchParams';
 
+import { PrivacyPolicy } from './components/PrivacyPolicy';
+import { TermsConditions } from './components/TermsConditions';
+
 function MainSite() {
   const [searchParams, setSearchParams] = useState<SearchParams>(emptySearchParams);
   const { language } = useLanguage();
@@ -42,6 +45,8 @@ function App() {
           <Route path="/" element={<MainSite />} />
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/test" element={<TestCarShowcase />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-conditions" element={<TermsConditions />} />
         </Routes>
       </SettingsProvider>
     </LanguageProvider>

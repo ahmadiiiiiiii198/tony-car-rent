@@ -748,6 +748,7 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                                 src={(car.images && car.images.length > 0) ? car.images[cardImageIndices[car.id] || 0] : car.image}
                                                 alt={`${car.brand} ${car.name} - Tonaydin Luxury Cars`}
                                                 loading="lazy"
+                                                decoding="async"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     const imgs = (car.images && car.images.length > 0) ? car.images : [car.image];
@@ -951,6 +952,7 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                             src={(selectedCar.images && selectedCar.images.length > 0) ? selectedCar.images[currentImageIndex] : selectedCar.image}
                                             alt={selectedCar.name}
                                             className="modal-gallery-image"
+                                            decoding="async"
                                             onClick={() => {
                                                 const imgs = (selectedCar.images && selectedCar.images.length > 0) ? selectedCar.images : [selectedCar.image];
                                                 setLightboxImages(imgs);

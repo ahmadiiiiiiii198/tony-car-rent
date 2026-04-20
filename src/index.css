@@ -268,6 +268,7 @@ ul {
   height: 8rem;
   width: auto;
   transition: height 0.4s ease;
+  margin-right: 2rem;
 }
 
 .navbar.scrolled .nav-logo img {
@@ -913,6 +914,9 @@ ul {
   line-height: 1;
   animation: badge-pulse 2s infinite ease-in-out;
   border: 1px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @keyframes badge-pulse {
@@ -934,11 +938,17 @@ ul {
 
 @media (max-width: 1024px) {
   .hero-tab-badge {
-    top: 5px;
-    right: 5px;
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+    margin-left: 0.5rem;
     font-size: 0.5rem;
     padding: 1px 4px;
     letter-spacing: 0.04em;
+    animation: none;
+    display: inline-flex;
+    vertical-align: middle;
   }
 }
 
@@ -1091,7 +1101,7 @@ ul {
 .hero-search-field select,
 .hero-search-field input,
 .hero-search-field textarea {
-  padding: 0.9rem 1rem;
+  padding: 0.9rem 2.5rem 0.9rem 1rem;
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 12px;
@@ -1296,7 +1306,14 @@ ul {
   }
 }
 
-/* ===== End Configurator Banner ===== */
+.adv-section-body select,
+.modal-select {
+  padding: 0.8rem 2.5rem 0.8rem 1rem !important;
+  appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 1rem center !important;
+}
 
 .adv-section-header {
   display: flex;
@@ -1428,13 +1445,13 @@ ul {
   width: 20px;
   height: 20px;
   min-width: 20px;
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border: 1.5px solid rgba(0, 0, 0, 0.15);
   border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
-  background: rgba(0, 0, 0, 0.3);
+  background: #ffffff;
 }
 
 .adv-checkbox.checked {
@@ -1816,7 +1833,7 @@ ul {
 
 @media (min-width: 1024px) {
   .services-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
   }
 }
 
@@ -3772,9 +3789,9 @@ ul {
 }
 
 .sort-dropdown {
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--color-text);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #1a1a1a;
   padding: 0.6rem 2.5rem 0.6rem 1rem;
   border-radius: 8px;
   outline: none;
@@ -3782,10 +3799,10 @@ ul {
   font-size: 0.9rem;
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a0a0a0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23333333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.8rem center;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
 }
 
 .sort-dropdown:focus {

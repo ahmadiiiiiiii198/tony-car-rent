@@ -57,12 +57,13 @@ export const Navbar = () => {
     setMobileOpen(false);
     document.body.style.overflow = 'unset';
 
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       const fleetSection = document.getElementById('fleet');
       if (fleetSection) {
-        fleetSection.scrollIntoView({ behavior: 'smooth' });
+        const top = fleetSection.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top, behavior: 'smooth' });
       }
-    }, 100);
+    });
   };
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -72,17 +73,17 @@ export const Navbar = () => {
     // Explicitly unset overflow for immediate effect on mobile browsers
     document.body.style.overflow = 'unset';
 
-    // Small delay ensures the menu state update is processing and body is scrollable
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       if (href === '#') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         const element = document.querySelector(href);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+          const top = element.getBoundingClientRect().top + window.scrollY;
+          window.scrollTo({ top, behavior: 'smooth' });
         }
       }
-    }, 50);
+    });
   };
 
   return (

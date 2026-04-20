@@ -535,6 +535,18 @@ export const AdminPanel = () => {
         }
     };
 
+    // Number formatting helper: 200000 -> "200.000"
+    const formatNumber = (val: number | string): string => {
+        const num = typeof val === 'string' ? parseInt(val.replace(/\./g, '').replace(/[^0-9]/g, ''), 10) : val;
+        if (isNaN(num) || num === 0) return '';
+        return new Intl.NumberFormat('it-IT').format(num);
+    };
+
+    const parseFormattedNumber = (val: string): number => {
+        const cleaned = val.replace(/\./g, '').replace(/[^0-9]/g, '');
+        return parseInt(cleaned, 10) || 0;
+    };
+
     // Fleet Management Functions
     const handleSaveCar = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -761,7 +773,6 @@ export const AdminPanel = () => {
             <div className="admin-container">
                 {activeTab === 'orders' && (
                     <div className="admin-content-section">
-                        {/* Order Stats */}
                         <div className="admin-stats">
                             <div className="stat-card" onClick={() => setFilterStatus('all')}>
                                 <Package size={24} />
@@ -1208,7 +1219,28 @@ export const AdminPanel = () => {
                                             </div>
                                         );
                                     })}
-                                    <input type="file" ref={multiFileInputRef} hidden accept="image/*" onChange={e => { if (e.target.files?.[0]) { handleFileSelected(e.target.files[0], false); e.target.value = ''; } }} />
+                                    <input 
+                                        type="file" 
+                                        ref={multiFileInputRef} 
+                                        hidden 
+                                        accept="image/*" 
+                                        multiple 
+                                        onChange={async (e) => { 
+                                            if (e.target.files && e.target.files.length > 0) { 
+                                                const files = Array.from(e.target.files);
+                                                // If multiple files, upload them directly
+                                                if (files.length > 1) {
+                                                    for (const file of files) {
+                                                        await uploadDirect(file, false);
+                                                    }
+                                                } else {
+                                                    // If single file, show the choice (Direct vs Editor)
+                                                    handleFileSelected(files[0], false);
+                                                }
+                                                e.target.value = ''; 
+                                            } 
+                                        }} 
+                                    />
                                 </div>
                                 {uploadingImage && <p className="ce-uploading-text"><RefreshCw size={14} className="spin" /> Caricamento in corso...</p>}
                             </div>
@@ -1357,8 +1389,11 @@ export const AdminPanel = () => {
                                 <div className="ce-section-title"><span>Chilometraggio (km)</span></div>
                                 <input
                                     className="ce-input"
-                                    value={editingCar.km || ''}
-                                    onChange={e => setEditingCar({ ...editingCar, km: e.target.value })}
+                                    value={editingCar.km ? formatNumber(editingCar.km) : ''}
+                                    onChange={e => {
+                                        const raw = e.target.value.replace(/\./g, '').replace(/[^0-9]/g, '');
+                                        setEditingCar({ ...editingCar, km: raw });
+                                    }}
                                     placeholder="Inserisci il chilometraggio"
                                 />
                             </div>
@@ -1483,10 +1518,14 @@ export const AdminPanel = () => {
                                     <input
                                         className="ce-input ce-input-prefixed"
                                         required
-                                        type="number"
-                                        value={editingCar.price}
-                                        onChange={e => setEditingCar({ ...editingCar, price: Number(e.target.value) })}
-                                        placeholder="0,00"
+                                        type="text"
+                                        inputMode="numeric"
+                                        value={editingCar.price ? formatNumber(editingCar.price) : ''}
+                                        onChange={e => {
+                                            const num = parseFormattedNumber(e.target.value);
+                                            setEditingCar({ ...editingCar, price: num });
+                                        }}
+                                        placeholder="0"
                                     />
                                 </div>
                             </div>

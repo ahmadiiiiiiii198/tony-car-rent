@@ -128,7 +128,7 @@ export const AdvancedSearchModal = ({ isOpen, onClose, onSearch, initialParams }
                                             <label className="space-y-2">
                                                 <span className="text-sm text-gray-400">Carrozzeria</span>
                                                 <select
-                                                    className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-[#d4af37] outline-none"
+                                                    className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-[#d4af37] outline-none modal-select"
                                                     value={params.bodyType || ''}
                                                     onChange={(e) => setParams({ ...params, bodyType: e.target.value })}
                                                 >
@@ -140,7 +140,7 @@ export const AdvancedSearchModal = ({ isOpen, onClose, onSearch, initialParams }
                                             <label className="space-y-2">
                                                 <span className="text-sm text-gray-400">Marca</span>
                                                 <select
-                                                    className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-[#d4af37] outline-none"
+                                                    className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-[#d4af37] outline-none modal-select"
                                                     value={params.brand}
                                                     onChange={(e) => setParams({ ...params, brand: e.target.value })}
                                                 >
@@ -155,7 +155,7 @@ export const AdvancedSearchModal = ({ isOpen, onClose, onSearch, initialParams }
                                                 <label className="space-y-2">
                                                     <span className="text-sm text-gray-400">Prezzo Da</span>
                                                     <select
-                                                        className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-[#d4af37] outline-none"
+                                                        className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-[#d4af37] outline-none modal-select"
                                                         value={params.minPrice || ''}
                                                         onChange={(e) => setParams({ ...params, minPrice: Number(e.target.value) })}
                                                     >
@@ -169,7 +169,7 @@ export const AdvancedSearchModal = ({ isOpen, onClose, onSearch, initialParams }
                                                 <label className="space-y-2">
                                                     <span className="text-sm text-gray-400">A</span>
                                                     <select
-                                                        className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-[#d4af37] outline-none"
+                                                        className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-[#d4af37] outline-none modal-select"
                                                         value={params.maxPrice || ''}
                                                         onChange={(e) => setParams({ ...params, maxPrice: Number(e.target.value) })}
                                                     >
@@ -186,7 +186,7 @@ export const AdvancedSearchModal = ({ isOpen, onClose, onSearch, initialParams }
                                                 <label className="space-y-2">
                                                     <span className="text-sm text-gray-400">Anno Da</span>
                                                     <select
-                                                        className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-[#d4af37] outline-none"
+                                                        className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-[#d4af37] outline-none modal-select"
                                                         value={params.year || ''}
                                                         onChange={(e) => setParams({ ...params, year: Number(e.target.value) })}
                                                     >
@@ -197,7 +197,7 @@ export const AdvancedSearchModal = ({ isOpen, onClose, onSearch, initialParams }
                                                 <label className="space-y-2">
                                                     <span className="text-sm text-gray-400">A</span>
                                                     <select
-                                                        className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-[#d4af37] outline-none"
+                                                        className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-[#d4af37] outline-none modal-select"
                                                     >
                                                         <option value="">A</option>
                                                         {years.map(y => <option key={y} value={y}>{y}</option>)}
@@ -252,7 +252,7 @@ export const AdvancedSearchModal = ({ isOpen, onClose, onSearch, initialParams }
                                             <div className="space-y-2">
                                                 <span className="text-sm text-gray-400">Cambio</span>
                                                 <select
-                                                    className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-[#d4af37] outline-none"
+                                                    className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-[#d4af37] outline-none modal-select"
                                                     value={params.transmission || ''}
                                                     onChange={(e) => setParams({ ...params, transmission: e.target.value })}
                                                 >
