@@ -2816,3 +2816,50 @@
         margin: 1rem 1.25rem 1.5rem;
     }
 }
+
+/* Ricambi Admin */
+.ricambi-admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.25rem;
+}
+
+.ricambi-admin-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 1rem;
+    transition: all 0.2s;
+}
+
+.ricambi-admin-card:hover {
+    border-color: rgba(212, 175, 55, 0.25);
+}
+
+.ricambi-order-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 1.25rem;
+}
+
+.ricambi-edit-modal {
+    background: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    width: 560px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .ricambi-admin-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ricambi-edit-modal {
+        padding: 1.25rem;
+    }
+}

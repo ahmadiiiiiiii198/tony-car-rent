@@ -399,7 +399,15 @@ export const AdminPanel = () => {
     const [authenticated, setAuthenticated] = useState(false);
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
-    const [activeTab, setActiveTab] = useState<'orders' | 'fleet' | 'settings' | 'search'>('orders');
+    const [activeTab, setActiveTab] = useState<'orders' | 'fleet' | 'settings' | 'search' | 'ricambi'>('orders');
+
+    // Ricambi State
+    const [ricambiProducts, setRicambiProducts] = useState<any[]>([]);
+    const [ricambiOrders, setRicambiOrders] = useState<any[]>([]);
+    const [loadingRicambi, setLoadingRicambi] = useState(false);
+    const [editingRicambio, setEditingRicambio] = useState<any>(null);
+    const [showRicambioModal, setShowRicambioModal] = useState(false);
+    const [ricambiView, setRicambiView] = useState<'products' | 'orders'>('products');
 
     // Orders State
     const [orders, setOrders] = useState<Order[]>([]);
@@ -548,6 +556,37 @@ export const AdminPanel = () => {
     };
 
     // Fleet Management Functions
+    const fetchRicambiProducts = async () => {
+        setLoadingRicambi(true);
+        const { data } = await supabase.from('ricambi').select('*').order('created_at', { ascending: false });
+        setRicambiProducts(data || []);
+        setLoadingRicambi(false);
+    };
+
+    const fetchRicambiOrders = async () => {
+        const { data } = await supabase.from('ricambi_orders').select('*').order('created_at', { ascending: false });
+        setRicambiOrders(data || []);
+    };
+
+    const handleSaveRicambio = async () => {
+        if (!editingRicambio) return;
+        const { id, ...rest } = editingRicambio;
+        if (id) {
+            await supabase.from('ricambi').update(rest).eq('id', id);
+        } else {
+            await supabase.from('ricambi').insert(rest);
+        }
+        setShowRicambioModal(false);
+        setEditingRicambio(null);
+        fetchRicambiProducts();
+    };
+
+    const handleDeleteRicambio = async (id: number) => {
+        if (!confirm('Sei sicuro di voler eliminare questo ricambio?')) return;
+        await supabase.from('ricambi').delete().eq('id', id);
+        fetchRicambiProducts();
+    };
+
     const handleSaveCar = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!editingCar) return;
@@ -724,6 +763,12 @@ export const AdminPanel = () => {
                             onClick={() => setActiveTab('fleet')}
                         >
                             <LayoutGrid size={18} /> <span>Flotta</span>
+                        </button>
+                        <button
+                            className={`nav-item ${activeTab === 'ricambi' ? 'active' : ''}`}
+                            onClick={() => { setActiveTab('ricambi'); fetchRicambiProducts(); fetchRicambiOrders(); }}
+                        >
+                            <Package size={18} /> <span>Ricambi</span>
                         </button>
                         <button
                             className={`nav-item ${activeTab === 'search' ? 'active' : ''}`}
@@ -1161,6 +1206,246 @@ export const AdminPanel = () => {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                )}
+
+                {activeTab === 'ricambi' && (
+                    <div className="admin-content-section">
+                        <div className="section-header">
+                            <div>
+                                <h2><Package size={22} /> Gestione Ricambi</h2>
+                                <p>Gestisci il catalogo ricambi e visualizza gli ordini</p>
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                            <button
+                                className={`btn-outline ${ricambiView === 'products' ? 'active' : ''}`}
+                                style={ricambiView === 'products' ? { background: 'var(--color-gold)', color: '#000', borderColor: 'var(--color-gold)' } : {}}
+                                onClick={() => setRicambiView('products')}
+                            >
+                                <Package size={16} /> Catalogo ({ricambiProducts.length})
+                            </button>
+                            <button
+                                className={`btn-outline ${ricambiView === 'orders' ? 'active' : ''}`}
+                                style={ricambiView === 'orders' ? { background: 'var(--color-gold)', color: '#000', borderColor: 'var(--color-gold)' } : {}}
+                                onClick={() => setRicambiView('orders')}
+                            >
+                                <MessageSquare size={16} /> Ordini ({ricambiOrders.length})
+                            </button>
+                        </div>
+
+                        {ricambiView === 'products' && (
+                            <>
+                                <button className="btn-primary" style={{ marginBottom: '1.5rem' }} onClick={() => {
+                                    setEditingRicambio({ name: '', description: '', category: 'Generale', brand: '', price: 0, image: '', available: true });
+                                    setShowRicambioModal(true);
+                                }}>
+                                    <Plus size={16} /> Aggiungi Ricambio
+                                </button>
+
+                                {loadingRicambi ? (
+                                    <div style={{ textAlign: 'center', padding: '3rem' }}>
+                                        <RefreshCw size={24} className="spin" />
+                                    </div>
+                                ) : ricambiProducts.length === 0 ? (
+                                    <div style={{ textAlign: 'center', padding: '3rem', color: '#888' }}>
+                                        <Package size={48} style={{ opacity: 0.3, marginBottom: '1rem' }} />
+                                        <p>Nessun ricambio nel catalogo</p>
+                                        <p style={{ fontSize: '0.85rem' }}>Clicca "Aggiungi Ricambio" per iniziare</p>
+                                    </div>
+                                ) : (
+                                    <div className="ricambi-admin-grid">
+                                        {ricambiProducts.map((p: any) => (
+                                            <div key={p.id} className="ricambi-admin-card">
+                                                {p.image && <img src={p.image} alt={p.name} style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '8px', marginBottom: '0.75rem' }} />}
+                                                <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                                                    <span style={{ fontSize: '0.7rem', color: 'var(--color-gold)', fontWeight: 700, textTransform: 'uppercase' }}>{p.category}</span>
+                                                    {p.brand && <span style={{ fontSize: '0.7rem', color: '#888' }}>{p.brand}</span>}
+                                                </div>
+                                                <h4 style={{ fontSize: '0.95rem', margin: '0 0 0.25rem', fontFamily: 'var(--font-body)', textTransform: 'none', letterSpacing: 0 }}>{p.name}</h4>
+                                                <p style={{ fontSize: '0.8rem', color: '#aaa', marginBottom: '0.5rem' }}>{p.description}</p>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                    <span style={{ fontWeight: 800, fontSize: '1rem' }}>€ {new Intl.NumberFormat('it-IT', { minimumFractionDigits: 2 }).format(p.price)}</span>
+                                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                                        <button onClick={() => { setEditingRicambio(p); setShowRicambioModal(true); }} style={{ padding: '0.4rem', background: 'rgba(212,175,55,0.15)', borderRadius: '6px', color: 'var(--color-gold)' }}>
+                                                            <Edit size={14} />
+                                                        </button>
+                                                        <button onClick={() => handleDeleteRicambio(p.id)} style={{ padding: '0.4rem', background: 'rgba(239,68,68,0.15)', borderRadius: '6px', color: '#ef4444' }}>
+                                                            <Trash2 size={14} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <span style={{ fontSize: '0.7rem', color: p.available ? '#22c55e' : '#ef4444', marginTop: '0.25rem' }}>
+                                                    {p.available ? '● Disponibile' : '● Non disponibile'}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </>
+                        )}
+
+                        {ricambiView === 'orders' && (
+                            <>
+                                <button className="btn-outline" style={{ marginBottom: '1.5rem' }} onClick={fetchRicambiOrders}>
+                                    <RefreshCw size={14} /> Aggiorna
+                                </button>
+                                {ricambiOrders.length === 0 ? (
+                                    <div style={{ textAlign: 'center', padding: '3rem', color: '#888' }}>
+                                        <MessageSquare size={48} style={{ opacity: 0.3, marginBottom: '1rem' }} />
+                                        <p>Nessun ordine ricambi ricevuto</p>
+                                    </div>
+                                ) : (
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                        {ricambiOrders.map((order: any) => (
+                                            <div key={order.id} className="ricambi-order-card">
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                                                    <div>
+                                                        <strong style={{ fontSize: '1rem' }}>{order.customer_name}</strong>
+                                                        <div style={{ fontSize: '0.8rem', color: '#888', display: 'flex', gap: '1rem', marginTop: '0.25rem' }}>
+                                                            <span><Mail size={12} /> {order.customer_email}</span>
+                                                            {order.customer_phone && <span><Phone size={12} /> {order.customer_phone}</span>}
+                                                        </div>
+                                                    </div>
+                                                    <div style={{ textAlign: 'right' }}>
+                                                        <span style={{ fontSize: '0.7rem', padding: '0.25rem 0.75rem', borderRadius: '20px', background: order.status === 'pending' ? 'rgba(234,179,8,0.15)' : order.status === 'confirmed' ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)', color: order.status === 'pending' ? '#eab308' : order.status === 'confirmed' ? '#22c55e' : '#ef4444', fontWeight: 700, textTransform: 'uppercase' }}>
+                                                            {order.status}
+                                                        </span>
+                                                        <div style={{ fontSize: '0.75rem', color: '#666', marginTop: '0.25rem' }}>
+                                                            {new Date(order.created_at).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '8px', padding: '0.75rem', marginBottom: '0.5rem' }}>
+                                                    <table style={{ width: '100%', fontSize: '0.82rem' }}>
+                                                        <thead>
+                                                            <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                                                                <th style={{ textAlign: 'left', padding: '0.25rem 0', fontWeight: 600 }}>Prodotto</th>
+                                                                <th style={{ textAlign: 'center', padding: '0.25rem 0', fontWeight: 600 }}>Qtà</th>
+                                                                <th style={{ textAlign: 'right', padding: '0.25rem 0', fontWeight: 600 }}>Prezzo</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {(order.items || []).map((item: any, idx: number) => (
+                                                                <tr key={idx}>
+                                                                    <td style={{ padding: '0.25rem 0' }}>{item.name}</td>
+                                                                    <td style={{ textAlign: 'center', padding: '0.25rem 0' }}>{item.quantity}</td>
+                                                                    <td style={{ textAlign: 'right', padding: '0.25rem 0' }}>€ {new Intl.NumberFormat('it-IT', { minimumFractionDigits: 2 }).format(item.price * item.quantity)}</td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                    <span style={{ fontWeight: 800, color: 'var(--color-gold)' }}>Totale: € {new Intl.NumberFormat('it-IT', { minimumFractionDigits: 2 }).format(order.total)}</span>
+                                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                                        {order.status === 'pending' && (
+                                                            <>
+                                                                <button onClick={async () => { await supabase.from('ricambi_orders').update({ status: 'confirmed' }).eq('id', order.id); fetchRicambiOrders(); }} style={{ padding: '0.4rem 0.8rem', background: 'rgba(34,197,94,0.15)', borderRadius: '6px', color: '#22c55e', fontSize: '0.8rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                                                                    <CheckCircle size={14} /> Conferma
+                                                                </button>
+                                                                <button onClick={async () => { await supabase.from('ricambi_orders').update({ status: 'rejected' }).eq('id', order.id); fetchRicambiOrders(); }} style={{ padding: '0.4rem 0.8rem', background: 'rgba(239,68,68,0.15)', borderRadius: '6px', color: '#ef4444', fontSize: '0.8rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                                                                    <X size={14} /> Rifiuta
+                                                                </button>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                {order.message && <p style={{ fontSize: '0.82rem', color: '#aaa', marginTop: '0.5rem', fontStyle: 'italic' }}>"{order.message}"</p>}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </>
+                        )}
+
+                        {/* Ricambio Edit Modal */}
+                        {showRicambioModal && editingRicambio && (
+                            <div className="img-editor-overlay" onClick={() => setShowRicambioModal(false)}>
+                                <div className="ricambi-edit-modal" onClick={e => e.stopPropagation()}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                        <h3 style={{ fontFamily: 'var(--font-body)', textTransform: 'none', letterSpacing: 0, margin: 0 }}>
+                                            {editingRicambio.id ? 'Modifica Ricambio' : 'Nuovo Ricambio'}
+                                        </h3>
+                                        <button onClick={() => setShowRicambioModal(false)}><X size={20} /></button>
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                        <div className="form-group">
+                                            <label>Nome *</label>
+                                            <input value={editingRicambio.name} onChange={e => setEditingRicambio({ ...editingRicambio, name: e.target.value })} placeholder="Nome del ricambio" />
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group">
+                                                <label>Categoria</label>
+                                                <input value={editingRicambio.category} onChange={e => setEditingRicambio({ ...editingRicambio, category: e.target.value })} placeholder="es. Freni, Motore, Carrozzeria..." />
+                                            </div>
+                                            <div className="form-group">
+                                                <label>Marca Compatibile</label>
+                                                <input value={editingRicambio.brand || ''} onChange={e => setEditingRicambio({ ...editingRicambio, brand: e.target.value })} placeholder="es. BMW, Mercedes..." />
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Descrizione</label>
+                                            <textarea value={editingRicambio.description || ''} onChange={e => setEditingRicambio({ ...editingRicambio, description: e.target.value })} placeholder="Descrizione del ricambio" rows={3} style={{ width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '0.6rem 0.8rem', color: 'white', fontFamily: 'var(--font-body)', resize: 'vertical' }} />
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group">
+                                                <label>Prezzo (€)</label>
+                                                <input type="number" step="0.01" min="0" value={editingRicambio.price} onChange={e => setEditingRicambio({ ...editingRicambio, price: parseFloat(e.target.value) || 0 })} />
+                                            </div>
+                                            <div className="form-group">
+                                                <label>Disponibile</label>
+                                                <select value={editingRicambio.available ? 'true' : 'false'} onChange={e => setEditingRicambio({ ...editingRicambio, available: e.target.value === 'true' })} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '0.6rem 0.8rem', color: 'white' }}>
+                                                    <option value="true">Sì</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Immagine</label>
+                                            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                                                <input value={editingRicambio.image || ''} onChange={e => setEditingRicambio({ ...editingRicambio, image: e.target.value })} placeholder="URL immagine" style={{ flex: 1 }} />
+                                                <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1rem', background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '10px', color: '#d4af37', fontSize: '0.85rem', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                                                    <Upload size={16} /> Carica
+                                                    <input type="file" accept="image/*" hidden onChange={async (e) => {
+                                                        const file = e.target.files?.[0];
+                                                        if (!file) return;
+                                                        const btn = e.target.parentElement;
+                                                        if (btn) btn.textContent = 'Caricamento...';
+                                                        try {
+                                                            const fd = new FormData();
+                                                            fd.append('file', file);
+                                                            const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/upload-to-r2`, {
+                                                                method: 'POST',
+                                                                headers: { 'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}` },
+                                                                body: fd
+                                                            });
+                                                            const data = await res.json();
+                                                            if (data.url) {
+                                                                setEditingRicambio((prev: any) => ({ ...prev, image: data.url }));
+                                                            } else {
+                                                                alert('Errore: ' + (data.error || 'Upload fallito'));
+                                                            }
+                                                        } catch (err: any) {
+                                                            alert('Errore upload: ' + err.message);
+                                                        }
+                                                        e.target.value = '';
+                                                        if (btn) btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Carica';
+                                                    }} />
+                                                </label>
+                                            </div>
+                                            {editingRicambio.image && (
+                                                <img src={editingRicambio.image} alt="Preview" style={{ maxWidth: '200px', borderRadius: '8px', marginTop: '0.75rem', border: '1px solid rgba(255,255,255,0.1)' }} />
+                                            )}
+                                        </div>
+                                        <button className="btn-primary" onClick={handleSaveRicambio} style={{ marginTop: '0.5rem' }}>
+                                            <Save size={16} /> {editingRicambio.id ? 'Salva Modifiche' : 'Aggiungi al Catalogo'}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
 

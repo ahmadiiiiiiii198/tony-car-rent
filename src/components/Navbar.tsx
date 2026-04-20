@@ -45,6 +45,7 @@ export const Navbar = () => {
   const navLinks = [
     { id: 'home', name: t.home, href: '#' },
     { id: 'fleet', name: t.fleet, href: '#fleet' },
+    { id: 'ricambi', name: language === 'it' ? 'Ricambi' : 'Parts', href: '#ricambi' },
     { id: 'services', name: t.services, href: '#services' },
     { id: 'contact', name: t.contact, href: '#contact' },
   ];

@@ -4,6 +4,8 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { Fleet } from './components/Fleet';
 import { Services } from './components/Services';
+import { Ricambi } from './components/Ricambi';
+import './ricambi.css';
 import { Footer } from './components/Footer';
 import { AdminPanel } from './components/AdminPanel';
 import { TestCarShowcase } from './components/TestCarShowcase';
@@ -30,6 +32,7 @@ function MainSite() {
       <main style={{ flex: 1, width: '100%', overflowX: 'hidden' }}>
         <Hero onSearch={(params) => setSearchParams(params)} />
         <Fleet searchParams={searchParams} onClearSearch={() => setSearchParams(emptySearchParams)} />
+        <Ricambi />
         <Services />
       </main>
       <Footer />
