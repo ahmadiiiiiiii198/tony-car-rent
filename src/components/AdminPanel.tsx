@@ -598,27 +598,27 @@ export const AdminPanel = () => {
         setPendingIsMain(isMain);
     };
 
-    const uploadDirect = async (file: File, isMain: boolean) => {
+    const uploadToR2 = async (fileOrBlob: File | Blob, isMain: boolean) => {
         setUploadingImage(true);
         try {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Math.random()}.${fileExt}`;
-            const filePath = `cars/${fileName}`;
-
-            const { error: uploadError } = await supabase.storage
-                .from('car-images')
-                .upload(filePath, file);
-
-            if (uploadError) throw uploadError;
-
-            const { data: { publicUrl } } = supabase.storage
-                .from('car-images')
-                .getPublicUrl(filePath);
+            const fd = new FormData();
+            if (fileOrBlob instanceof File) {
+                fd.append('file', fileOrBlob);
+            } else {
+                fd.append('file', fileOrBlob, `car-${Date.now()}.png`);
+            }
+            const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/upload-to-r2`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}` },
+                body: fd
+            });
+            const data = await res.json();
+            if (!data.url) throw new Error(data.error || 'Upload fallito');
 
             if (isMain) {
-                setEditingCar(prev => prev ? { ...prev, image: publicUrl } : null);
+                setEditingCar(prev => prev ? { ...prev, image: data.url } : null);
             } else {
-                setEditingCar(prev => prev ? { ...prev, images: [...(prev.images || []), publicUrl] } : null);
+                setEditingCar(prev => prev ? { ...prev, images: [...(prev.images || []), data.url] } : null);
             }
         } catch (error: any) {
             alert('Errore caricamento: ' + error.message);
@@ -627,32 +627,12 @@ export const AdminPanel = () => {
         }
     };
 
+    const uploadDirect = async (file: File, isMain: boolean) => {
+        await uploadToR2(file, isMain);
+    };
+
     const uploadBlob = async (blob: Blob, isMain: boolean) => {
-        setUploadingImage(true);
-        try {
-            const fileName = `${Math.random()}.png`;
-            const filePath = `cars/${fileName}`;
-
-            const { error: uploadError } = await supabase.storage
-                .from('car-images')
-                .upload(filePath, blob, { contentType: 'image/png' });
-
-            if (uploadError) throw uploadError;
-
-            const { data: { publicUrl } } = supabase.storage
-                .from('car-images')
-                .getPublicUrl(filePath);
-
-            if (isMain) {
-                setEditingCar(prev => prev ? { ...prev, image: publicUrl } : null);
-            } else {
-                setEditingCar(prev => prev ? { ...prev, images: [...(prev.images || []), publicUrl] } : null);
-            }
-        } catch (error: any) {
-            alert('Errore caricamento: ' + error.message);
-        } finally {
-            setUploadingImage(false);
-        }
+        await uploadToR2(blob, isMain);
     };
 
     const handleImageEditorComplete = async (blob: Blob) => {

@@ -749,6 +749,8 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                                 alt={`${car.brand} ${car.name} - Tonaydin Luxury Cars`}
                                                 loading="lazy"
                                                 decoding="async"
+                                                className="img-fade-in"
+                                                onLoad={(e) => (e.target as HTMLImageElement).classList.add('loaded')}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     const imgs = (car.images && car.images.length > 0) ? car.images : [car.image];

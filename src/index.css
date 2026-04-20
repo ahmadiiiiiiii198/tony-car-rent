@@ -20,6 +20,23 @@
   padding: 0;
 }
 
+img[loading="lazy"] {
+  content-visibility: auto;
+}
+
+img {
+  image-rendering: auto;
+}
+
+.img-fade-in {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.img-fade-in.loaded {
+  opacity: 1;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

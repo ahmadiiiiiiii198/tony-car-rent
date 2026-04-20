@@ -12,7 +12,7 @@ export const Footer = () => {
             <div className="container">
                 <div className="footer-grid">
                     <div className="footer-brand">
-                        <img src="/logo-newest.png" alt="Tonaydin" style={{ height: '4rem', marginBottom: '1.5rem' }} />
+                        <img src="/logo-newest.png" alt="Tonaydin" loading="lazy" decoding="async" style={{ height: '4rem', marginBottom: '1.5rem' }} />
                         <p>
                             {t.footerDesc}
                         </p>

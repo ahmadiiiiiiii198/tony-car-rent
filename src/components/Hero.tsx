@@ -28,6 +28,8 @@ export const Hero = ({ onSearch }: HeroProps) => {
     const [animationStage] = useState<'intro' | 'settling' | 'complete'>('complete');
 
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const [videoLoaded, setVideoLoaded] = useState(false);
 
     const priceOptions = Array.from({ length: 20 }, (_, i) => (i + 1) * 5000);
     const yearOptions = Array.from({ length: 30 }, (_, i) => new Date().getFullYear() - i);
@@ -446,13 +448,17 @@ export const Hero = ({ onSearch }: HeroProps) => {
                 className="hero-bg"
             >
                 <video
+                    ref={videoRef}
                     autoPlay
                     loop
                     muted
                     playsInline
+                    preload={isMobile ? 'none' : 'metadata'}
                     poster={siteSettings.heroPoster || '/hero.png'}
                     aria-hidden="true"
                     title={language === 'it' ? 'Auto di lusso in movimento' : 'Luxury car in motion'}
+                    onLoadedData={() => setVideoLoaded(true)}
+                    style={{ opacity: videoLoaded ? 1 : 0, transition: 'opacity 0.8s ease' }}
                 >
                     <source src={siteSettings.heroVideo || '/bmw.mp4'} type="video/mp4" />
                 </video>
