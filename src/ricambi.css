@@ -254,6 +254,34 @@
     overflow: hidden;
 }
 
+/* Custom Fields */
+.ricambi-custom-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+}
+
+.ricambi-field {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    background: #f5f5f5;
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+}
+
+.ricambi-field-label {
+    font-weight: 700;
+    color: var(--color-text-muted);
+}
+
+.ricambi-field-value {
+    color: var(--color-text);
+    font-weight: 500;
+}
+
 .ricambi-card-footer {
     display: flex;
     align-items: center;

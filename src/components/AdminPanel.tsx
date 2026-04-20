@@ -1439,6 +1439,61 @@ export const AdminPanel = () => {
                                                 <img src={editingRicambio.image} alt="Preview" style={{ maxWidth: '200px', borderRadius: '8px', marginTop: '0.75rem', border: '1px solid rgba(255,255,255,0.1)' }} />
                                             )}
                                         </div>
+                                        {/* Custom Fields */}
+                                        <div className="form-group">
+                                            <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                <span>Campi Personalizzati</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const fields = [...(editingRicambio.custom_fields || []), { label: '', value: '' }];
+                                                        setEditingRicambio({ ...editingRicambio, custom_fields: fields });
+                                                    }}
+                                                    style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.3rem 0.75rem', background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '8px', color: '#d4af37', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer' }}
+                                                >
+                                                    <Plus size={14} /> Aggiungi Campo
+                                                </button>
+                                            </label>
+                                            {(editingRicambio.custom_fields || []).length === 0 && (
+                                                <p style={{ fontSize: '0.8rem', color: '#666', margin: '0.5rem 0 0' }}>Nessun campo aggiuntivo. Clicca "Aggiungi Campo" per creare campi personalizzati.</p>
+                                            )}
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
+                                                {(editingRicambio.custom_fields || []).map((field: any, idx: number) => (
+                                                    <div key={idx} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                                        <input
+                                                            value={field.label}
+                                                            onChange={e => {
+                                                                const fields = [...(editingRicambio.custom_fields || [])];
+                                                                fields[idx] = { ...fields[idx], label: e.target.value };
+                                                                setEditingRicambio({ ...editingRicambio, custom_fields: fields });
+                                                            }}
+                                                            placeholder="Nome campo"
+                                                            style={{ flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '0.5rem 0.75rem', color: 'white', fontSize: '0.85rem' }}
+                                                        />
+                                                        <input
+                                                            value={field.value}
+                                                            onChange={e => {
+                                                                const fields = [...(editingRicambio.custom_fields || [])];
+                                                                fields[idx] = { ...fields[idx], value: e.target.value };
+                                                                setEditingRicambio({ ...editingRicambio, custom_fields: fields });
+                                                            }}
+                                                            placeholder="Valore"
+                                                            style={{ flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '0.5rem 0.75rem', color: 'white', fontSize: '0.85rem' }}
+                                                        />
+                                                        <button
+                                                            onClick={() => {
+                                                                const fields = (editingRicambio.custom_fields || []).filter((_: any, i: number) => i !== idx);
+                                                                setEditingRicambio({ ...editingRicambio, custom_fields: fields });
+                                                            }}
+                                                            style={{ padding: '0.4rem', background: 'rgba(239,68,68,0.15)', borderRadius: '6px', color: '#ef4444', cursor: 'pointer', flexShrink: 0 }}
+                                                        >
+                                                            <Trash2 size={14} />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
                                         <button className="btn-primary" onClick={handleSaveRicambio} style={{ marginTop: '0.5rem' }}>
                                             <Save size={16} /> {editingRicambio.id ? 'Salva Modifiche' : 'Aggiungi al Catalogo'}
                                         </button>

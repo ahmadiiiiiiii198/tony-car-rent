@@ -4,6 +4,11 @@ import { Search, ShoppingCart, X, Send, User, Mail, Phone, MessageSquare, Packag
 import { supabase } from '../lib/supabase';
 import { useLanguage } from '../context/LanguageContext';
 
+interface CustomField {
+    label: string;
+    value: string;
+}
+
 interface RicambioProduct {
     id: number;
     name: string;
@@ -13,6 +18,7 @@ interface RicambioProduct {
     price: number;
     image: string | null;
     available: boolean;
+    custom_fields: CustomField[] | null;
 }
 
 interface CartItem {
@@ -241,6 +247,16 @@ export const Ricambi = () => {
                                         {product.brand && <span className="ricambi-brand">{product.brand}</span>}
                                         <h4>{product.name}</h4>
                                         {product.description && <p className="ricambi-desc">{product.description}</p>}
+                                        {product.custom_fields && product.custom_fields.length > 0 && (
+                                            <div className="ricambi-custom-fields">
+                                                {product.custom_fields.filter(f => f.label && f.value).map((field, idx) => (
+                                                    <div key={idx} className="ricambi-field">
+                                                        <span className="ricambi-field-label">{field.label}</span>
+                                                        <span className="ricambi-field-value">{field.value}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
                                         <div className="ricambi-card-footer">
                                             <span className="ricambi-price">€ {formatPrice(product.price)}</span>
                                             <button className="ricambi-add-btn" onClick={() => addToCart(product)}>
