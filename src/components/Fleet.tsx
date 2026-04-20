@@ -40,7 +40,7 @@ interface FleetProps {
 }
 
 export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [cars, setCars] = useState<Car[]>([]);
     // const [loading, setLoading] = useState(true); // Moved below
 
@@ -734,18 +734,19 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                     </motion.div>
                                 )}
                                 {filteredCars.map(car => (
-                                    <motion.div
+                                    <motion.article
                                         key={car.id}
                                         className="car-card"
                                         initial={{ opacity: 0, scale: 0.9 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0, scale: 0.9 }}
                                         whileHover={{ y: -10, boxShadow: "0 20px 40px rgba(0,0,0,0.4)" }}
+                                        aria-label={`${car.brand} ${car.name}`}
                                     >
                                         <div className="car-image-wrapper">
                                             <img
                                                 src={(car.images && car.images.length > 0) ? car.images[cardImageIndices[car.id] || 0] : car.image}
-                                                alt={car.name}
+                                                alt={`${car.brand} ${car.name} - Tonaydin Luxury Cars`}
                                                 loading="lazy"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
@@ -759,6 +760,7 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                                 <>
                                                     <button
                                                         className="card-gallery-nav prev"
+                                                        aria-label={language === 'it' ? 'Immagine precedente' : 'Previous image'}
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             setCardImageIndices(prev => ({
@@ -771,6 +773,7 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                                     </button>
                                                     <button
                                                         className="card-gallery-nav next"
+                                                        aria-label={language === 'it' ? 'Immagine successiva' : 'Next image'}
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             setCardImageIndices(prev => ({
@@ -881,7 +884,7 @@ export const Fleet = ({ searchParams, onClearSearch }: FleetProps) => {
                                                 </button>
                                             </div>
                                         </div>
-                                    </motion.div>
+                                    </motion.article>
                                 ))}
                             </AnimatePresence>
                         </motion.div>

@@ -7,7 +7,7 @@ export const Footer = () => {
     const { settings } = useSettings();
 
     return (
-        <footer className="footer" id="contact">
+        <footer className="footer" id="contact" role="contentinfo" aria-label="Contatti e informazioni Tonaydin Luxury Cars">
             <div className="container">
                 <div className="footer-grid">
                     <div className="footer-brand">
@@ -16,13 +16,13 @@ export const Footer = () => {
                             {t.footerDesc}
                         </p>
                         <div className="social-links">
-                            <a href={`https://instagram.com/${settings.instagram}`} target="_blank" rel="noopener noreferrer" className="social-link">
+                            <a href={`https://instagram.com/${settings.instagram}`} target="_blank" rel="noopener noreferrer" className="social-link" aria-label="Seguici su Instagram">
                                 <Instagram size={20} />
                             </a>
-                            <a href={`https://wa.me/${settings.whatsapp.replace('+', '')}`} target="_blank" rel="noopener noreferrer" className="social-link">
+                            <a href={`https://wa.me/${settings.whatsapp.replace('+', '')}`} target="_blank" rel="noopener noreferrer" className="social-link" aria-label="Contattaci su WhatsApp">
                                 <MessageCircle size={20} />
                             </a>
-                            <a href="#" className="social-link">
+                            <a href="#" className="social-link" aria-label="Seguici su Facebook">
                                 <Facebook size={20} />
                             </a>
                         </div>

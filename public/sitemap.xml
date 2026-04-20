@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Homepage (Italian - default) -->
+  <url>
+    <loc>https://www.tonycars46.com/</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://www.tonycars46.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.tonycars46.com/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.tonycars46.com/" />
+    <lastmod>2026-04-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://www.tonycars46.com/hero.png</image:loc>
+      <image:title>Tonaydin Luxury Cars - Flotta di auto di lusso</image:title>
+      <image:caption>Scopri la nostra flotta esclusiva di auto di lusso a Legnano (MI)</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.tonycars46.com/logo-newest.png</image:loc>
+      <image:title>Tonaydin Luxury Cars Logo</image:title>
+    </image:image>
+  </url>
+
+  <!-- Homepage (English) -->
+  <url>
+    <loc>https://www.tonycars46.com/?lang=en</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://www.tonycars46.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.tonycars46.com/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.tonycars46.com/" />
+    <lastmod>2026-04-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Fleet Section -->
+  <url>
+    <loc>https://www.tonycars46.com/#fleet</loc>
+    <lastmod>2026-04-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Services Section -->
+  <url>
+    <loc>https://www.tonycars46.com/#services</loc>
+    <lastmod>2026-04-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Contact Section -->
+  <url>
+    <loc>https://www.tonycars46.com/#contact</loc>
+    <lastmod>2026-04-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+</urlset>

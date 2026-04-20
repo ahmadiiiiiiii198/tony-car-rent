@@ -441,7 +441,7 @@ export const Hero = ({ onSearch }: HeroProps) => {
         'Mercedes-Benz', 'Nissan', 'Peugeot', 'Porsche', 'Smart', 'Toyota', 'Volkswagen'
     ];
     return (
-        <section className="hero-section" id="home">
+        <section className="hero-section" id="home" aria-label={language === 'it' ? 'Sezione principale - Tonaydin Luxury Cars' : 'Main section - Tonaydin Luxury Cars'}>
             <div
                 className="hero-bg"
             >
@@ -451,6 +451,8 @@ export const Hero = ({ onSearch }: HeroProps) => {
                     muted
                     playsInline
                     poster="/hero.png"
+                    aria-hidden="true"
+                    title={language === 'it' ? 'Auto di lusso in movimento' : 'Luxury car in motion'}
                 >
                     <source src="/bmw.mp4" type="video/mp4" />
                 </video>
@@ -458,7 +460,11 @@ export const Hero = ({ onSearch }: HeroProps) => {
                 <div className={`hero-tab-overlay ${activeTab || ''}`} />
             </div>
 
-
+            <h1 className="sr-only">
+                {language === 'it'
+                    ? 'Tonaydin Luxury Cars - Vendita e Noleggio Auto di Lusso a Legnano (MI)'
+                    : 'Tonaydin Luxury Cars - Luxury Car Sales and Rental in Legnano, Milan'}
+            </h1>
 
             <div className="container hero-content">
                 {/* Search widget with category tabs */}

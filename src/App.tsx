@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -7,12 +7,19 @@ import { Services } from './components/Services';
 import { Footer } from './components/Footer';
 import { AdminPanel } from './components/AdminPanel';
 import { TestCarShowcase } from './components/TestCarShowcase';
-import { LanguageProvider } from './context/LanguageContext';
+import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { SettingsProvider } from './context/SettingsContext';
 import { emptySearchParams, type SearchParams } from './types/SearchParams';
 
 function MainSite() {
   const [searchParams, setSearchParams] = useState<SearchParams>(emptySearchParams);
+  const { language } = useLanguage();
+
+  useEffect(() => {
+    document.title = language === 'it' 
+      ? 'Tonaydin Luxury Cars | Vendita e Noleggio Auto di Lusso a Legnano'
+      : 'Tonaydin Luxury Cars | Luxury Car Sales & Rental in Legnano';
+  }, [language]);
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', width: '100%', overflowX: 'hidden' }}>

@@ -53,7 +53,7 @@ export const Services = () => {
     ];
 
     return (
-        <section id="services" className="section-padding services-section">
+        <section id="services" className="section-padding services-section" aria-label={language === 'it' ? 'I nostri servizi esclusivi' : 'Our exclusive services'}>
             <div className="container">
                 <div className="services-header">
                     <motion.h2
