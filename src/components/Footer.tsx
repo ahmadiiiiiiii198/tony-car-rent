@@ -68,6 +68,9 @@ export const Footer = () => {
                         <Link to="/terms-conditions">{t.termsConditions}</Link>
                     </div>
                 </div>
+                <div style={{ textAlign: 'center', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-color)', color: '#888', fontSize: '0.85rem' }}>
+                    <p>This website is designed and created by Adib Tech: <a href="tel:+393516158210" style={{ color: 'var(--color-gold)' }}>+39 351 6158210</a> | Instagram: <a href="https://instagram.com/adib_tech" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-gold)' }}>adib_tech</a></p>
+                </div>
             </div>
         </footer>
     );
